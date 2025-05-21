@@ -1,0 +1,58 @@
+<section class="login-wrapper">
+    <div class="login-card">
+      <h2 class="text-center mb-4">Iniciar Sesión</h2>
+  
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+        <div class="mb-3">
+          <label for="usuario" class="form-label fw-bold">Usuario</label>
+          <input
+            type="text"
+            id="usuario"
+            class="form-control"
+            formControlName="usuario"
+            placeholder="Introduce tu usuario"
+          />
+          @if (checkControl('usuario', 'required')) {
+            <p class="text-danger">El campo es obligatorio</p>
+          }
+        </div>
+  
+        <div class="mb-3">
+          <label for="contrasena" class="form-label fw-bold">Contraseña</label>
+          <div class="position-relative">
+            <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="contrasena"
+            class="form-control"
+            formControlName="contrasena"
+            placeholder="Introduce tu contraseña"
+          />
+          <button
+          type="button"
+          (click)="showPassword = !showPassword"
+          class="position-absolute top-50 translate-middle-y end-0 d-flex align-items-center px-3 text-secondary hover:text-primary border-0 bg-transparent"        >
+        @if (!showPassword) {
+            👁️
+          } @else {
+            🙈
+        }
+        </button>
+          </div>
+
+          @if (checkControl('contrasena', 'required')) {
+            <p class="text-danger">El campo es obligatorio</p>
+          }
+        </div>
+  
+        <button type="submit" class="btn w-100 btn-primary-color mt-4 fw-bold" [disabled]="loginForm.invalid">
+          Iniciar Sesión
+        </button>
+      </form>
+      <div class="d-flex justify-content-center align-items-center mt-4 flex-column">
+        <p>¿Has olvidado tu contraseña? <a [routerLink]="['/home']" class="link-primary-color text-decoration-none">Recuérdame</a></p>
+        <p>¿Aún no tienes cuenta? <a [routerLink]="['/register']" class="link-primary-color text-decoration-none">Registrate</a></p>
+
+      </div>
+    </div>
+  </section>
+  
