@@ -1,1 +1,30 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --primary-color: #0FA3B1;
+  --text-color: #333;
+}
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
+.btn-primary-color {
+  background-color: var(--primary-color);
+}
+
+h1, h2, h3 {
+  font-family: 'Roboto', sans-serif;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.link-primary-color {
+  color: var(--primary-color);
+}
