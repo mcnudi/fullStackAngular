@@ -1,0 +1,12 @@
+.img-container {
+  transition: transform 1s ease-in-out;
+  z-index: 10;
+}
+
+.translate-down {
+  transform: translateY(100%);
+}
+
+.translate-up {
+  transform: translateY(-65%);
+}

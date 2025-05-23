@@ -1,0 +1,15 @@
+.btn-primary-color {
+    background-color: rgba(15, 163, 177, 0.5);
+    border: none;
+
+    &:hover {
+        background-color: rgb(15, 163, 177);
+    }
+  }
+
+  .botones-overlay {
+  position: absolute;
+  top: 70%;
+  left: 13%;
+  transform: translate(-25%, -25%);
+}
