@@ -8,10 +8,21 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, RouterLink, CommonModule],
+  imports: [
+    ReactiveFormsModule, 
+    RouterLink, 
+    CommonModule, 
+    MatFormFieldModule, 
+    MatInputModule, 
+    MatButtonModule,
+    MatIconModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
