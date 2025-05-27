@@ -3,11 +3,11 @@
     <h2 class="text-center mb-4">Regístrate</h2>
 
     <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
-      <div class="mb-3">
-        <label for="nombreCompleto" class="form-label fw-bold"
-          >Nombre Completo</label
-        >
+      <mat-form-field class="w-100 mb-3" appearance="fill">
+        <mat-label for="nombreCompleto" class="form-label fw-bold"
+          >Nombre Completo</mat-label>
         <input
+          matInput
           type="text"
           id="nombreCompleto"
           class="form-control"
@@ -15,12 +15,13 @@
           placeholder="Introduce tu nombre completo"
         />
         @if (checkControl('nombreCompleto', 'required')) {
-        <p class="text-danger">El campo es obligatorio</p>
+        <mat-error class="text-danger">El campo es obligatorio</mat-error>
         }
-      </div>
-      <div class="mb-3">
-        <label for="email" class="form-label fw-bold">Correo Electrónico</label>
+      </mat-form-field>
+      <mat-form-field class="w-100 mb-3" appearance="fill">
+        <mat-label for="email" class="form-label fw-bold">Correo Electrónico</mat-label>
         <input
+          matInput
           type="text"
           id="email"
           class="form-control"
@@ -28,14 +29,15 @@
           placeholder="Introduce tu email"
         />
         @if (checkControl('email', 'required')) {
-        <p class="text-danger">El campo es obligatorio</p>
+        <mat-error class="text-danger">El campo es obligatorio</mat-error>
         } @if (checkControl('email', 'pattern')) {
-        <p class="text-danger">Introduce un correo válido</p>
+        <mat-error class="text-danger">Introduce un correo válido</mat-error>
         }
-      </div>
-      <div class="mb-3">
-        <label for="usuario" class="form-label fw-bold">Usuario</label>
+      </mat-form-field>
+      <mat-form-field class="w-100 mb-3" appearance="fill">
+        <mat-label for="usuario" class="form-label fw-bold">Usuario</mat-label>
         <input
+          matInput
           type="text"
           id="usuario"
           class="form-control"
@@ -43,14 +45,15 @@
           placeholder="Introduce tu usuario"
         />
         @if (checkControl('usuario', 'required')) {
-        <p class="text-danger">El campo es obligatorio</p>
+        <mat-error class="text-danger">El campo es obligatorio</mat-error>
         }
-      </div>
+      </mat-form-field>
 
-      <div class="mb-3">
-        <label for="contrasena" class="form-label fw-bold">Contraseña</label>
+      <mat-form-field class="w-100 mb-3" appearance="fill">
+        <mat-label for="contrasena" class="form-label fw-bold">Contraseña</mat-label>
         <div class="position-relative">
           <input
+            matInput
             [type]="showPassword ? 'text' : 'password'"
             id="contrasena"
             class="form-control"
@@ -77,24 +80,24 @@
           Seguridad: {{ seguridadContrasena }}
         </p>
         } @if (checkControl('contrasena', 'required')) {
-        <p class="text-danger text-sm mt-1">El campo es obligatorio</p>
+        <mat-error class="text-danger text-sm mt-1">El campo es obligatorio</mat-error>
         } @else if (checkControl('contrasena', 'pattern')) {
-        <p class="text-danger text-sm mt-1">
+        <mat-error class="text-danger text-sm mt-1">
           La contraseña debe contener al menos una mayúscula, una minúscula y un
           número
-        </p>
+        </mat-error>
         } @else if (checkControl('contrasena', 'minlength')) {
-        <p class="text-danger text-sm mt-1">
+        <mat-error class="text-danger text-sm mt-1">
           La contraseña debe tener al menos 8 caracteres
-        </p>
+        </mat-error>
         }
-      </div>
+      </mat-form-field>
 
       <button
-        type="submit"
-        class="btn w-100 btn-primary-color mt-4 fw-bold"
-        [disabled]="registerForm.invalid"
-      >
+      mat-raised-button
+      color="primary"
+      class="w-100 mt-4 d-flex align-items-center justify-content-center gap-2"
+      [disabled]="registerForm.invalid">
         Registrarse
       </button>
     </form>
