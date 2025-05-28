@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { UserAuthenticatedResponse, UserLoginRequest, UserRegisterRequest } from '../interfaces/iuser.interface';
 
 
 interface AuthResponse {
@@ -12,16 +13,22 @@ interface AuthResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private API_URL = 'URL de la API';
+  private API_URL = 'http://localhost:3000/api/users';
 
   constructor(private http: HttpClient) {}
 
-  register(data: any): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/register`, data);
+  register(data: UserRegisterRequest): Observable<UserAuthenticatedResponse> {
+    return this.http.post<UserAuthenticatedResponse>(
+      `${this.API_URL}/register`,
+      data
+    );
   }
 
-  login(data: any): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/login`, data);
+  login(data: UserLoginRequest): Observable<UserAuthenticatedResponse> {
+    return this.http.post<UserAuthenticatedResponse>(
+      `${this.API_URL}/login`,
+      data
+    );
   }
 
   saveToken(token: string) {

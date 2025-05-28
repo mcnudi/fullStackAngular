@@ -6,16 +6,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { UserLoginRequest } from '../../interfaces/iuser.interface';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-login',
   imports: [
-    ReactiveFormsModule, 
-    RouterLink,    
+    ReactiveFormsModule,
+    RouterLink,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
@@ -24,13 +26,19 @@ export class LoginComponent {
   showPassword = false;
   router = inject(Router);
   authService = inject(AuthService);
+  toastService = inject(ToastService);
 
   loginForm: FormGroup = new FormGroup({
-    usuario: new FormControl('', [Validators.required]),
-    contrasena: new FormControl('', [Validators.required]),
+    username: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required]),
   });
 
-
+  ngOnInit(): void {
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/dashboard']);
+    }
+  }
+  
   async onLogin() {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -38,14 +46,20 @@ export class LoginComponent {
     }
 
     try {
-      const response = await this.authService
-        .login(this.loginForm.value)
-        .toPromise();
+      const loginData: UserLoginRequest = {
+        username: this.loginForm.value.username,
+        password: this.loginForm.value.password,
+      };
+      console.log(loginData);
+
+      const response = await this.authService.login(loginData).toPromise();
+      console.log(response);
       if (response) {
         this.authService.saveToken(response.token);
         this.router.navigate(['/dashboard']);
       }
     } catch (err) {
+      this.toastService.showError('Error al iniciar sesión. Verifica tus credenciales.');
       console.error(err);
     }
   }

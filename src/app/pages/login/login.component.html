@@ -4,44 +4,44 @@
   
       <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
         <mat-form-field class="w-100 mb-3" appearance="fill">
-          <mat-label for="usuario" class="form-label fw-bold">Usuario</mat-label>
+          <mat-label for="username" class="form-label fw-bold">username</mat-label>
           <input
             matInput
             type="text"
-            id="usuario"
+            id="username"
             class="form-control"
-            formControlName="usuario"
+            formControlName="username"
             placeholder="Introduce tu usuario"
           />
-          @if (checkControl('usuario', 'required')) {
+          @if (checkControl('username', 'required')) {
             <mat-error class="text-danger">El campo es obligatorio</mat-error>
           }
         </mat-form-field>
   
         <mat-form-field class="w-100 mb-3" appearance="fill">
-          <mat-label for="contrasena" class="form-label fw-bold">Contraseña</mat-label>
+          <mat-label for="password" class="form-label fw-bold">Contraseña</mat-label>
           <div class="position-relative">
             <input
             matInput
             [type]="showPassword ? 'text' : 'password'"
-            id="contrasena"
+            id="password"
             class="form-control"
-            formControlName="contrasena"
+            formControlName="password"
             placeholder="Introduce tu contraseña"
             />
             <button
               type="button"
               (click)="showPassword = !showPassword"
-              class="position-absolute top-50 translate-middle-y end-0 d-flex align-items-center px-3 text-secondary hover:text-primary border-0 bg-transparent"        >
+              class="position-absolute top-50 translate-middle-y end-0 d-flex align-items-center text-secondary hover:text-primary border-0 bg-transparent"        >
               @if (!showPassword) {
-                  👁️
+                <mat-icon>visibility</mat-icon>
               } @else {
-                  🙈
+                <mat-icon>visibility_off</mat-icon>
               }
             </button>
           </div>
 
-          @if (checkControl('contrasena', 'required')) {
+          @if (checkControl('password', 'required')) {
             <mat-error class="text-danger">El campo es obligatorio</mat-error>
           }
         </mat-form-field>
