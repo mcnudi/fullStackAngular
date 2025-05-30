@@ -1,15 +1,26 @@
-.btn-primary-color {
+/*.btn-primary-color {
     background-color: rgba(15, 163, 177, 0.5);
     border: none;
 
     &:hover {
         background-color: rgb(15, 163, 177);
     }
-  }
+  }*/
 
   .botones-overlay {
   position: absolute;
   top: 70%;
-  left: 13%;
+  left: 14%;
   transform: translate(-25%, -25%);
 }
+
+button[mat-raised-button] {
+    background-color: rgba(15, 163, 177, 1) !important; 
+    color: white !important; 
+    font-size: 0.875rem;
+    font-weight: bold;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px; /* Bordes redondeados */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border:none !important;
+  }

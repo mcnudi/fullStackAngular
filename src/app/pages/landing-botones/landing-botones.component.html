@@ -1,4 +1,18 @@
-<div class="botones-overlay">
-  <button class="btn btn-primary-color m-2"  (click)="irAComoFunciona()">¿Como funciona?</button>
-  <button class="btn btn-primary-color m-2" (click)="irRegistrarse()">Empezar ahora</button>
+<!--<div class="botones-overlay">
+  <button  class=" btn-primary-color m-2"  (click)="irAComoFunciona()">¿Como funciona?</button>
+  <button class="btn-primary-color m-2" (click)="irRegistrarse()">Empezar ahora</button>
+</div>-->
+<div class="botones-overlay d-flex gap-2">
+<button
+        mat-raised-button
+        color="primary"
+        class="d-flex align-items-center justify-content-center" (click)="irAComoFunciona()">
+          ¿Como funciona?
+</button>
+<button
+        mat-raised-button
+        color="primary"
+        class="d-flex align-items-center justify-content-center" (click)="irRegistrarse()">
+          Empezar ahora
+</button>
 </div>
