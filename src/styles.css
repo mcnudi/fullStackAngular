@@ -2,7 +2,7 @@
   --primary-color: #0FA3B1;
   --text-color: #333;
 }
-html, body {
+html, body, main {
   margin: 0;
   height: 100%;
 }
@@ -21,7 +21,7 @@ h2 {
   font-weight: bold;
 }
 
-body {
+body, main {
   font-family: 'Open Sans', sans-serif;
 }
 
