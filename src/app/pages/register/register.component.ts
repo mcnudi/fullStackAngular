@@ -12,17 +12,20 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { UserRegisterRequest } from '../../interfaces/iuser.interface';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-register',
   imports: [
-    ReactiveFormsModule, 
-    RouterLink, 
-    CommonModule, 
-    MatFormFieldModule, 
-    MatInputModule, 
+    ReactiveFormsModule,
+    RouterLink,
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatButtonModule,
-    MatIconModule],
+    MatIconModule,
+  ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
@@ -30,31 +33,31 @@ export class RegisterComponent {
   showPassword = false;
   router = inject(Router);
   authService = inject(AuthService);
+  toastService = inject(ToastService);
 
-  seguridadContrasena: 'Débil' | 'Media' | 'Fuerte' | '' = '';
+  passwordSecurity: 'Débil' | 'Media' | 'Fuerte' | '' = '';
 
   registerForm: FormGroup = new FormGroup({
-    nombreCompleto: new FormControl('', [Validators.required]),
+    name: new FormControl('', [Validators.required]),
     email: new FormControl('', [
       Validators.required,
       Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'),
     ]),
-    usuario: new FormControl('', [Validators.required]),
-    contrasena: new FormControl('', [
+    username: new FormControl('', [Validators.required]),
+    password: new FormControl('', [
       Validators.required,
       Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$'),
-      Validators.minLength(8),
+      Validators.minLength(6),
     ]),
   });
 
   ngOnInit(): void {
     this.registerForm
-      .get('contrasena')
+      .get('password')
       ?.valueChanges.subscribe((value: string) => {
-        this.seguridadContrasena = this.checkPasswordStrength(value);
+        this.passwordSecurity = this.checkPasswordStrength(value);
       });
-      console.log("prueba",this.seguridadContrasena);
-
+    console.log('prueba', this.passwordSecurity);
   }
 
   checkControl(controlName: string, errorName: string) {
@@ -95,8 +98,15 @@ export class RegisterComponent {
     }
 
     try {
-      const formData = this.registerForm.value;
-      const response = await this.authService.register(formData).toPromise();
+      const registerData: UserRegisterRequest = {
+        name: this.registerForm.value.name,
+        email: this.registerForm.value.email,
+        username: this.registerForm.value.username,
+        password: this.registerForm.value.password,
+      };
+      const response = await this.authService
+        .register(registerData)
+        .toPromise();
 
       if (response) {
         this.authService.saveToken(response.token);
@@ -104,14 +114,13 @@ export class RegisterComponent {
       }
     } catch (error: any) {
       console.error(error.error);
-      /*
       if (error.status === 409) {
-        this.toast.error(
-          error.error?.message || 'Ese correo ya está registrado'
+        this.toastService.showError(
+          'Ese correo/usuario ya está registrado'
         );
       } else {
-        this.toast.error('Hubo un error al registrar el usuario');
-      }*/
+        this.toastService.showError('Hubo un error al registrar el usuario');
+      }
     }
   }
 }
