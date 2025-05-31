@@ -1,1 +1,42 @@
-<p>dashboard works!</p>
+<div class="container-fluid p-0">
+  <div class="row g-0">
+    <!-- Sidebar -->
+    <div class="col-12 col-md-3 col-lg-2 bg-light border-end min-vh-100 d-flex flex-column align-items-center py-4">
+      <div class="w-100">
+        <h5 class="fw-bold mb-4">Perfil de Aprendizaje</h5>
+        <ul class="list-unstyled">
+          <li class="mb-3">
+            <span class="fw-bold">Intereses</span>
+            <div class="bg-secondary bg-opacity-25 rounded mt-1" style="height: 20px; width: 80%;"></div>
+          </li>
+          <li class="mb-3">
+            <span class="fw-bold">Objetivos</span>
+            <div class="bg-secondary bg-opacity-25 rounded mt-1" style="height: 20px; width: 80%;"></div>
+          </li>
+          <li class="mb-3">
+            <span class="fw-bold">Disponibilidad</span>
+            <div class="bg-secondary bg-opacity-25 rounded mt-1" style="height: 20px; width: 80%;"></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="col-12 col-md-9 col-lg-10 d-flex flex-column" style="background: #f6faf4; min-height: 100vh;">
+
+      <!-- Calendar placeholder -->
+      <div class="flex-grow-1 d-flex flex-column align-items-center justify-content-center py-4">
+        <!-- Aquí puedes integrar un calendario real como angular-calendar o fullcalendar -->
+        <div class="bg-white rounded shadow-sm p-3 w-100" style="max-width: 900px; min-height: 400px;">
+          <p class="text-center text-muted">[Aquí irá el calendario]</p>
+        </div>
+      </div>
+
+      <!-- Bottom buttons -->
+      <div class="d-flex justify-content-between px-5 pb-4">
+        <button class="btn btn-info text-white px-4">Nueva Actividad</button>
+        <button class="btn btn-info text-white px-4">Filtrar por Categorías</button>
+      </div>
+    </div>
+  </div>
+</div>
