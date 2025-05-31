@@ -30,6 +30,8 @@
             <span class="nav-link no-underline" style="cursor: pointer;">
               {{ authService.getUserName() }}
             </span>
+                        <a class="nav-link no-underline" (click)="logout()" style="cursor: pointer;">Cerrar Sesión</a>
+
           </li>
         }
       </ul>

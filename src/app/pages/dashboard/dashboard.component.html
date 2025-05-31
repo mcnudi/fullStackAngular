@@ -28,7 +28,10 @@
       <div class="flex-grow-1 d-flex flex-column align-items-center justify-content-center py-4">
         <!-- Aquí puedes integrar un calendario real como angular-calendar o fullcalendar -->
         <div class="bg-white rounded shadow-sm p-3 w-100" style="max-width: 900px; min-height: 400px;">
-          <p class="text-center text-muted">[Aquí irá el calendario]</p>
+          <full-calendar
+            [options]="calendarOptions"
+            style="min-height: 400px;"
+          ></full-calendar>
         </div>
       </div>
 
