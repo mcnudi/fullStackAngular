@@ -37,6 +37,8 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService
   ) {}
 
+
+
   ngOnInit() {
     const userName = this.authService.getUserName(); // O como obtengas el ID del usuario
     if (!userName) {
