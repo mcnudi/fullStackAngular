@@ -1,7 +1,10 @@
 :root {
   --primary-color: #0FA3B1;
   --text-color: #333;
+  --warn-color: #dc3545;
+  --success-color: #198754;
 }
+
 html, body, main {
   margin: 0;
   height: 100%;
@@ -33,6 +36,7 @@ body, main {
   background-color: #198754; 
   font-size: 15px;
   border-radius: 6px;
+  color: #fff;
 }
 
 .snackbar-error {
@@ -58,4 +62,53 @@ body, main {
 
 .mat-snack-bar-action:hover {
   background-color: transparent !important;
+}
+
+.header-background {
+  background-color: var(--primary-color);
+}
+
+
+.btn-custom {
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: none;
+}
+
+.btn-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-custom:disabled {
+  background-color: rgba(200, 200, 200, 0.5);
+  color: rgba(255, 255, 255, 0.7);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.btn-primary-color {
+  background-color: var(--primary-color);
+}
+.btn-primary-color:hover {
+  background-color: #0d919e;
+}
+
+.btn-success {
+  background-color: var(--success-color);
+}
+.btn-success:hover {
+  background-color: #146c43;
+}
+
+.btn-error {
+  background-color: var(--warn-color);
+}
+.btn-error:hover {
+  background-color: #bb2d3b;
 }

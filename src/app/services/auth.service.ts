@@ -66,4 +66,5 @@ export class AuthService {
     const decoded = this.getDecodedToken();
     return decoded ? decoded.userName : null;
   }
+
 }

@@ -1,0 +1,65 @@
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow p-4" style="max-width: 700px; width: 100%;">
+      <div class="row">
+        <div class="col-md-5 d-flex align-items-center justify-content-center">
+          <label
+            for="fileInput"
+            [ngClass]="{
+              'image-box': true,
+              'with-image': !!previewUrl
+            }"
+          >
+            @if (!previewUrl) {
+              <span class="text-muted text-center">Haz clic para seleccionar una imagen</span>
+            } @else {
+              <img
+                [src]="previewUrl"
+                alt="Vista previa"
+                class="img-fluid rounded shadow-sm"
+                style="max-height: 100%; max-width: 100%;"
+              />
+            }
+          </label>
+          <input
+            type="file"
+            id="fileInput"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+            hidden
+          />
+        </div>
+  
+        <div class="col-md-7 mt-3 mt-md-0 align-content-center">
+            @if (selectedImage) {
+              <div>
+                <p>
+                  <strong>Nombre:</strong>
+                  <span [class.text-danger]="sizeExceeded">{{ selectedImage.name }}</span>
+                </p>
+                <p>
+                  <strong>Tamaño:</strong>
+                  <span [class.text-danger]="sizeExceeded">
+                    {{ (selectedImage.size / 1024) | number:'1.0-2' }} KB
+                  </span>
+                </p>
+          
+                @if (sizeExceeded) {
+                  <p class="text-danger fw-bold">
+                    La imagen supera el tamaño máximo permitido ({{ MAX_SIZE_MB }} MB)
+                  </p>
+                }
+              </div>
+            }
+          
+            <button
+              class="btn-custom btn-primary-color mt-3 w-100"
+              (click)="onUpdate()"
+              [disabled]="!selectedImage || sizeExceeded"
+            >
+              Actualizar
+            </button>
+          </div>
+      </div>
+    </div>
+  </div>
+  

@@ -2,9 +2,10 @@ export interface User {
   user_id: number;
   name: string;
   email: string;
-  userName: string;
-  password_hash: string;
+  username: string;
+  password: string;
   created_at: Date;
+  image?: string;
 }
 
 export interface UserLoginRequest {
@@ -24,4 +25,12 @@ export interface UserAuthenticatedResponse {
   name: string;
   email: string;
   token: string;
+}
+
+export interface UserUpdate {
+  name: string;
+  email: string;
+  username: string;
+  password: string;
+  image?: string;
 }
