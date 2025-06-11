@@ -61,4 +61,10 @@ export class AuthService {
 
     return Array.isArray(role) ? role[0] : role;
   }
+
+  getUserName(): any {
+    const decoded = this.getDecodedToken();
+    return decoded ? decoded.userName : null;
+  }
+
 }
