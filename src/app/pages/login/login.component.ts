@@ -50,13 +50,13 @@ export class LoginComponent {
         username: this.loginForm.value.username,
         password: this.loginForm.value.password,
       };
-      console.log(loginData);
 
       const response = await this.authService.login(loginData).toPromise();
-      console.log(response);
       if (response) {
+        console.log(response);
         this.authService.saveToken(response.token);
         this.router.navigate(['/dashboard']);
+
       }
     } catch (err) {
       this.toastService.showError('Error al iniciar sesión. Verifica tus credenciales.');
