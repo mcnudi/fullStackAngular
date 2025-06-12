@@ -1,132 +1,141 @@
-<div class="container-fluid p-0" style="background: #f6faf4">
-  <div class="row" style="height: 70vh">
-    <!-- Columna izquierda -->
-    <div
-      class="col-3 d-flex flex-column align-items-center justify-content-start pt-4"
-      style="background: #f6faf4"
-    >
-      <!-- Imagen de usuario -->
-      <div class="mb-3">
-        <img
-          src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
-          alt="Usuario"
-          class="img-fluid rounded-circle"
-          style="width: 120px; height: 120px; object-fit: cover"
-        />
-      </div>
-      <!-- Título y subtítulo -->
-      <div class="text-center mb-3">
-        <div class="fw-bold" style="font-size: 1.1rem">
-          Perfil de Aprendizaje
+<!-- Sección superior -->
+<div class="info-usuario-up pt-4" style="background: #f6faf4; min-height: 70vh;">
+  <div class="container">
+    <div class="row">
+
+      <!-- Columna superior izquierda -->
+      <div class="col-3 d-flex flex-column align-items-center justify-content-start pt-4 " style="background: #f6faf4;">
+
+              <!-- Imagen de usuario -->
+              <div class="mb-3">
+                <img
+                  src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
+                  alt="Usuario"
+                  class="img-fluid rounded-circle"
+                  style="width: 120px; height: 120px; object-fit: cover;"
+                />
+              </div>
+
+              <!-- Título y subtítulo -->
+              <div class="text-center mb-3 pd-3">
+                <div class="fw-bold" style="font-size: 1.1rem;">
+                  {{ userName }}
+                </div>
+                <div style="font-size: 0.95rem; color: #555;">
+                  Gráficos/Estadísticas
+                </div>
+              </div>
+
+              <!-- Gráfico circular o de barras -->
+              <div style="width: 280px; margin: 0 auto; position: relative;">
+
+                <!-- Flecha izquierda -->
+                <button
+                  (click)="chartType = 'pie'"
+                  style="
+                    position: absolute;
+                    left: -30px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: none;
+                    border: none;
+                  "
+                >
+                  ◀
+                </button>
+
+                <!-- Flecha derecha -->
+                <button
+                  (click)="chartType = 'bar'"
+                  style="
+                    position: absolute;
+                    right: -30px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: none;
+                    border: none;
+                  "
+                >
+                  ▶
+                </button>
+
+                <!-- Gráfico dinámico -->
+                @if (chartType === 'pie') {
+                  <ngx-charts-pie-chart
+                    [view]="[280, 180]"
+                    [results]="single"
+                    [scheme]="'fire'"
+                    [gradient]="false"
+                    [legend]="true"
+                    [legendPosition]="legendPosition"
+                    [labels]="true"
+                    [doughnut]="false"
+                  >
+                  </ngx-charts-pie-chart>
+                }
+
+                @if (chartType === 'bar') {
+                  <ngx-charts-bar-vertical
+                    [view]="[280, 180]"
+                    [results]="barChartData"
+                    [scheme]="'fire'"
+                    [gradient]="false"
+                    [legend]="true"
+                    [xAxis]="true"
+                    [yAxis]="true"
+                    [legendPosition]="legendPosition"
+                    [showXAxisLabel]="true"
+                    [showYAxisLabel]="true"
+                    xAxisLabel="Categoría"
+                    yAxisLabel="Valor"
+                  >
+                  </ngx-charts-bar-vertical>
+                }
+              </div>
+            </div>
+
+      <!-- Columna superior derecha -->
+      <div class="col-9 d-flex flex-column px-5" style="background: #fff;">
+        <div class="pt-4 pb-2">
+          <h5 class="fw-bold mb-2">Tareas de la Semana</h5>
+          <hr class="mb-3" style="margin-bottom: 0.75rem;" />
+
+          <div
+            class="objetivos-list bg-light rounded p-3 mb-4"
+            style="overflow-y: auto; max-height: 220px;"
+          >
+            <ul class="list-unstyled mb-0">
+              @for (objetivo of objetivos; track $index) {
+                <li class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-truncate" style="max-width: 70%;">
+                    {{ objetivo }}
+                  </span>
+                  <button class="btn btn-sm btn-outline-secondary">Ver</button>
+                </li>
+              }
+            </ul>
+          </div>
         </div>
-        <div style="font-size: 0.95rem; color: #555">Gráficos/Estadísticas</div>
-      </div>
-      <!-- Gráfico circular -->
-      <!-- Gráfico con flechas para cambiar -->
-      <div style="width: 280px; margin: 0 auto; position: relative">
-        <!-- Flecha izquierda -->
-        <button
-          (click)="chartType = 'pie'"
-          style="
-            position: absolute;
-            left: -30px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-          "
-        >
-          <
-        </button>
-        <!-- Flecha derecha -->
-        <button
-          (click)="chartType = 'bar'"
-          style="
-            position: absolute;
-            right: -30px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-          "
-        >
-          >
-        </button>
 
-        @if (chartType === 'pie') {
-          <ngx-charts-pie-chart
-            [view]="[280, 180]"
-            [results]="single"
-            [scheme]="'fire'"
-            [gradient]="false"
-            [legend]="true"
-            [legendPosition]="legendPosition"
-            [labels]="true"
-            [doughnut]="false"
-          >
-          </ngx-charts-pie-chart>
-        }
-
-        @if (chartType === 'bar') {
-          <ngx-charts-bar-vertical
-            [view]="[280, 180]"
-            [results]="barChartData"
-            [scheme]="'fire'"
-            [gradient]="false"
-            [legend]="true"
-            [xAxis]="true"
-            [yAxis]="true"
-            [legendPosition]="legendPosition"
-            [showXAxisLabel]="true"
-            [showYAxisLabel]="true"
-            xAxisLabel="Categoría"
-            yAxisLabel="Valor"
-          >
-          </ngx-charts-bar-vertical>
-  }
-      </div>
-    </div>
-    <!-- Columna derecha -->
-    <div class="col-9 d-flex flex-column px-5" style="background: #fff">
-      <div class="pt-4 pb-2">
-        <h5 class="fw-bold mb-2">Tareas de la Semana</h5>
-        <hr class="mb-3" style="margin-bottom: 0.75rem" />
-        <div
-          class="objetivos-list bg-light rounded p-3 mb-4"
-          style="overflow-y: auto; max-height: 220px"
-        >
-          <ul class="list-unstyled mb-0">
-            @for (objetivo of objetivos; track $index) {
-            <li class="d-flex justify-content-between align-items-center mb-2">
-              <span class="text-truncate" style="max-width: 70%">{{
-                objetivo
-              }}</span>
-              <button class="btn btn-sm btn-outline-secondary">Ver</button>
-            </li>
-            }
-          </ul>
+        <div class="d-flex justify-content-center gap-4">
+          <button class="btn btn-info text-white px-4">Nueva Actividad</button>
         </div>
       </div>
 
-      <div class="d-flex justify-content-center gap-4">
-        <button class="btn btn-info text-white px-4">Nueva Actividad</button>
-      </div>
     </div>
   </div>
 </div>
 
-<!-- Sección inferior (60%) -->
+<!-- Sección inferior (Calendario) -->
 <div class="info-usuario-down container-fluid">
   <div class="calendario h-100">
-    <div
-      class="d-flex flex-column align-items-center justify-content-center py-5 h-100"
-    >
+    <div class="d-flex flex-column align-items-center justify-content-center py-5 h-100">
       <div
         class="bg-white rounded shadow-sm p-3 w-100 px-4"
-        style="min-height: 400px"
+        style="min-height: 400px;"
       >
         <!-- Calendario -->
-        <full-calendar [options]="calendarOptions" style="min-height: 400px">
+        <full-calendar [options]="calendarOptions" style="min-height: 400px;">
         </full-calendar>
       </div>
     </div>

@@ -38,7 +38,7 @@ export class LoginComponent {
       this.router.navigate(['/dashboard']);
     }
   }
-  
+
   async onLogin() {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -55,6 +55,7 @@ export class LoginComponent {
       if (response) {
         console.log(response);
         this.authService.saveToken(response.token);
+
         this.router.navigate(['/dashboard']);
 
       }

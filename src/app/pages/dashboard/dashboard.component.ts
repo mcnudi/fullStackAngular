@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { EventInput, EventMountArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import { CalendarEventsService } from '../../services/calendarEvents.service';
+import { CalendarEventsService } from '../../services/dashboard-user.service';
 import { AuthService } from '../../services/auth.service';
 import esLocale from '@fullcalendar/core/locales/es';
 import { LegendPosition, NgxChartsModule } from '@swimlane/ngx-charts';
@@ -16,36 +16,23 @@ import { pieData, barData } from './pieData';
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
-  // Opciones del calendario
-  calendarOptions = {
-    plugins: [dayGridPlugin],
-    initialView: 'dayGridWeek',
-    locale: esLocale,
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,dayGridWeek,dayGridDay',
-    },
-    events: [
-      { title: 'Estudiar Matemáticas', start: new Date() },
-      { title: 'Estudiar Historia', start: '2025-05-27T12:00:00', end: '2025-05-27T13:00:00' }
-    ] as EventInput[],
-    eventDidMount: function(info: EventMountArg) {
-      (info.el as HTMLElement).title = info.event.title;
-    }
-  };
 
-  // Datos para el gráfico circular
-  single = pieData;
-  legendPosition = LegendPosition.Below;
+userName: string = ''; // --> Esto tendra que ser un array, para poder jugar con la información.
+objetivos = [];
+intereses = [];
+categorias = [];
 
-  constructor(
-    private calendarEventsService: CalendarEventsService,
-    private authService: AuthService
-  ) {}
-
-  ngOnInit() {
+  ngOnInit():void {
     const userName = this.authService.getUserName();
+
+ if (this.authService.isAuthenticated()) {
+    this.userName = this.authService.getUserName();
+    console.log('Nombre del usuario:', this.userName);
+  } else {
+    console.warn('Usuario no autenticado');
+  }
+
+  /* De momento sacar información del usuario
     if (!userName) {
       console.error('User ID not found. Please log in.');
     } else {
@@ -59,9 +46,39 @@ export class DashboardComponent implements OnInit {
         });
       console.log('Calendar initialized with user ID:', userName);
       console.log('Calendar events:', this.calendarOptions.events);
-    }
-  }
 
+    }
+      */
+  }
+/*--------- TS de Calendario ----------*/
+              // Opciones del calendario
+              calendarOptions = {
+                plugins: [dayGridPlugin],
+                initialView: 'dayGridWeek',
+                locale: esLocale,
+                headerToolbar: {
+                  left: 'prev,next today',
+                  center: 'title',
+                  right: 'dayGridMonth,dayGridWeek,dayGridDay',
+                },
+                events: [
+                  { title: 'Estudiar Matemáticas', start: new Date() },
+                  { title: 'Estudiar Historia', start: '2025-05-27T12:00:00', end: '2025-05-27T13:00:00' }
+                ] as EventInput[],
+                eventDidMount: function(info: EventMountArg) {
+                  (info.el as HTMLElement).title = info.event.title;
+                }
+              };
+    /*--------- TS de Grafico ----------*/
+      // Datos para el gráfico circular
+      single = pieData;
+      legendPosition = LegendPosition.Below;
+
+      constructor(
+        private calendarEventsService: CalendarEventsService,
+        private authService: AuthService,
+      ) {}
+  /*-------------------------------OTROS -------------------*/
   // Métodos para interacción con el gráfico
   onSelect(data: any): void {
     console.log('Item clicked', JSON.parse(JSON.stringify(data)));
@@ -75,11 +92,7 @@ export class DashboardComponent implements OnInit {
     console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 
-  objetivos = [
-    'Objetivo 1 - Fecha límite: 3 Jun',
-    'Objetivo 2 - Fecha límite: 5 Jun',
-    'Objetivo 3 - Fecha límite: 7 Jun'
-  ];
+
 
   chartType: 'pie' | 'bar' = 'pie';
 
