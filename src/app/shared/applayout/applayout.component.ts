@@ -1,8 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { RouterOutlet, RouterLink, RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
+import { lastValueFrom } from 'rxjs';
+import { User } from '../../interfaces/iuser.interface';
 
 @Component({
   selector: 'app-applayout',
@@ -17,4 +21,15 @@ import { RouterOutlet, RouterLink, RouterModule } from '@angular/router';
   templateUrl: './applayout.component.html',
   styleUrl: './applayout.component.css',
 })
-export class ApplayoutComponent {}
+export class ApplayoutComponent {
+  authService = inject(AuthService);
+  userService = inject(UserService);
+  user: User | null = null;
+
+  async ngOnInit() {
+    const username = this.authService.getUserName();
+    if (username) {
+      this.user = await lastValueFrom(this.userService.getByUsername(username));
+    }
+  }
+}
