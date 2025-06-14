@@ -26,6 +26,7 @@ export const routes: Routes = [
       { path: 'profile', component: ProfileComponent },
       { path: 'updateImage', component: UpdateImageComponent },
       { path: 'panel', component: PanelComponent },
+      { path:'rutina',component:RutinaComponent}
     ],
   },
   { path: '**', redirectTo: 'home' },

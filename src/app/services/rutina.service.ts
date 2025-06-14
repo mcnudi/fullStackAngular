@@ -9,10 +9,9 @@ import { Observable } from 'rxjs';
 export class RutinaService {
 
   private http = inject(HttpClient)
-  private baseURL: string = "http://localhost:3000/api/rutina"
+  private baseURL: string = "http://localhost:3000/api/rutinas"
 
-  insertRutina(user:String,rutina:Irutina): Observable<Irutina> {
-      //console.log('Updating user profile:', user);
+  insertRutina(rutina:Irutina): Observable<Irutina> {
       return this.http.post<Irutina>(
         `${this.baseURL}`,rutina);
     }
