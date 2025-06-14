@@ -7,6 +7,8 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { UpdateImageComponent } from './pages/update-image/update-image.component';
 import { ApplayoutComponent } from './shared/applayout/applayout.component';
+import { PanelComponent } from './pages/panel/panel.component';
+
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
@@ -14,7 +16,6 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'passwordRecovery', component: PasswordRecoveryComponent },
-
   {
     path: 'app',
     component: ApplayoutComponent,
@@ -23,8 +24,8 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'updateImage', component: UpdateImageComponent },
+      { path: 'panel', component: PanelComponent },
     ],
   },
-
   { path: '**', redirectTo: 'home' },
 ];

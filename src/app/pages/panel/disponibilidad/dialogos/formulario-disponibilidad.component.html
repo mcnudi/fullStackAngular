@@ -1,0 +1,27 @@
+<form>
+    <h2 class="text-center mb-3">¿Cuál es tu disponibilidad?</h2>
+
+    <!-- Grupo de día -->
+    <div class="mb-3">
+        <label for="dia_semana" class="form-label">Día de la semana:</label>
+        <input type="text" id="dia_semana" class="form-control">
+    </div>
+
+    <!-- Grupo de hora inicio -->
+    <div class="mb-3">
+        <label for="hora_inicio" class="form-label">Hora de inicio:</label>
+        <input type="time" step="3600" id="hora_inicio" class="form-control">
+    </div>
+
+    <!-- Grupo de hora fin -->
+    <div class="mb-3">
+        <label for="hora_fin" class="form-label">Hora de fin:</label>
+        <input type="time" step="3600" id="hora_fin" class="form-control">
+    </div>
+
+    <!-- Botones -->
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Añadir</button>
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+    </div>
+</form>
