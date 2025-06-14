@@ -54,7 +54,7 @@ export const routes: Routes = [
       {
         path: 'rutinas',
         component: RutinasComponent,
-        title: 'Rutinator - rutinas',
+        title: 'Rutinator - Rutinas',
       },
     ],
   },
