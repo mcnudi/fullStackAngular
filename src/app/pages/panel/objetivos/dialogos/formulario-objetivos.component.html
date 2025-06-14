@@ -1,0 +1,28 @@
+<form>
+    <h2 class="text-center mb-3">Añade tus objetivos...</h2>
+
+    <!-- Grupo de título -->
+    <div class="mb-3">
+        <label for="titulo_objetivo" class="form-label">Título del objetivo:</label>
+        <input type="text" id="titulo_objetivo" class="form-control">
+    </div>
+
+    <!-- Grupo de descripción -->
+    <div class="mb-3">
+        <label for="descripcion" class="form-label">Describe tu objetivo:</label>
+        <textarea id="descripcion" class="form-control" rows="3"></textarea>
+    </div>
+
+    <!-- Grupo de horas -->
+    <div class="mb-3">
+        <label for="horas" class="form-label">Horas a la semana:</label>
+        <input type="text" id="horas" class="form-control" maxlength="2" value="0">
+    </div>
+
+    <!-- Botones -->
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Añadir</button>
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+    </div>
+
+</form>

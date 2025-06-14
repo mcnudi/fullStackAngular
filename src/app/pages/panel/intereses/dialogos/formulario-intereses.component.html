@@ -1,0 +1,24 @@
+<form>
+    <h2 class="text-center mb-3">Añade tus intereses...</h2>
+    
+    <!-- Grupo de interés -->
+    <div class="mb-3">
+        <label for="nombre_intereses" class="form-label">Interés:</label>
+        <input type="text" id="nombre_intereses" class="form-control">
+    </div>
+
+    <!-- Grupo de color -->
+    <div class="mb-3">
+        <label for="color" class="form-label">Color a mostrar:</label>
+        <div class="d-flex gap-2">
+            <input type="text" id="color" class="form-control" maxlength="6" value="FF00FF">
+            <div class="colorPreview mt-2 form-control"></div>
+        </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Añadir</button>
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+    </div>
+</form>

@@ -1,5 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,12 +15,12 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-password-recovery',
   imports: [
-    ReactiveFormsModule, 
-    RouterLink,    
+    ReactiveFormsModule,
+    RouterLink,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
   ],
   templateUrl: './passwordRecovery.component.html',
   styleUrl: './passwordRecovery.component.css',
@@ -29,7 +34,6 @@ export class PasswordRecoveryComponent {
     usuario: new FormControl('', [Validators.required]),
   });
 
-
   async onLogin() {
     if (this.passRecoveryForm.invalid) {
       this.passRecoveryForm.markAllAsTouched();
@@ -42,7 +46,7 @@ export class PasswordRecoveryComponent {
         .toPromise();
       if (response) {
         this.authService.saveToken(response.token);
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['app/dashboard']);
       }
     } catch (err) {
       console.error(err);

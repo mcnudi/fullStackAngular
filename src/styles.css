@@ -1,11 +1,13 @@
 :root {
-  --primary-color: #0FA3B1;
+  --primary-color: #0fa3b1;
   --text-color: #333;
   --warn-color: #dc3545;
   --success-color: #198754;
 }
 
-html, body, main {
+html,
+body,
+main {
   margin: 0;
   height: 100%;
 }
@@ -14,8 +16,10 @@ html, body, main {
   background-color: var(--primary-color);
 }
 
-h1, h2, h3 {
-  font-family: 'Roboto', sans-serif;
+h1,
+h2,
+h3 {
+  font-family: "Roboto", sans-serif;
 }
 
 h2 {
@@ -24,8 +28,9 @@ h2 {
   font-weight: bold;
 }
 
-body, main {
-  font-family: 'Open Sans', sans-serif;
+body,
+main {
+  font-family: "Open Sans", sans-serif;
 }
 
 .link-primary-color {
@@ -33,7 +38,7 @@ body, main {
 }
 
 .snackbar-success {
-  background-color: #198754; 
+  background-color: #198754;
   font-size: 15px;
   border-radius: 6px;
   color: #fff;
@@ -46,7 +51,6 @@ body, main {
   border-radius: 6px;
   text-align: center;
 }
-
 
 .snackbar-info {
   background-color: #0d6efd;
@@ -67,7 +71,6 @@ body, main {
 .header-background {
   background-color: var(--primary-color);
 }
-
 
 .btn-custom {
   color: white;

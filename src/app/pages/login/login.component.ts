@@ -1,5 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -35,10 +40,10 @@ export class LoginComponent {
 
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['app/dashboard']);
     }
   }
-  
+
   async onLogin() {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -55,11 +60,12 @@ export class LoginComponent {
       if (response) {
         console.log(response);
         this.authService.saveToken(response.token);
-        this.router.navigate(['/dashboard']);
-
+        this.router.navigate(['app/dashboard']);
       }
     } catch (err) {
-      this.toastService.showError('Error al iniciar sesión. Verifica tus credenciales.');
+      this.toastService.showError(
+        'Error al iniciar sesión. Verifica tus credenciales.'
+      );
       console.error(err);
     }
   }
