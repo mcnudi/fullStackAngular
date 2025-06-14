@@ -1,119 +1,174 @@
-<!-- Sección superior -->
-<div class="info-usuario-up pt-4" style="background: #f6faf4; min-height: 70vh;">
-  <div class="container">
-    <div class="row">
+<div class="container-fluid p-5">
+  <div class="info-usuario-total d-flex flex-column" style="height: 100vh">
+    <!-- Sección superior (40%) -->
+    <div
+      class="info-usuario-up d-flex flex-row container-fluid bg-light border-end"
+      style="flex: 0 0 40%; height: 40vh"
+    >
+      <!-- Lado izquierdo (30%) -->
+      <div
+        class="info-left d-flex flex-column align-items-center p-2"
+        style="flex: 0 0 30%; height: 100%"
+      >
+        <!-- Imagen (30%) -->
+        <div
+          class="d-flex justify-content-center align-items-center"
+          style="flex: 0 0 30%; width: 100%"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
+            alt="Usuario"
+            class="img-fluid rounded-circle"
+            style="width: 120px; height: 120px; object-fit: cover"
+          />
+        </div>
 
-      <!-- Columna superior izquierda -->
-      <div class="col-3 d-flex flex-column align-items-center justify-content-start pt-4 " style="background: #f6faf4;">
-
-              <!-- Imagen de usuario -->
-              <div class="mb-3">
-                <img
-                  src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
-                  alt="Usuario"
-                  class="img-fluid rounded-circle"
-                  style="width: 120px; height: 120px; object-fit: cover;"
-                />
-              </div>
-
-              <!-- Título y subtítulo -->
-              <div class="text-center mb-3 pd-3">
-                <div class="fw-bold" style="font-size: 1.1rem;">
-                  {{ userName }}
-                </div>
-                <div style="font-size: 0.95rem; color: #555;">
-                  Gráficos/Estadísticas
-                </div>
-              </div>
-
-              <!-- Gráfico circular o de barras -->
-              <div style="width: 280px; margin: 0 auto; position: relative;">
-
-                <!-- Flecha izquierda -->
-                <button
-                  (click)="chartType = 'pie'"
-                  style="
-                    position: absolute;
-                    left: -30px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    background: none;
-                    border: none;
-                  "
-                >
-                  ◀
-                </button>
-
-                <!-- Flecha derecha -->
-                <button
-                  (click)="chartType = 'bar'"
-                  style="
-                    position: absolute;
-                    right: -30px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    background: none;
-                    border: none;
-                  "
-                >
-                  ▶
-                </button>
-
-                <!-- Gráfico dinámico -->
-                @if (chartType === 'pie') {
-                  <ngx-charts-pie-chart
-                    [view]="[280, 180]"
-                    [results]="single"
-                    [scheme]="'fire'"
-                    [gradient]="false"
-                    [legend]="true"
-                    [legendPosition]="legendPosition"
-                    [labels]="true"
-                    [doughnut]="false"
-                  >
-                  </ngx-charts-pie-chart>
-                }
-
-                @if (chartType === 'bar') {
-                  <ngx-charts-bar-vertical
-                    [view]="[280, 180]"
-                    [results]="barChartData"
-                    [scheme]="'fire'"
-                    [gradient]="false"
-                    [legend]="true"
-                    [xAxis]="true"
-                    [yAxis]="true"
-                    [legendPosition]="legendPosition"
-                    [showXAxisLabel]="true"
-                    [showYAxisLabel]="true"
-                    xAxisLabel="Categoría"
-                    yAxisLabel="Valor"
-                  >
-                  </ngx-charts-bar-vertical>
-                }
-              </div>
-            </div>
-
-      <!-- Columna superior derecha -->
-      <div class="col-9 d-flex flex-column px-5" style="background: #fff;">
-        <div class="pt-4 pb-2">
-          <h5 class="fw-bold mb-2">Tareas de la Semana</h5>
-          <hr class="mb-3" style="margin-bottom: 0.75rem;" />
-
+        <!-- Contenido (70%) con scroll si es necesario -->
+        <div
+          class="w-100 overflow-auto"
+          style="flex: 1 1 auto; max-height: 70%"
+        >
+          <h5 class="fw-bold text-center mb-3">Perfil de Aprendizaje</h5>
+          <ul class="list-unstyled px-3">
+            <li class="mb-2">
+              <span class="fw-bold">Intereses</span>
+              <div
+                class="bg-secondary bg-opacity-25 rounded mt-1"
+                style="height: 20px; width: 100%"
+              ></div>
+            </li>
+            <li class="mb-2">
+              <span class="fw-bold">Objetivos</span>
+              <div
+                class="bg-secondary bg-opacity-25 rounded mt-1"
+                style="height: 20px; width: 100%"
+              ></div>
+            </li>
+            <li class="mb-2">
+              <span class="fw-bold">Disponibilidad</span>
+              <div
+                class="bg-secondary bg-opacity-25 rounded mt-1"
+                style="height: 20px; width: 100%"
+              ></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- Lado derecho (70%) -->
+      <div
+        class="info-right d-flex flex-column px-5"
+        style="flex: 0 0 70%; height: 100%"
+      >
+        <!-- Contenido arriba, que crece y hace scroll -->
+        <div
+          class="content-top d-flex"
+          style="
+            flex: 1 1 auto;
+            gap: 2rem;
+            overflow-y: auto;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+          "
+        >
+          <!-- Círculo de progreso -->
           <div
-            class="objetivos-list bg-light rounded p-3 mb-4"
-            style="overflow-y: auto; max-height: 220px;"
+            class="progress-circle d-flex justify-content-center align-items-center"
+            style="flex: 0 0 150px; height: 150px; position: relative"
           >
-            <ul class="list-unstyled mb-0">
-              @for (objetivo of objetivos; track $index) {
-                <li class="d-flex justify-content-between align-items-center mb-2">
-                  <span class="text-truncate" style="max-width: 70%;">
-                    {{ objetivo }}
-                  </span>
-                  <button class="btn btn-sm btn-outline-secondary">Ver</button>
-                </li>
-              }
-            </ul>
+            <svg class="progress-ring" width="120" height="120">
+              <circle
+                class="progress-ring__background"
+                stroke="#e9ecef"
+                stroke-width="10"
+                fill="transparent"
+                r="54"
+                cx="60"
+                cy="60"
+              />
+              <circle
+                class="progress-ring__circle"
+                stroke="#0d6efd"
+                stroke-width="10"
+                fill="transparent"
+                r="54"
+                cx="60"
+                cy="60"
+                style="transition: stroke-dashoffset 0.35s"
+              />
+            </svg>
+            <div
+              class="progress-text position-absolute text-center"
+              style="
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-weight: 700;
+                font-size: 1.25rem;
+              "
+            >
+              75%
+            </div>
+          </div>
+
+          <!-- Próximos Objetivos: ocupa todo lo que queda y tiene scroll propio -->
+          <div
+            class="objetivos-container d-flex flex-column"
+            style="flex: 1 1 auto; min-width: 0"
+          >
+            <h5 class="fw-bold mb-2">Próximos Objetivos</h5>
+            <hr class="mb-3" style="margin-bottom: 0.75rem" />
+            <div
+              class="objetivos-list bg-light rounded p-3 flex-grow-1"
+              style="overflow-y: auto; max-height: 100%"
+            >
+              <ul class="list-unstyled mb-0">
+                <li>Objetivo 1 - Fecha límite: 3 Jun</li>
+                <li>Objetivo 2 - Fecha límite: 5 Jun</li>
+                <li>Objetivo 3 - Fecha límite: 7 Jun</li>
+                <li>Objetivo 4 - Fecha límite: 8 Jun</li>
+                <li>Objetivo 5 - Fecha límite: 10 Jun</li>
+                <li>Objetivo 6 - Fecha límite: 12 Jun</li>
+                <li>Objetivo 7 - Fecha límite: 14 Jun</li>
+                <li>Objetivo 8 - Fecha límite: 15 Jun</li>
+
+                <li>Objetivo 9 - Fecha límite: 17 Jun</li>
+                <li>Objetivo 10 - Fecha límite: 20 Jun</li>
+                <!-- Más objetivos -->
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones abajo fijos -->
+        <div
+          class="bottons d-flex justify-content-center w-100 pt-5 pb-5"
+          style="gap: 100px; flex-shrink: 0"
+        >
+          <button class="btn btn-info text-white px-4">Nueva Actividad</button>
+          <button class="btn btn-info text-white px-4">
+            Filtrar por Categorías
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección inferior (60%) -->
+    <div class="info-usuario-down container-fluid">
+      <div class="calendario h-100">
+        <div
+          class="d-flex flex-column align-items-center justify-content-center py-5 h-100"
+        >
+          <div
+            class="bg-white rounded shadow-sm p-3 w-100 px-4"
+            style="min-height: 400px"
+          >
+            <!-- Calendario -->
+            <full-calendar
+              [options]="calendarOptions"
+              style="min-height: 400px"
+            >
+            </full-calendar>
+
           </div>
         </div>
 

@@ -1,42 +1,76 @@
 <nav class="navbar navbar-expand-lg navbar-light color">
   <div class="container-fluid">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto gap-2">
         <li class="nav-item">
-          <a class="nav-link no-underline" routerLinkActive="active" [routerLink]="[ authService.isAuthenticated() ? '/dashboard' : '/home']">Home</a>
+          <a
+            class="nav-link no-underline"
+            routerLinkActive="active"
+            [routerLink]="[
+              authService.isAuthenticated() ? 'app/dashboard' : '/home'
+            ]"
+            >Home</a
+          >
         </li>
 
         @if (!authService.isAuthenticated()) {
-          <li class="nav-item">
-            <a class="nav-link no-underline" routerLinkActive="active" [routerLink]="['/login']">Iniciar Sesión</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link no-underline" routerLinkActive="active" [routerLink]="['/register']">Registrarse</a>
-          </li>
+        <li class="nav-item">
+          <a
+            class="nav-link no-underline"
+            routerLinkActive="active"
+            [routerLink]="['/login']"
+            >Iniciar Sesión</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link no-underline"
+            routerLinkActive="active"
+            [routerLink]="['/register']"
+            >Registrarse</a
+          >
+        </li>
         } @else {
-          <li class="nav-item">
-            <div class="d-flex align-items-center">
-              <img 
-                [src]="profileImage" 
-                alt="Perfil" 
-                class="rounded-circle object-fit-cover border border-white" 
-                width="40" 
-                height="40"
-              />
-              <a class="nav-link no-underline" routerLinkActive="active" style="cursor: pointer;" [routerLink]="['/profile']">
-                {{ authService.getUserName() }}
-              </a>
-            </div>
-          </li>
-          
-          <li>
-            <a class="nav-link no-underline" (click)="logout()" style="cursor: pointer;">Cerrar Sesión</a>
-          </li>
+        <li class="nav-item">
+          <div class="d-flex align-items-center">
+            <img
+              [src]="profileImage"
+              alt="Perfil"
+              class="rounded-circle object-fit-cover border border-white"
+              width="40"
+              height="40"
+            />
+            <a
+              class="nav-link no-underline"
+              routerLinkActive="active"
+              style="cursor: pointer"
+              [routerLink]="['app/profile']"
+            >
+              {{ authService.getUserName() }}
+            </a>
+          </div>
+        </li>
+
+        <li>
+          <a
+            class="nav-link no-underline"
+            (click)="logout()"
+            style="cursor: pointer"
+            >Cerrar Sesión</a
+          >
+        </li>
         }
       </ul>
     </div>

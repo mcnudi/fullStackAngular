@@ -73,7 +73,7 @@ export class ProfileComponent {
         this.toastService.showError(
           'Error al obtener la información del usuario'
         );
-        this.router.navigate(['/dahsboard']);
+        this.router.navigate(['app/dahsboard']);
       },
     });
   }
@@ -140,6 +140,4 @@ export class ProfileComponent {
       ? `data:image/png;base64,${this.profile.image}`
       : 'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
   }
-
-
 }
