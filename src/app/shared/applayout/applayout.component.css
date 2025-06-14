@@ -1,3 +1,7 @@
+.mat-container {
+  height: 100vh;
+}
+
 .sidebar {
   background-color: white;
 }
