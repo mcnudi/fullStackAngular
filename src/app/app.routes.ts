@@ -8,7 +8,7 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { UpdateImageComponent } from './pages/update-image/update-image.component';
 import { ApplayoutComponent } from './shared/applayout/applayout.component';
 import { PanelComponent } from './pages/panel/panel.component';
-
+import { authGuardGuard } from './auth-guard.guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
@@ -18,6 +18,7 @@ export const routes: Routes = [
   { path: 'passwordRecovery', component: PasswordRecoveryComponent },
   {
     path: 'app',
+    canActivate: [authGuardGuard],
     component: ApplayoutComponent,
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
