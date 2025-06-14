@@ -9,6 +9,7 @@ import { UpdateImageComponent } from './pages/update-image/update-image.componen
 import { ApplayoutComponent } from './shared/applayout/applayout.component';
 import { PanelComponent } from './pages/panel/panel.component';
 import { authGuardGuard } from './auth-guard.guard';
+import { RutinasComponent } from './pages/rutinas/rutinas.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
@@ -26,6 +27,7 @@ export const routes: Routes = [
       { path: 'profile', component: ProfileComponent },
       { path: 'updateImage', component: UpdateImageComponent },
       { path: 'panel', component: PanelComponent },
+      { path: 'rutinas', component: RutinasComponent },
     ],
   },
   { path: '**', redirectTo: 'home' },
