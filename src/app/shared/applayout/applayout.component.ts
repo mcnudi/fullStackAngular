@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
-
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { RouterOutlet, RouterLink, RouterModule } from '@angular/router';
