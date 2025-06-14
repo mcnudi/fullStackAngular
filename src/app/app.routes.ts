@@ -12,20 +12,44 @@ import { authGuardGuard } from './auth-guard.guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
-  { path: 'home', component: HomeComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'passwordRecovery', component: PasswordRecoveryComponent },
+  { path: 'home', component: HomeComponent, title: 'Rutinator' },
+  { path: 'login', component: LoginComponent, title: 'Rutinator - login' },
+  {
+    path: 'register',
+    component: RegisterComponent,
+    title: 'Rutinator - registro',
+  },
+  {
+    path: 'passwordRecovery',
+    component: PasswordRecoveryComponent,
+    title: 'Rutinator - Recuperar contraseña',
+  },
   {
     path: 'app',
     canActivate: [authGuardGuard],
     component: ApplayoutComponent,
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
-      { path: 'dashboard', component: DashboardComponent },
-      { path: 'profile', component: ProfileComponent },
-      { path: 'updateImage', component: UpdateImageComponent },
-      { path: 'panel', component: PanelComponent },
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+        title: 'Rutinator - Dashboard',
+      },
+      {
+        path: 'profile',
+        component: ProfileComponent,
+        title: 'Rutinator - Perfil',
+      },
+      {
+        path: 'updateImage',
+        component: UpdateImageComponent,
+        title: 'Rutinator - actualizar imagen',
+      },
+      {
+        path: 'panel',
+        component: PanelComponent,
+        title: 'Rutinator - Mi panel',
+      },
     ],
   },
   { path: '**', redirectTo: 'home' },
