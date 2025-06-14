@@ -1,0 +1,17 @@
+<button (click)="openModal()" class="btn btn-primary">+</button>
+<mat-expansion-panel class="w-full max-w-full" [expanded]='true'>
+    <mat-expansion-panel-header>
+        <h3 class="mb-0">
+            Disponibilidad
+        </h3>
+    </mat-expansion-panel-header>
+    @for (item of arrayDisponibilidad; track item.id) {
+        <div class="panel-content">
+            <button class="btn btn-outline-success mt-2">♻️</button>
+            <button class="btn btn-outline-danger mt-2">🗑</button>
+            <span>{{ item.weekday }} -> </span>
+            <span>De {{ item.start_time }} a </span>
+            <span>{{ item.end_time }} </span>
+        </div>
+    }
+</mat-expansion-panel>

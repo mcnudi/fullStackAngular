@@ -1,0 +1,15 @@
+<button (click)="openModal()" class="btn btn-primary">+</button>
+<mat-expansion-panel [expanded]='true'>
+    <mat-expansion-panel-header>
+        <h3 class="mb-0">
+            Intereses
+        </h3>
+    </mat-expansion-panel-header>
+    @for (item of arrayIntereses; track item.id) {
+        <div class="panel-content">
+            <button class="btn btn-outline-success mt-2">♻️</button>
+            <button class="btn btn-outline-danger mt-2">🗑</button>
+            <span>     {{ item.interest_name }}</span>
+        </div>   
+    }
+</mat-expansion-panel>
