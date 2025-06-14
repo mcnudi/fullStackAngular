@@ -1,0 +1,31 @@
+
+
+.contenedor {
+  display: flex;
+  gap: 20px;
+}
+
+.intereses-card,
+.objetivos-card,
+.disponibilidad-card {
+  flex: 1;
+  padding: 20px;
+
+    border-radius: 15px;
+  background-color: #f0f0f0;
+}
+
+
+
+
+
+
+/* PRUEBA */
+
+.card-content {
+  min-height: 100px;
+  display: flex;
+  align-items: top;
+  justify-content: center;
+  text-align: left;
+}

@@ -10,7 +10,8 @@ import { UserService } from '../../services/user.service';
   styleUrl: './navegacion.component.css',
 })
 export class NavegacionComponent {
-  profileImage: string = 'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
+  profileImage: string =
+    'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
 
   authService = inject(AuthService);
   router = inject(Router);

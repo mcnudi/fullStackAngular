@@ -110,14 +110,12 @@ export class RegisterComponent {
 
       if (response) {
         this.authService.saveToken(response.token);
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['app/dashboard']);
       }
     } catch (error: any) {
       console.error(error.error);
       if (error.status === 409) {
-        this.toastService.showError(
-          'Ese correo/usuario ya está registrado'
-        );
+        this.toastService.showError('Ese correo/usuario ya está registrado');
       } else {
         this.toastService.showError('Hubo un error al registrar el usuario');
       }
