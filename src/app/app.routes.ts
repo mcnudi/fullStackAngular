@@ -1,4 +1,3 @@
-
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
@@ -7,7 +6,7 @@ import { PasswordRecoveryComponent } from './pages/passwordRecovery/passwordReco
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { UpdateImageComponent } from './pages/update-image/update-image.component';
-
+import { ApplayoutComponent } from './shared/applayout/applayout.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
@@ -15,8 +14,17 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'passwordRecovery', component: PasswordRecoveryComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'profile', component: ProfileComponent },
-  { path: 'updateImage', component: UpdateImageComponent },
+
+  {
+    path: 'app',
+    component: ApplayoutComponent,
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'profile', component: ProfileComponent },
+      { path: 'updateImage', component: UpdateImageComponent },
+    ],
+  },
+
   { path: '**', redirectTo: 'home' },
 ];
