@@ -42,7 +42,8 @@
           <a
             mat-list-item
             class="sidebar__link__container"
-            [routerLink]="['/app/rutinas']"
+            [routerLink]="['/app/rutina',user?.username]"
+            
             routerLinkActive="sidebar__link--active"
             [routerLinkActiveOptions]="{ exact: true }"
           >
