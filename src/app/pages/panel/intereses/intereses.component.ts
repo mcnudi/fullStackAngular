@@ -20,10 +20,9 @@ export class InteresesComponent implements OnInit {
   authService = inject(AuthService)
   dialog = inject(Dialog)
   
-  idUsuarioLogado: number = 10; // Cambiarlo por usuario logado con Token
   /*
     arrayIntereses = [
-      { id: 1, interest_name: 'ARTE' },
+      { id: 1, interest_name: 'ARTE', color: 'FF00FF' },
       { id: 2, interest_name: 'CIENCIA' },
       { id: 3, interest_name: 'EDUCACIÓN' }
     ];
@@ -36,7 +35,7 @@ export class InteresesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.panelService.getInterests(this.idUsuarioLogado).subscribe({
+    this.panelService.getInterests(this.authService.getDecodedToken().id).subscribe({
       next: (data: Interests[]) => {
         this.arrayIntereses = data;
       },

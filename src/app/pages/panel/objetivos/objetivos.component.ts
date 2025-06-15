@@ -20,7 +20,6 @@ export class ObjetivosComponent implements OnInit {
   authService = inject(AuthService)
   dialog = inject(Dialog)
 
-  idUsuarioLogado: number = 10; // Cambiarlo por usuario logado con Token
   /*
     arrayObjetivos = [
       { id: 1, name: 'ARTE', dedicacion: 3},
@@ -36,13 +35,13 @@ export class ObjetivosComponent implements OnInit {
   }
 
   ngOnInit() {
-      this.panelService.getGoals(this.idUsuarioLogado).subscribe({
-        next: (data: Goals[]) => {
-          this.arrayObjetivos = data;
-        },
-        error: (error) => {
-          console.log(error);
-        }
-      })
+    this.panelService.getGoals(this.authService.getDecodedToken().id).subscribe({
+      next: (data: Goals[]) => {
+        this.arrayObjetivos = data;
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    })
   }
 }

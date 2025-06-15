@@ -61,6 +61,7 @@ export class LoginComponent {
         console.log(response);
         this.authService.saveToken(response.token);
         this.router.navigate(['app/dashboard']);
+
       }
     } catch (err) {
       this.toastService.showError(
