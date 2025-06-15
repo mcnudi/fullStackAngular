@@ -3,10 +3,6 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Availability, Goals, Interests } from '../interfaces/ipanel.interface';
 
-interface AuthResponse {
-  token: string;
-}
-
 @Injectable({
   providedIn: 'root',
 })
