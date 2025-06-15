@@ -1,15 +1,16 @@
-<button (click)="openModal()" class="btn btn-primary">+</button>
+<button (click)="openModal()" class="btn-mas w-100 mt-4 d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">+</button>
 <mat-expansion-panel [expanded]='true'>
-    <mat-expansion-panel-header>
+    <mat-expansion-panel-header class="header-color-mat">
         <h3 class="mb-0">
             Intereses
         </h3>
     </mat-expansion-panel-header>
     @for (item of arrayIntereses; track item.id) {
         <div class="panel-content">
-            <button class="btn btn-outline-success mt-2">♻️</button>
-            <button class="btn btn-outline-danger mt-2">🗑</button>
-            <span>     {{ item.interest_name }}</span>
+            <button class="btn-crud btn btn-outline-success mt-2"><mat-icon>edit</mat-icon></button>
+            <button class="btn-crud btn btn-outline-danger mt-2"><mat-icon>delete</mat-icon></button>
+            <span [style]="{'background-color': '#' + item.color}">{{ item.interest_name }}</span>
+            <span>{{ item.color }}</span>
         </div>   
     }
 </mat-expansion-panel>

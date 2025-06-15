@@ -6,16 +6,21 @@ import { AuthService } from '../../../services/auth.service';
 
 import { Dialog } from '@angular/cdk/dialog'
 import { FormularioDisponibilidadComponent } from './dialogos/formulario-disponibilidad.component';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-disponibilidad',
   standalone: true,
-  imports: [MatExpansionModule],
+  imports: [MatExpansionModule, MatIcon],
   templateUrl: './disponibilidad.component.html',
   styleUrls: ['./disponibilidad.component.css'],
 })
 export class DisponibilidadComponent implements OnInit {
-  idUsuarioLogado: number = 17; // Cambiarlo por usuario logado con Token
+  panelService = inject(PanelService)
+  authService = inject(AuthService)
+  dialog = inject(Dialog)
+
+  idUsuarioLogado: number = 10; // Cambiarlo por usuario logado con Token
   /*
     arrayDisponibilidad = [
       { id: 1, dia: '0', nombre_dia: 'LUNES', hora_inicio: '10:00', hora_fin: '12:00'},
@@ -27,13 +32,6 @@ export class DisponibilidadComponent implements OnInit {
   */
  
   arrayDisponibilidad: Availability [] = [];
-
-  constructor(
-    private panelService: PanelService,
-    private authService: AuthService)
-    {}
-
-  private dialog = inject(Dialog)
 
   protected openModal (){
     this.dialog.open(FormularioDisponibilidadComponent, { disableClose: true });
