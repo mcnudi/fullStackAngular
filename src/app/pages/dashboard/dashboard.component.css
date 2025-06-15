@@ -4,3 +4,9 @@
   transform-origin: 50% 50%;
   stroke-linecap: round;
 }
+/*Añadido para eliminar el margen que el propio bootstrap te incluye por señalar un div como row*/
+.row {
+  margin-right: -0.75rem;
+  margin-left: -0.75rem;
+}
+
