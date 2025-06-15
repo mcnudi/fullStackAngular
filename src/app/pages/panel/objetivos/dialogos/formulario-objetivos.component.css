@@ -21,3 +21,7 @@ button {
     height: calc(4em);
     padding: 0.75em;
 }
+
+.btn-mas {
+    height: 30px !important;
+}

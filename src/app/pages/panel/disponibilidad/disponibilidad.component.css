@@ -2,12 +2,15 @@ ul {
     list-style: none;
 }
 
-button {
-    background-color: rgba(15, 163, 177, 1); 
-    color: white; 
-    font-size: 20px;
-    font-weight: bold;
-    padding: 2px 15px;
-    border-radius: 8px;
-    border: none;
+.btn-mas {
+    height: 30px !important;
+}
+
+.btn-crud {
+    height: 40px;
+    width: 46px;
+}
+
+.header-color-mat {
+    background-color: lightgray;
 }
