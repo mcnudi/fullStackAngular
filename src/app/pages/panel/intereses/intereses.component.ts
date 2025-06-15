@@ -6,16 +6,21 @@ import { Interests } from '../../../interfaces/ipanel.interface';
 
 import { Dialog } from '@angular/cdk/dialog'
 import { FormularioInteresesComponent } from './dialogos/formulario-intereses.component';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-intereses',
   standalone: true,
-  imports: [MatExpansionModule],
+  imports: [MatExpansionModule, MatIcon],
   templateUrl: './intereses.component.html',
   styleUrls: ['./intereses.component.css'],
 })
 export class InteresesComponent implements OnInit {
-  idUsuarioLogado: number = 17; // Cambiarlo por usuario logado con Token
+  panelService = inject(PanelService)
+  authService = inject(AuthService)
+  dialog = inject(Dialog)
+  
+  idUsuarioLogado: number = 10; // Cambiarlo por usuario logado con Token
   /*
     arrayIntereses = [
       { id: 1, interest_name: 'ARTE' },
@@ -25,13 +30,6 @@ export class InteresesComponent implements OnInit {
   */
 
   arrayIntereses: Interests [] = [];
-  
-  constructor(
-    private panelService: PanelService,
-    private authService: AuthService)
-    {}
-
-  private dialog = inject(Dialog)
 
   protected openModal (){
     this.dialog.open(FormularioInteresesComponent, { disableClose: true });

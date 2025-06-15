@@ -6,17 +6,21 @@ import { AuthService } from '../../../services/auth.service';
 
 import { Dialog } from '@angular/cdk/dialog'
 import { FormularioObjetivosComponent } from './dialogos/formulario-objetivos.component';
-
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-objetivos',
   standalone: true,
-  imports: [MatExpansionModule],
+  imports: [MatExpansionModule,MatIcon],
   templateUrl: './objetivos.component.html',
   styleUrls: ['./objetivos.component.css'],
 })
 export class ObjetivosComponent implements OnInit {
-  idUsuarioLogado: number = 17; // Cambiarlo por usuario logado con Token
+  panelService = inject(PanelService)
+  authService = inject(AuthService)
+  dialog = inject(Dialog)
+
+  idUsuarioLogado: number = 10; // Cambiarlo por usuario logado con Token
   /*
     arrayObjetivos = [
       { id: 1, name: 'ARTE', dedicacion: 3},
@@ -27,15 +31,8 @@ export class ObjetivosComponent implements OnInit {
 
   arrayObjetivos: Goals [] = [];
 
-  constructor(
-    private panelService: PanelService,
-    private authService: AuthService)
-    {}
-
-  private dialog = inject(Dialog)
-
   protected openModal (){
-    this.dialog.open(FormularioObjetivosComponent, { disableClose: true }); //Probar a abrir componentes modales
+    this.dialog.open(FormularioObjetivosComponent, { disableClose: true });
   }
 
   ngOnInit() {
