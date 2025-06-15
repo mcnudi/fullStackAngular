@@ -1,0 +1,21 @@
+mat-slide-toggle {
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+table.table td,
+table.table th {
+  border-bottom: none !important;
+}
+
+table td {
+  padding: 0.25rem !important;
+  vertical-align: middle;
+}
+
+.td-label {
+  width: 150px;
+  white-space: nowrap;
+  vertical-align: middle;
+}

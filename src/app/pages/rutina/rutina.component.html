@@ -31,7 +31,7 @@
             </thead>
             <tbody>
               <tr>
-                <td class="text-start">
+                <td class="td-label text-start">
                   <label for="name" class="form-label fw-bold"
                     >Nombre</label
                   >
@@ -42,42 +42,52 @@
                     id="name"
                     class="form-control"
                     formControlName="name"
+                    
                   />
-                 
+                  @if(checkControl('name','required')){
+                    <p class="error text-danger f-6">El campo no puede estar vacio</p>
+                  } 
+                  @if(checkControl('name','message')){
+                    <p class="error text-danger f-6">
+                  {{rutinaForm.get('name')?.errors?.['message']}}
+                    </p>
+                }
+
                 </td>
               </tr>
 
               <tr>
-                <td class="text-start">
+                <td class="td-label text-start">
                   <label for="descripcion" class="form-label fw-bold"
                     >Descripcion</label
                   >
                 </td>
-                <td>
-                 
+                <td class="text-start">
                   <textarea
                     id="descripcion"
                     class="form-control"
                     formControlName="descripcion"
                   ></textarea>
-                  
+                  @if(checkControl('descripcion','required')){
+                    <p class="error text-danger f-6">El campo no puede estar vacio</p>
+                  } 
+                  @if(checkControl('descripcion','message')){
+                    <p class="error text-danger f-6">
+                  {{rutinaForm.get('descripcion')?.errors?.['message']}}
+                    </p>
+                }
                 </td>
               </tr>
 
              <tr>
-                <td>
-                  
-                
+              <td class="td-label text-start"></td>
+                <td class="text-start">
                  <mat-slide-toggle 
-                  class="form-control"
                   formControlName="defecto"
                   (change)="esDefecto($event)"
                   [checked]="defect">
-                  
                 </mat-slide-toggle>
                  <span class="me-3">Añadir como rutina por defecto</span>
-                 
-                  
                 </td>
                 
               </tr>
@@ -96,8 +106,8 @@
           </button>
           <button
             class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-error"
-           
             type="button"
+            (click)="cancelar()"
           >
             <mat-icon>cancel</mat-icon> Cancelar
           </button>

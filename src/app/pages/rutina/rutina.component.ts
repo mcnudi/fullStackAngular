@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, Input } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Irutina } from '../../interfaces/irutina';
 import { RutinaService } from '../../services/rutina.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-rutina',
@@ -14,30 +15,39 @@ import { RutinaService } from '../../services/rutina.service';
 export class RutinaComponent {
   defect:boolean=false;
   serviceRutina = inject(RutinaService);
-  user:number = 14
+  router = inject(Router);
+  routerL = inject(ActivatedRoute);
+
   irutina:Irutina | null=null;
+  username:string='';
+
   rutinaForm: FormGroup = new FormGroup({
-    name: new FormControl('', [Validators.required]),
-    descripcion: new FormControl('', [Validators.required]),
-    defecto: new FormControl('', [Validators.required]),
+    name: new FormControl('', [Validators.required,this.textoValidator]),
+    descripcion: new FormControl('', [Validators.required,this.textoValidator]),
+    defecto: new FormControl('false', )
     
   });
 
+  async ngOnInit() {
+    this.username = this.routerL.snapshot.paramMap.get('username') || '';
+  }
+
   async salvar(){
+
     this.irutina=this.rutinaForm.value;
     
     if (this.irutina){
-    this.irutina.usuario=this.user;
+      this.irutina.usuario=this.username;
     if (this.irutina.defecto){
       this.irutina.defecto=true;
     }
     else{
       this.irutina.defecto=false;
     }
-    console.log("✅ irutinas tiene", this.irutina);
+
     this.serviceRutina.insertRutina(this.irutina).subscribe({
-      next: (res) => console.log("✅ Respuesta del backend:", res),
-      error: (err) => console.error("❌ Error al guardar rutina:", err)
+      next: (res) => console.log("Respuesta del backend:", res),
+      error: (err) => console.error("Error al guardar rutina:", err)
     });
     }else{
       console.error("❌ Formulario inválido: rutina es null");
@@ -52,7 +62,21 @@ export class RutinaComponent {
     this.defect = event.checked;
   }
 
+   textoValidator(control: AbstractControl): any {
+    return control.value.trim().length > 2
+      ? null
+      : { message: 'El texto debe tener más de 2 caracteres' };
+  }
 
+checkControl(controlName: string, errorName: string): boolean | undefined {
+    return (
+      this.rutinaForm.get(controlName)?.hasError(errorName) &&
+      this.rutinaForm.get(controlName)?.touched
+    );
+  }
+cancelar(){
+  this.router.navigate(['/app/dashboard']);
+}
   /*this.userService.getByUsername(this.username).subscribe({
       next: (user) => {
         this.profile = user;
