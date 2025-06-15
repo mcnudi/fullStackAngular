@@ -20,7 +20,6 @@ export class DisponibilidadComponent implements OnInit {
   authService = inject(AuthService)
   dialog = inject(Dialog)
 
-  idUsuarioLogado: number = 10; // Cambiarlo por usuario logado con Token
   /*
     arrayDisponibilidad = [
       { id: 1, dia: '0', nombre_dia: 'LUNES', hora_inicio: '10:00', hora_fin: '12:00'},
@@ -38,7 +37,7 @@ export class DisponibilidadComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.panelService.getAvailability(this.idUsuarioLogado).subscribe({
+    this.panelService.getAvailability(this.authService.getDecodedToken().id).subscribe({
       next: (data: Availability[]) => {
         this.arrayDisponibilidad = data;
       },
