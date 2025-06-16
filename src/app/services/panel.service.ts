@@ -50,7 +50,13 @@ export class PanelService {
       );
   }
 
-
+  updateAvailability(idUsuario: number, idAvailability: number, availabilityData: Partial<Availability>): Observable<Availability> {
+    debugger;
+    return this.httpClient.patch<Availability>(
+      `${this.API_URL}/availability/${idUsuario}/${idAvailability}/update`,
+      availabilityData
+    );
+  }
 
 
 }
