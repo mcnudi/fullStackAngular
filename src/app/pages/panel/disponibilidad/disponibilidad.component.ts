@@ -1,8 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { Availability } from '../../../interfaces/ipanel.interface';
 import { PanelService } from '../../../services/panel.service';
 import { AuthService } from '../../../services/auth.service';
+import { Availability } from '../../../interfaces/ipanel.interface';
 
 import { Dialog } from '@angular/cdk/dialog'
 import { FormularioDisponibilidadComponent } from './dialogos/formulario-disponibilidad.component';
@@ -19,6 +19,7 @@ export class DisponibilidadComponent implements OnInit {
   panelService = inject(PanelService)
   authService = inject(AuthService)
   dialog = inject(Dialog)
+  changeDetectorRef = inject(ChangeDetectorRef)
 
   /*
     arrayDisponibilidad = [
@@ -45,5 +46,20 @@ export class DisponibilidadComponent implements OnInit {
         console.log(error);
       }
     })
+  }
+
+  deleteAvailability(elemento: Availability) {
+    this.panelService.removeAvailability(this.authService.getDecodedToken().id, elemento.id!).subscribe( {
+      next: (data: Availability) => {
+        const index = this.arrayDisponibilidad.findIndex(i => i.id === elemento.id);
+        if (index !== -1) {
+          this.arrayDisponibilidad.splice(index, 1);
+          this.changeDetectorRef.markForCheck();
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { PanelService } from '../../../services/panel.service';
 import { AuthService } from '../../../services/auth.service';
@@ -19,6 +19,7 @@ export class InteresesComponent implements OnInit {
   panelService = inject(PanelService)
   authService = inject(AuthService)
   dialog = inject(Dialog)
+  changeDetectorRef = inject(ChangeDetectorRef)
   
   /*
     arrayIntereses = [
@@ -30,12 +31,12 @@ export class InteresesComponent implements OnInit {
 
   arrayIntereses: Interests [] = [];
 
-  protected openModal (){
+  protected openModal () {
     this.dialog.open(FormularioInteresesComponent, { disableClose: true });
   }
 
   ngOnInit() {
-    this.panelService.getInterests(this.authService.getDecodedToken().id).subscribe({
+    this.panelService.getInterests(this.authService.getDecodedToken().id).subscribe( {
       next: (data: Interests[]) => {
         this.arrayIntereses = data;
       },
@@ -43,5 +44,20 @@ export class InteresesComponent implements OnInit {
         console.log(error);
       }
     })
+  }
+
+  deleteInterest(elemento: Interests) {
+    this.panelService.removeInterests(this.authService.getDecodedToken().id, elemento.interest_name!).subscribe( {
+      next: (data: Interests) => {
+        const index = this.arrayIntereses.findIndex(i => i.interest_name === elemento.interest_name);
+        if (index !== -1) {
+          this.arrayIntereses.splice(index, 1);
+          this.changeDetectorRef.markForCheck();
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   }
 }
