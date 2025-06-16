@@ -50,7 +50,7 @@ export class RutinaComponent {
       error: (err) => console.error("Error al guardar rutina:", err)
     });
     }else{
-      console.error("❌ Formulario inválido: rutina es null");
+      console.error("Formulario inválido: rutina es null");
     }
 
 
@@ -77,18 +77,5 @@ checkControl(controlName: string, errorName: string): boolean | undefined {
 cancelar(){
   this.router.navigate(['/app/dashboard']);
 }
-  /*this.userService.getByUsername(this.username).subscribe({
-      next: (user) => {
-        this.profile = user;
-        this.profile.password = '*********';
-        this.profileForm.patchValue(user);
-      },
-      error: (err) => {
-        this.toastService.showError(
-          'Error al obtener la información del usuario'
-        );
-        this.router.navigate(['app/dahsboard']);
-      },
-    });
-  }*/
+  
 }

@@ -15,6 +15,9 @@ export class RutinaService {
       return this.http.post<Irutina>(
         `${this.baseURL}`,rutina);
     }
-
+  modificarRutina(rutina:Irutina): Observable<Irutina> {
+      return this.http.put<Irutina>(
+        `${this.baseURL}`,rutina);
+    }
    
 }
