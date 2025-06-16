@@ -13,7 +13,7 @@ export class CalendarEventsService {
     return this.http.get<any[]>(`${this.apiUrl}?userId=${userId}`);
   }
   getActivitiesByUserId(userId: number): Observable<any[]> {
-  return this.http.get<any[]>(`http://localhost:3000/api/activities/user/${userId}`);
+  return this.http.get<any[]>(`http://localhost:3000/api/activities/activitybyuser/${userId}`);
 }
 
 }
