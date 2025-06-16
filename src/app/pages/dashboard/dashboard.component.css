@@ -10,3 +10,27 @@
   margin-left: -0.75rem;
 }
 
+.actividad-item {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.actividad-item:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.actividad-titulo {
+  font-weight: bold;
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+.actividad-horario {
+  font-size: 0.85rem;
+}
+
+.btn-actividad {
+  font-size: 0.85rem;
+  padding: 0.4rem 1.2rem;
+}
+

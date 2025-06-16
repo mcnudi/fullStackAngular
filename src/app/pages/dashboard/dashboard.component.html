@@ -1,121 +1,125 @@
-<!-- Sección superior -->
-<div class="info-usuario-up pt-4" style="background: #f6faf4; min-height: 50vh;">
-  <div class="wrapper-padding" style="padding: 0 1rem;"> <!-- Reducido de 2rem a 1rem -->
-    <div class="container">
-      <div class="row">
+<!-- Contenedor principal que ocupa toda la pantalla y divide en dos partes iguales -->
+<div class="mt-3" style="height: 100vh; display: flex; flex-direction: column;">
 
-        <!-- Columna izquierda -->
-        <div class="col-3 d-flex flex-column align-items-center justify-content-start pt-4" style="background: #f6faf4;">
-          <!-- Imagen de usuario -->
-          <div class="mb-3">
-            <img
-              src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
-              alt="Usuario"
-              class="img-fluid rounded-circle"
-              style="width: 120px; height: 120px; object-fit: cover;"
-            />
-          </div>
 
-          <!-- Título y subtítulo -->
-          <div class="text-center mb-3 pd-3">
-            <div class="fw-bold" style="font-size: 1.1rem;">
-            {{username}}
-            </div>
-            <div style="font-size: 0.95rem; color: #555;">
-              Gráficos/Estadísticas
-            </div>
-          </div>
+  <!-- Sección superior: 50% altura -->
+  <div class="info-usuario-up" style="background: #f6faf4; flex: 1;">
+    <div class="container h-100">
+      <div class="row g-4 h-100">
 
-          <!-- Gráfico -->
-          <div style="width: 280px; margin: 0 auto; position: relative;">
-            <!-- Flecha izquierda -->
-            <button
-              (click)="chartType = 'pie'"
-              style="position: absolute; left: -25px; top: 50%; transform: translateY(-50%); background: none; border: none;">
-              ◀
-            </button>
+<!-- Columna izquierda -->
+<div class="col-3">
+  <div class="bg-white rounded shadow-sm p-3 text-center h-100 d-flex flex-column">
 
-            <!-- Flecha derecha -->
-            <button
-              (click)="chartType = 'bar'"
-              style="position: absolute; right: -25px; top: 50%; transform: translateY(-50%); background: none; border: none;">
-              ▶
-            </button>
+    <!-- Imagen y nombre juntos arriba -->
+    <div>
+      <!-- Imagen de usuario -->
+      <div class="mb-2">
+        <img
+          src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
+          alt="Usuario"
+          class="img-fluid rounded-circle"
+          style="width: 120px; height: 120px; object-fit: cover;"
+        />
+      </div>
 
-            <!-- Gráfico dinámico -->
-            @if (chartType === 'pie') {
-              <ngx-charts-pie-chart
-                [view]="[280, 180]"
-                [results]="single"
-                [scheme]="'fire'"
-                [gradient]="false"
-                [legend]="true"
-                [legendPosition]="legendPosition"
-                [labels]="true"
-                [doughnut]="false"
-              >
-              </ngx-charts-pie-chart>
-            }
-
-            @if (chartType === 'bar') {
-              <ngx-charts-bar-vertical
-                [view]="[280, 180]"
-                [results]="barChartData"
-                [scheme]="'fire'"
-                [gradient]="false"
-                [legend]="true"
-                [xAxis]="true"
-                [yAxis]="true"
-                [legendPosition]="legendPosition"
-                [showXAxisLabel]="true"
-                [showYAxisLabel]="true"
-                xAxisLabel="Categoría"
-                yAxisLabel="Valor"
-              >
-              </ngx-charts-bar-vertical>
-            }
-          </div>
+      <!-- Título y subtítulo -->
+      <div class="mb-1">
+        <div class="fw-bold" style="font-size: 1.1rem;">
+          {{username}}
         </div>
+        <div style="font-size: 0.95rem; color: #555;">
+          Gráficos/Estadísticas
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráfico ocupa el espacio restante -->
+    <div style=" position: relative;">
+      <button
+        (click)="chartType = 'pie'"
+        class="btn btn-link position-absolute top-50 start-0 translate-middle-y px-1"
+      >◀</button>
+
+      <button
+        (click)="chartType = 'bar'"
+        class="btn btn-link position-absolute top-50 end-0 translate-middle-y px-1"
+      >▶</button>
+
+      <div class="px-3 h-100 d-flex align-items-center justify-content-center">
+        @if (chartType === 'pie') {
+          <ngx-charts-pie-chart
+            [view]="[240, 180]"
+            [results]="single"
+            [scheme]="'fire'"
+            [gradient]="false"
+            [legend]="true"
+            [legendPosition]="legendPosition"
+            [labels]="true"
+            [doughnut]="false"
+          ></ngx-charts-pie-chart>
+        }
+
+        @if (chartType === 'bar') {
+          <ngx-charts-bar-vertical
+            [view]="[240, 180]"
+            [results]="barChartData"
+            [scheme]="'fire'"
+            [gradient]="false"
+            [legend]="true"
+            [xAxis]="true"
+            [yAxis]="true"
+            [legendPosition]="legendPosition"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            xAxisLabel="Categoría"
+            yAxisLabel="Valor"
+          ></ngx-charts-bar-vertical>
+        }
+      </div>
+    </div>
+
+  </div>
+</div>
+
 
         <!-- Columna derecha -->
-        <div class="col-9 d-flex flex-column px-3" style="background: #fff;">
-          <div class="pt-3 pb-2">
-            <h5 class="fw-bold mb-2">Actividades de la Semana</h5>
-            <hr class="mb-3" style="margin-bottom: 0.75rem;" />
-
-            <div
-              class="objetivos-list bg-light rounded p-2 mb-4"
-              style="overflow-y: auto; max-height: 220px;"
-            >
+        <div class="col-9">
+          <div class="bg-white rounded shadow-sm p-4 actividades-wrapper h-100 d-flex flex-column">
+            <h2 class="fw-bold mb-2">ACTIVIDADES DE LA SEMANA</h2>
+            <hr class="mb-3" />
+            <div class="objetivos-list bg-light rounded p-3 flex-grow-1" style="overflow-y: auto;">
               <ul class="list-unstyled mb-0">
-          @for (actividad of actividades; track $index) {
-            <li class="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
-              <span class="text-truncate" style="max-width: 70%;">
-                {{ actividad.start_time }} - {{ actividad.end_time }} {{ actividad.title }}
-              </span>
-              <button class="btn btn-sm btn-custom">Ver</button>
-            </li>
-}
+                @for (actividad of actividades; track $index) {
+                  <li class="actividad-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-white shadow-sm">
+                    <div class="actividad-info text-truncate">
+                      <strong class="actividad-titulo d-block">{{ actividad.title }}</strong>
+                      <small class="actividad-horario text-muted">{{ actividad.start_time }} - {{ actividad.end_time }}</small>
+                    </div>
+                    <button class="btn btn-sm btn-custom btn-actividad px-4">Ver</button>
+                  </li>
+                }
               </ul>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
-</div>
 
-<!-- Sección inferior: Calendario -->
-<div class="info-usuario-down container-fluid py-4" style="background: #f6faf4; padding-left: 3rem; padding-right: 3rem;">
-  <div class="d-flex justify-content-center">
-    <div
-      class="calendario bg-white rounded shadow-sm p-3 w-100"
-      style="max-width: 1100px; min-height: 400px; max-height: 900px; overflow-y: auto; overflow-x: hidden;"
-    >
-      <full-calendar
-        [options]="calendarOptions"
-        style="width: 100%;"
-      ></full-calendar>
+  <!-- Sección inferior: Calendario ocupa otro 50% -->
+  <div class="info-usuario-down container-fluid py-4" style="background: #f6faf4; flex: 1; padding-left: 3rem; padding-right: 3rem; overflow: hidden;">
+    <div class="d-flex justify-content-center h-100">
+      <div
+        class="calendario bg-white rounded shadow-sm p-3 w-100"
+        style="max-width: 1100px; height: 100%; overflow-y: auto; overflow-x: hidden;"
+      >
+        <full-calendar
+          [options]="calendarOptions"
+          style="width: 100%; height: 100%;"
+        ></full-calendar>
+      </div>
     </div>
   </div>
 </div>
