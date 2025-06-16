@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-rutinas-list',
@@ -8,5 +8,11 @@ import { RouterModule } from '@angular/router';
   styleUrl: './rutinas-list.component.css'
 })
 export class RutinasListComponent {
-  
+  routerL = inject(ActivatedRoute);
+  username:string="";
+
+  async ngOnInit() {
+    this.username = this.routerL.snapshot.paramMap.get('usuario') || '';
+    
+  }
 }

@@ -29,7 +29,7 @@ export class RutinaComponent {
   });
 
   async ngOnInit() {
-    this.username = this.routerL.snapshot.paramMap.get('username') || '';
+    this.username = this.routerL.snapshot.paramMap.get('usuario') || '';
   }
 
   async salvar(){
@@ -44,7 +44,6 @@ export class RutinaComponent {
     else{
       this.irutina.defecto=false;
     }
-
     this.serviceRutina.insertRutina(this.irutina).subscribe({
       next: (res) => console.log("Respuesta del backend:", res),
       error: (err) => console.error("Error al guardar rutina:", err)

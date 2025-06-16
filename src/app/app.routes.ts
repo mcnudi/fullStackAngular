@@ -53,12 +53,12 @@ export const routes: Routes = [
         title: 'Rutinator - Mi panel',
       },
       {
-        path: 'rutina',
+        path: 'rutina/:usuario',
         component: RutinasListComponent,
         title: 'Rutinator - Rutinas',
       },
       {
-        path: 'anadirRutina',
+        path: 'anadirRutina/:usuario',
         component: RutinaComponent,
         title: 'Rutinator - Rutinas',
       },
