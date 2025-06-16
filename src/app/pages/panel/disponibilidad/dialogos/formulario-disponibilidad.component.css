@@ -3,7 +3,7 @@
   border-radius: 15px;
   background-color: white;
   filter: drop-shadow(0 0 2em rgba(black, 0.5));
-  padding: 0 2em 2em;
+  padding: 2em 2em 2em 2em;
 }
 
 button {
@@ -15,4 +15,16 @@ button {
     border-radius: 8px;
     transition: background-color 0.3s ease, transform 0.2s ease;
     border:none !important;
+}
+
+.titulo_modal {
+  padding: 15px;
+  background-color: lightgray;
+  text-align: center;
+  border-radius: 15px;
+}
+
+h2 {
+  display: block;
+  margin: 0;
 }

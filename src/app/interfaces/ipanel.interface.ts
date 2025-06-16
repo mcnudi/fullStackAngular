@@ -8,7 +8,7 @@ export interface Goals {
   id?: number;
   users_id?: number;
   interest_id?: number;
-  title?: string;
+  goals_name?: string;
   description?: string;
   hours_per_week?: number;
 }

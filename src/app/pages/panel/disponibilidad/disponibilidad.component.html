@@ -7,11 +7,11 @@
     </mat-expansion-panel-header>
     @for (item of arrayDisponibilidad; track item.id) {
         <div class="panel-content">
-            <button class="btn-crud btn btn-outline-success mt-2"><mat-icon>edit</mat-icon></button>
-            <button class="btn-crud btn btn-outline-danger mt-2"><mat-icon>delete</mat-icon></button>
-            <span>{{ item.weekday }} -> </span>
-            <span>De {{ item.start_time }} a </span>
-            <span>{{ item.end_time }} </span>
+            <button class="btn-crud btn btn-outline-success mt-1"><mat-icon>edit</mat-icon></button>
+            <button (click)="deleteAvailability(item)" class="btn-crud btn btn-outline-danger mt-1"><mat-icon>delete</mat-icon></button>
+            <div class="elemento_texto_lista mt-1">
+                <span>{{ item.weekday }} -> De {{ item.start_time }} a {{ item.end_time }} </span>
+            </div>
         </div>
     }
 </mat-expansion-panel>
