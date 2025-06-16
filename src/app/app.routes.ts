@@ -9,6 +9,7 @@ import { UpdateImageComponent } from './pages/update-image/update-image.componen
 import { ApplayoutComponent } from './shared/applayout/applayout.component';
 import { PanelComponent } from './pages/panel/panel.component';
 import { authGuardGuard } from './auth-guard.guard';
+import { RutinasListComponent } from './pages/rutinas-list/rutinas-list.component';
 import { RutinaComponent } from './pages/rutina/rutina.component';
 
 export const routes: Routes = [
@@ -52,7 +53,12 @@ export const routes: Routes = [
         title: 'Rutinator - Mi panel',
       },
       {
-        path: 'rutina/:username',
+        path: 'rutina',
+        component: RutinasListComponent,
+        title: 'Rutinator - Rutinas',
+      },
+      {
+        path: 'anadirRutina',
         component: RutinaComponent,
         title: 'Rutinator - Rutinas',
       },
