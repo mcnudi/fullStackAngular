@@ -7,9 +7,11 @@
     </mat-expansion-panel-header>
     @for (item of arrayIntereses; track item.id) {
         <div class="panel-content">
-            <button class="btn-crud btn btn-outline-success mt-2"><mat-icon>edit</mat-icon></button>
-            <button class="btn-crud btn btn-outline-danger mt-2"><mat-icon>delete</mat-icon></button>
-            <span [style]="{'background-color': '#' + item.color}">{{ item.interest_name }}</span>
+            <button class="btn-crud btn btn-outline-success mt-1"><mat-icon>edit</mat-icon></button>
+            <button (click)="deleteInterest(item)" class="btn-crud btn btn-outline-danger mt-1"><mat-icon>delete</mat-icon></button>
+            <div class="elemento_texto_lista mt-1" [style]="{'background-color': '#' + item.color}">
+                <span><strong>{{ item.interest_name }}</strong></span>
+            </div>
         </div>   
     }
 </mat-expansion-panel>

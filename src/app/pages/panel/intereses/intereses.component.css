@@ -9,8 +9,25 @@ ul {
 .btn-crud {
     height: 40px;
     width: 46px;
+    opacity: 0.3;
 }
 
 .header-color-mat {
     background-color: lightgray;
+}
+
+.panel-content {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.elemento_texto_lista {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px;
+    border: 1px solid lightgray;
+    border-radius: 7px;
 }

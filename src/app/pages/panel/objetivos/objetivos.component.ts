@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { PanelService } from '../../../services/panel.service';
 import { Goals } from '../../../interfaces/ipanel.interface';
@@ -19,6 +19,8 @@ export class ObjetivosComponent implements OnInit {
   panelService = inject(PanelService)
   authService = inject(AuthService)
   dialog = inject(Dialog)
+  changeDetectorRef = inject(ChangeDetectorRef)
+
 
   /*
     arrayObjetivos = [
@@ -43,5 +45,20 @@ export class ObjetivosComponent implements OnInit {
         console.log(error);
       }
     })
+  }
+
+  deleteGoal(elemento: Goals) {
+    this.panelService.removeGoals(this.authService.getDecodedToken().id, elemento.id!).subscribe( {
+      next: (data: Goals) => {
+        const index = this.arrayObjetivos.findIndex(i => i.id === elemento.id);
+        if (index !== -1) {
+          this.arrayObjetivos.splice(index, 1);
+          this.changeDetectorRef.markForCheck();
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   }
 }
