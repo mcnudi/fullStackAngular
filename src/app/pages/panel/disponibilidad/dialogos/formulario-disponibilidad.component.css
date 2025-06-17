@@ -7,14 +7,13 @@
 }
 
 button {
-    background-color: rgba(15, 163, 177, 1) !important; 
-    color: white !important; 
-    font-size: 0.875rem;
+    background-color: rgba(15, 163, 177, 1); 
+    color: white; 
+    font-size: 20px;
     font-weight: bold;
-    padding: 0.75rem 1.5rem;
+    padding: 2px 15px;
     border-radius: 8px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    border:none !important;
+    border: none;
 }
 
 .titulo_modal {

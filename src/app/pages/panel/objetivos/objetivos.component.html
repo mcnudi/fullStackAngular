@@ -1,4 +1,4 @@
-<button (click)="openModal()" class="btn-mas w-100 mt-4 d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">+</button>
+<button (click)="openModal('añadir', {})" class="btn-mas w-100 mt-4 d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">+</button>
 <mat-expansion-panel [expanded]='true'>
     <mat-expansion-panel-header class="header-color-mat">
         <h3 class="mb-0">
@@ -7,7 +7,7 @@
     </mat-expansion-panel-header>
     @for (item of arrayObjetivos; track item.id) {
         <div class="panel-content">
-            <button class="btn-crud btn btn-outline-success mt-1"><mat-icon>edit</mat-icon></button>
+            <button (click)="openModal('actualizar', item)" class="btn-crud btn btn-outline-success mt-1"><mat-icon>edit</mat-icon></button>
             <button (click)="deleteGoal(item)" class="btn-crud btn btn-outline-danger mt-1"><mat-icon>delete</mat-icon></button>
             <div class="elemento_texto_lista mt-1">
                 <span><strong>{{ item.goals_name }}</strong> - [{{ item.hours_per_week }} h./sem.]</span>

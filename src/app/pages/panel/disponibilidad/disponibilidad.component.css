@@ -19,15 +19,25 @@ ul {
 
 .panel-content {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
     gap: 5px;
 }
 
 .elemento_texto_lista {
     flex-grow: 1;
-    display: inline;
     background-color: rgba(55, 151, 52, 0.2);
     padding: 7px;
     border: 1px solid lightgray;
     border-radius: 7px;
+}
+
+.elemento-disponibilidad {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-grow: 1;
+}
+
+.cabecera-interior{
+    height: 30px;
 }
