@@ -40,7 +40,7 @@ export class DashboardComponent implements OnInit {
   availability: Availability[] = [];
   actividades: Activity[] = [];
   userinfo: User | null = null;
-
+ 
   filtroTipo: string = '';
   // Este array siempre debe contener TODOS los eventos cargados inicialmente
   eventosOriginales: EventInput[] = [];
