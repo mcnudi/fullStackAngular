@@ -1,3 +1,4 @@
+
 import { Availability } from './../../interfaces/ipanel.interface';
 import { PanelService } from './../../services/panel.service';
 import { Component, OnInit } from '@angular/core';
@@ -40,7 +41,7 @@ export class DashboardComponent implements OnInit {
   availability: Availability[] = [];
   actividades: Activity[] = [];
   userinfo: User | null = null;
- 
+
   filtroTipo: string = '';
   // Este array siempre debe contener TODOS los eventos cargados inicialmente
   eventosOriginales: EventInput[] = [];
@@ -112,6 +113,7 @@ export class DashboardComponent implements OnInit {
     this.userService.getByUsername(this.username).subscribe({
       next: (user: User) => {
         const userId = (user as any).id;
+        console.log('usuario recibido:',user)
 
         // Cargar objetivos e intereses (estos no afectan directamente el calendario)
         this.panelService.getGoals(userId).subscribe({
@@ -120,9 +122,20 @@ export class DashboardComponent implements OnInit {
         });
 
         this.panelService.getInterests(userId).subscribe({
-          next: (data: Interests[]) => { this.intereses = data; },
+          next: (data: Interests[]) => { console.log('Intereses recibidos:', data); this.intereses = data; },
           error: (error) => { console.log('Error al cargar intereses:', error); }
         });
+          this.calendarEventsService.getActivitiesByUserId(userId).subscribe({
+          next: (data: Activity[]) => { console.log('Actividades recibidos:', data); this.actividades = data; },
+          error: (error) => { console.log('Error al cargar actividades:', error); }
+        });
+
+        this.panelService.getAvailability(userId).subscribe({
+          next: (data: Availability[]) => { console.log('Disponibilidad recibidas:', data); this.availability = data; },
+          error: (error) => { console.log('Error al cargar actividades:', error); }
+        });
+
+
 
         // Usar forkJoin para esperar que ambas llamadas de eventos se completen
         forkJoin({
@@ -186,7 +199,7 @@ export class DashboardComponent implements OnInit {
           weekday: updatedEvent.start ? updatedEvent.start.getDay() : undefined,
           user_id: this.authService.getDecodedToken()?.id
         };
-        const id = Number(info.event.id.split('-')[1]?.trim()); 
+        const id = Number(info.event.id.split('-')[1]?.trim());
         const userId = this.authService.getDecodedToken()?.id;
 
         if(userId === undefined || id === undefined || isNaN(id)) {
@@ -229,7 +242,7 @@ export class DashboardComponent implements OnInit {
       this.eventosOriginales[index] = updatedOriginalEvent;
     }
     // Después de actualizar eventosOriginales, si hay un filtro aplicado, re-aplicarlo
-    this.aplicarFiltros(); 
+    this.aplicarFiltros();
   }
 
   getDateOnTime(date: Date | null): string {
