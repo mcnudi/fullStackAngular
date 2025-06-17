@@ -36,6 +36,8 @@ export class DashboardComponent implements OnInit {
   objetivos: Goals[] = [];
   intereses: Interests[] = [];
   availability: Availability[] = [];
+  actividades: Activity[] =[];
+  userinfo: User | null = null;
 
   /*--------- TS de Calendario ----------*/
   calendarOptions: any = {
@@ -104,39 +106,29 @@ export class DashboardComponent implements OnInit {
     { name: 'Tareas Pendientes', value: 15 }
   ];
 
-  ngOnInit(): void {
-    // 1. Recupera el username
-    this.username = this.authService.getUserName();
+ngOnInit(): void {
+  // 1. Recupera el username
+  this.username = this.authService.getUserName();
 
-    // 2. Obtén el objeto User completo para sacar su id y cargar informacion.
-    this.userService.getByUsername(this.username).subscribe({
-      next: (user: User) => {
-        console.log('Usuario completo recibido:', user);
-        // Extraemos el id (lo que aparece en consola como user.id)
-        const userId = (user as any).id;
-        console.log('ID extraído:', userId);
+  // 2. Obtén el objeto User completo para sacar su id y cargar información.
+  this.userService.getByUsername(this.username).subscribe({
+    next: (user: User) => {
+      this.userinfo = user;
+      console.log('Usuario completo recibido:', user);
 
-        // 3. Extraemos los objetivos.
-        this.panelService.getGoals(userId).subscribe({
-          next: (data: Goals[]) => {
-            this.objetivos = data;
-            console.log('Estos son mis goals', this.objetivos);
-          },
-          error: (error) => {
-            console.log(error);
-          }
-        });
+      const userId = (user as any).id;
+      console.log('ID extraído:', userId);
 
-        // 4. Extraemos los intereses --> Han modificado el metodo, ahora tengo que ver como hacerlo.
-        this.panelService.getInterests(userId).subscribe({
-          next: (data: Interests[]) => {
-            this.intereses = data;
-            console.log('Estos son mis intereses', this.intereses);
-          },
-          error: (error) => {
-            console.log(error);
-          }
-        });
+      // 3. Extraemos los objetivos.
+      this.panelService.getGoals(userId).subscribe({
+        next: (data: Goals[]) => {
+          this.objetivos = data;
+          console.log('Estos son mis goals', this.objetivos);
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      });
 
         // 5. Extraemos la disponibilidad
         this.panelService.getAvailability(userId).subscribe({
@@ -154,24 +146,23 @@ export class DashboardComponent implements OnInit {
               id: `availability-${avail.id}`
             }));
 
-            const eventosPrevios = this.calendarOptions.events || [];
-            this.calendarOptions = {
-              ...this.calendarOptions,
-              events: [
-                ...(eventosPrevios as EventInput[]),
-                ...availabilityEvents
-              ]
-            };
-          },
-          error: (error) => {
-            console.log(error);
-          }
-        });
+      // 5. Extraemos la disponibilidad
+      this.panelService.getAvailability(userId).subscribe({
+        next: (data: Availability[]) => {
+          this.availability = data;
+          console.log('Esta es mi disponibilidad', this.availability);
 
-        // 6. Extraemos las actividades
-        this.calendarEventsService.getActivitiesByUserId(userId).subscribe({
-          next: (activities: Activity[]) => {
-            console.log('Actividades recibidas:', activities);
+          /* Los pinta, pero los pinta mal,
+             hay que ver cómo extraer la descripción
+             y pegarla junto a la hora. */
+          const availabilityEvents: EventInput[] = data.map(avail => ({
+            title: 'Disponible',
+            daysOfWeek: [avail.weekday],      // 1 (lunes) al 7 (domingo)
+            startTime: avail.start_time,      // Ej. '09:00:00'
+            endTime: avail.end_time,          // Ej. '17:00:00'
+            display: 'auto',
+            color: '#81c784'                  // Verde claro
+          }));
 
             const activityEvents: EventInput[] = activities.map(act => ({
               title: `${act.title}${act.description ? ' - ' + act.description : ''}`,
@@ -183,25 +174,20 @@ export class DashboardComponent implements OnInit {
               id: `activity-${act.id}`
             }));
 
-            const eventosPrevios = this.calendarOptions.events || [];
-            this.calendarOptions = {
-              ...this.calendarOptions,
-              events: [
-                ...(eventosPrevios as EventInput[]),
-                ...activityEvents
-              ]
-            };
-          },
-          error: (error) => {
-            console.log(error);
-          }
-        });
+      // 6. Extraemos las actividades
+      this.calendarEventsService.getActivitiesByUserId(userId).subscribe({
+        next: (activities: Activity[]) => {
+          console.log('Actividades recibidas:', activities);
+          this.actividades = activities;
 
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
+          const activityEvents: EventInput[] = activities.map(act => ({
+            title: `${act.title}${act.description ? ' - ' + act.description : ''}`,
+            daysOfWeek: [act.day_of_week],     // 1 (lunes) al 7 (domingo)
+            startTime: act.start_time,
+            endTime: act.end_time,
+            display: 'auto',
+            color: '#64b5f6'                   // Azul
+          }));
 
     /*
       // OTROS métodos de interacción con el gráfico y el calendario
@@ -248,4 +234,6 @@ export class DashboardComponent implements OnInit {
     const seconds = String(date.getSeconds()).padStart(2, '0');
     return `${hours}:${minutes}:${seconds}`; // Formato 'HH:mm:ss'
   }
+}
+
 }
