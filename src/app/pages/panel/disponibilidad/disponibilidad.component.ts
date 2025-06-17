@@ -30,17 +30,22 @@ export class DisponibilidadComponent implements OnInit {
       { id: 5, dia: '4', nombre_dia: 'VIERNES',  hora_inicio: '10:00', hora_fin: '12:00'}
     ];
   */
- 
+
+  diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+  uniqueWeekdaysName: string[] = [];
+
   arrayDisponibilidad: Availability [] = [];
 
-  protected openModal (){
-    this.dialog.open(FormularioDisponibilidadComponent, { disableClose: true });
+  openModal (modo: 'añadir' | 'actualizar', elemento: Availability) {
+    this.dialog.open(FormularioDisponibilidadComponent, { data: { modo, elemento }, disableClose: true });
   }
 
   ngOnInit() {
     this.panelService.getAvailability(this.authService.getDecodedToken().id).subscribe({
       next: (data: Availability[]) => {
         this.arrayDisponibilidad = data;
+        //const uniqueWeekdays = [...new Set(this.arrayDisponibilidad.map(item => item.weekday))];
+        //this.uniqueWeekdaysName = uniqueWeekdays.map(numero => this.diasSemana[Number(numero)]);
       },
       error: (error) => {
         console.log(error);

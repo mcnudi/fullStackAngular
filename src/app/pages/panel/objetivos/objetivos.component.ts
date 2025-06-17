@@ -21,7 +21,6 @@ export class ObjetivosComponent implements OnInit {
   dialog = inject(Dialog)
   changeDetectorRef = inject(ChangeDetectorRef)
 
-
   /*
     arrayObjetivos = [
       { id: 1, name: 'ARTE', dedicacion: 3},
@@ -32,8 +31,8 @@ export class ObjetivosComponent implements OnInit {
 
   arrayObjetivos: Goals [] = [];
 
-  protected openModal (){
-    this.dialog.open(FormularioObjetivosComponent, { disableClose: true });
+  openModal (modo: 'añadir' | 'actualizar', elemento: Goals) {
+    this.dialog.open(FormularioObjetivosComponent, { data: { modo, elemento }, disableClose: true });
   }
 
   ngOnInit() {
