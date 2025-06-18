@@ -40,7 +40,8 @@ export class DashboardComponent implements OnInit {
   actividades: Activity[] = [];
   userinfo: User | null = null;
   actividadesSemanaActual: Activity[] = [];
-  defaultUserImageUrl: string = 'public\image\default-profile.png';
+  profileImage: string =
+    'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
 
   filtroTipo: string = ''; // Este array siempre debe contener TODOS los eventos cargados inicialmente
   eventosOriginales: EventInput[] = [];
@@ -117,14 +118,16 @@ export class DashboardComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-
-    console.log('DashboardComponent initialized');
     this.username = this.authService.getUserName();
 
     this.userService.getByUsername(this.username).subscribe({
       next: (user: User) => {
         const userId = (user as any).id;
-    this.userinfo = user;
+        this.userinfo = user;
+
+        if (user.image) {
+        this.profileImage = `data:image/png;base64,${user.image}`;
+      }
 
         this.panelService.getInterests(userId).subscribe({
           next: (data: Interests[]) => { console.log('Intereses recibidos:', data); this.intereses = data || []; },
@@ -132,9 +135,9 @@ export class DashboardComponent implements OnInit {
         });
           this.calendarEventsService.getActivitiesByUserId(userId).subscribe({
           next: (data: Activity[]) => { console.log('Actividades recibidas:', data); this.actividades=data || [];
-                                        this.actividadesSemanaActual = this.getActividadesSemanaActual(); },
+                                   /* TAMPOCO LO VEO MUY CLARO --> this.actividadesSemanaActual = this.getActividadesSemanaActual(); },*/
          
-        });
+        }});
 
         this.panelService.getAvailability(userId).subscribe({
           next: (data: Availability[]) => { console.log('Disponibilidad recibidas:', data); this.availability = data || []; },
@@ -158,7 +161,7 @@ export class DashboardComponent implements OnInit {
       },
     });
   }
-
+/* No lo tengo muy claro
 getActividadesSemanaActual(): Activity[] {
   if (!Array.isArray(this.actividades)) {
     return [];
@@ -169,13 +172,7 @@ getActividadesSemanaActual(): Activity[] {
     diasSemana.includes(Number(act.day_of_week))
   );
 }
-
-getImageUser(user: User): string {
-  return user.image && user.image.trim() !== '' ? user.image : this.defaultUserImageUrl;
-}
-
-
-
+*/
   saveEvent(
     info: EventDropArg,
     updatedEvent: { id: string; start: Date | null; end: Date | null }
