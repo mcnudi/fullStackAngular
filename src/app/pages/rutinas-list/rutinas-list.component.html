@@ -1,7 +1,7 @@
 <div class="main-container">
   <div class="header">
     <h1>Mis rutinas</h1>
-    <p class="subtext">3 rutinas</p>
+    <p class="subtext">{{ rutinas.length }} rutinas</p>
     <button class="crear-rutina">Crear rutina</button>
   </div>
 
@@ -10,42 +10,16 @@
     <span class="icon">🔍</span>
   </div>
 
-  <div class="rutina-card">
+  <div *ngFor="let rutina of rutinas" class="rutina-card">
     <div class="rutina-header">
-      <strong>Rutina por defecto</strong>
-      <span class="icon-star">⭐</span>
+      <strong>{{ rutina.name }}</strong>
+      <span *ngIf="rutina.is_default" class="icon-star">⭐</span>
     </div>
-    <p>Descripción de rutina</p>
+    <p>{{ rutina.description }}</p>
     <div class="rutina-footer">
-      <span>Última actualización: 27/02/2025</span>
+      <span>Última actualización: {{ rutina.created_at | date:'dd/MM/yyyy' }}</span>
       <div>
-        <a href="#">v1</a> · <span>12 tareas</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="rutina-card">
-    <div class="rutina-header">
-      <strong>Nombre de rutina</strong>
-    </div>
-    <p>Descripción de rutina</p>
-    <div class="rutina-footer">
-      <span>Última actualización: 27/02/2025</span>
-      <div>
-        <a href="#">v1</a> · <span>12 tareas</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="rutina-card">
-    <div class="rutina-header">
-      <strong>Nombre de rutina</strong>
-    </div>
-    <p>Descripción de rutina</p>
-    <div class="rutina-footer">
-      <span>Última actualización: 27/02/2025</span>
-      <div>
-        <a href="#">v1</a> · <span>12 tareas</span>
+        <a href="#">v1</a> · <span>0 tareas</span>
       </div>
     </div>
   </div>
