@@ -1,10 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, Inject, Input, OnInit, inject } from '@angular/core';
 
-import { DialogRef } from '@angular/cdk/dialog'
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog'
 import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Interests } from '../../../../interfaces/ipanel.interface';
 import { ToastService } from '../../../../services/toast.service';
-import { PanelService } from '../../../../services/panel.service';
 
 @Component({
   selector: 'app-formulario-intereses',
@@ -14,29 +13,35 @@ import { PanelService } from '../../../../services/panel.service';
   styleUrls: ['./formulario-intereses.component.css'],
 })
 export class FormularioInteresesComponent implements OnInit {
+  modo: 'añadir' | 'actualizar';
+  interesActual: Interests;
 
-  toastService = inject(ToastService);
-  userService = inject(PanelService);
-  
-
-  interest: Interests = {
-    id: 0,
-    interest_name: '',
-    color: ''
+  // Recepción de datos del Interés actual desde el componente Objetivos del Panel
+  constructor(@Inject(DIALOG_DATA) public data: { modo: 'añadir' | 'actualizar', elemento: Interests }) {
+    console.log(data.elemento!);
+    this.modo = data?.modo || 'añadir';
+    this.interesActual = data?.elemento
   };
-
-  interestsForm: FormGroup = new FormGroup({
-    interest_name: new FormControl('', [Validators.required]),
-    color: new FormControl('', [Validators.required])
-  });
   
-  ngOnInit() {
+  toastService = inject(ToastService);
+  
+  interestsForm = new FormGroup({
+    interest_name: new FormControl('', Validators.required),
+    color: new FormControl('', Validators.required)
+  });
 
+  ngOnInit() {
+    if (this.modo === 'actualizar' && this.interesActual) {
+      this.interestsForm.patchValue({
+        interest_name: this.interesActual.interest_name,
+        color: '#' + this.interesActual.color // Formato hexadecimal.... cuando inserte en BD tal vez ya lleve el #
+      });
+    }
   }
 
-  private dialogRef = inject(DialogRef, { optional: true});
+  dialogRef = inject(DialogRef, { optional: true});
   
-  protected closeModal() {
+  closeModal() {
     this.dialogRef?.close()
   }
 
@@ -45,8 +50,6 @@ export class FormularioInteresesComponent implements OnInit {
     if (this.interestsForm.invalid) {
       this.toastService.showError('Por favor, completa todos los campos.');
       return;
-    }
-
-    
+    }    
   }
 }

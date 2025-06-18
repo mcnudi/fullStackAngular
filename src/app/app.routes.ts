@@ -62,6 +62,8 @@ export const routes: Routes = [
         component: RutinaComponent,
         title: 'Rutinator - Rutinas',
       },
+      { path: 'rutinas/:usuario', component: RutinasListComponent }
+
     ],
   },
   { path: '**', redirectTo: 'home' },

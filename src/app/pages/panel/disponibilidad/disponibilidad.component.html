@@ -1,17 +1,37 @@
-<button (click)="openModal()" class="btn-mas w-100 mt-4 d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">+</button>
-<mat-expansion-panel class="w-full max-w-full" [expanded]='true'>
+<button (click)="openModal('añadir', {})" class="btn-mas w-100 mt-4 d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">+</button>
+<mat-expansion-panel [expanded]='true'>
     <mat-expansion-panel-header class="header-color-mat">
         <h3 class="mb-0">
             Disponibilidad
         </h3>
     </mat-expansion-panel-header>
-    @for (item of arrayDisponibilidad; track item.id) {
-        <div class="panel-content">
-            <button class="btn-crud btn btn-outline-success mt-1"><mat-icon>edit</mat-icon></button>
-            <button (click)="deleteAvailability(item)" class="btn-crud btn btn-outline-danger mt-1"><mat-icon>delete</mat-icon></button>
-            <div class="elemento_texto_lista mt-1">
-                <span>{{ item.weekday }} -> De {{ item.start_time }} a {{ item.end_time }} </span>
+
+    @for (diaConDisponibilidad of diasSemana; let i = $index; track diaConDisponibilidad) {
+        <mat-expansion-panel [expanded]='true' id=diaConDisponibilidad.value>
+            <mat-expansion-panel-header class="header-color-mat cabecera-interior">
+                <span class="mb-0">
+                    {{ diaConDisponibilidad}}                  
+                </span>
+            </mat-expansion-panel-header>
+            <!-- Contenedor específico para cada día -->
+            <div class="panel-content">
+                @for (item of arrayDisponibilidad; track item.id) {
+                    @if (item.weekday === i) {
+                        <div class="elemento-disponibilidad">
+                            <button (click)="openModal('actualizar', item)" [id]="item.id" class="btn-crud btn btn-outline-success mt-1">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button (click)="deleteAvailability(item)" class="btn-crud btn btn-outline-danger mt-1">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                            <div class="elemento_texto_lista mt-1">
+                                <span>{{ item.start_time }} a {{ item.end_time }}</span>
+                            </div>
+                        </div>
+                    }
+                }
             </div>
-        </div>
+        </mat-expansion-panel>
     }
+
 </mat-expansion-panel>
