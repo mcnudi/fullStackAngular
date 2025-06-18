@@ -13,17 +13,7 @@ button {
     font-weight: bold;
     padding: 2px 15px;
     border-radius: 8px;
-    border:none;
-}
-
-.input-textarea {
-    width: 100%;
-    height: calc(4em);
-    padding: 0.75em;
-}
-
-.btn-mas {
-    height: 30px !important;
+    border: none;
 }
 
 .titulo_modal {
@@ -36,4 +26,14 @@ button {
 h2 {
   display: block;
   margin: 0;
+}
+
+.input-textarea {
+    width: 100%;
+    height: calc(4em);
+    padding: 0.75em;
+}
+
+.btn-mas {
+    height: 30px !important;
 }

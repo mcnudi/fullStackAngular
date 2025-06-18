@@ -13,12 +13,7 @@ button {
     font-weight: bold;
     padding: 2px 15px;
     border-radius: 8px;
-    border:none;
-}
-
-.colorPreview {
-  width: 30%;
-  background-color: #f0f;
+    border: none;
 }
 
 .titulo_modal {

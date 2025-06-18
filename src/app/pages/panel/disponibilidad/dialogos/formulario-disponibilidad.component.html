@@ -1,4 +1,4 @@
-<form>
+<form [formGroup]="availabilityForm" (ngSubmit)="saveAvailability()">
     <!-- Zona de título -->
     <div class="titulo_modal mb-3">
         <h2>¿Cuál es tu disponibilidad?</h2>
@@ -7,24 +7,26 @@
     <!-- Grupo de día -->
     <div class="mb-3">
         <label for="dia_semana" class="form-label">Día de la semana:</label>
-        <input type="text" id="dia_semana" class="form-control">
+        <input type="text" id="dia_semana" class="form-control" formControlName="dia_semana">
     </div>
 
     <!-- Grupo de hora inicio -->
     <div class="mb-3">
         <label for="hora_inicio" class="form-label">Hora de inicio:</label>
-        <input type="time" step="3600" id="hora_inicio" class="form-control">
+        <input type="time" step="3600" id="hora_inicio" class="form-control" formControlName="hora_inicio">
     </div>
 
     <!-- Grupo de hora fin -->
     <div class="mb-3">
         <label for="hora_fin" class="form-label">Hora de fin:</label>
-        <input type="time" step="3600" id="hora_fin" class="form-control">
+        <input type="time" step="3600" id="hora_fin" class="form-control" formControlName="hora_fin">
     </div>
 
     <!-- Botones -->
     <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-primary">Añadir</button>
+        <button type="submit" class="btn btn-primary">
+            {{ modo === 'actualizar' ? 'Actualizar' : 'Añadir' }}
+        </button>
         <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
     </div>
 </form>

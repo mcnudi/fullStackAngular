@@ -1,4 +1,4 @@
-<form>
+<form [formGroup]="goalsForm" (ngSubmit)="saveGoals()">
     <!-- Zona de título -->
     <div class="titulo_modal mb-3">
         <h2>¿Cuál es tu objetivo?</h2>
@@ -6,25 +6,27 @@
 
     <!-- Grupo de título -->
     <div class="mb-3">
-        <label for="titulo_objetivo" class="form-label">Título del objetivo:</label>
-        <input type="text" id="titulo_objetivo" class="form-control">
+        <label for="nombre_objetivo" class="form-label">Título del objetivo:</label>
+        <input id="nombre_objetivo" class="form-control" formControlName="nombre_objetivo">
     </div>
 
     <!-- Grupo de descripción -->
     <div class="mb-3">
         <label for="descripcion" class="form-label">Describe tu objetivo:</label>
-        <textarea id="descripcion" class="form-control" rows="3"></textarea>
+        <textarea id="descripcion" class="form-control" rows="3" formControlName="descripcion"></textarea>
     </div>
 
     <!-- Grupo de horas -->
     <div class="mb-3">
-        <label for="horas" class="form-label">Horas a la semana:</label>
-        <input type="text" id="horas" class="form-control" maxlength="2" value="0">
+        <label for="horas_semana" class="form-label">Horas a la semana:</label>
+        <input id="horas_semana" class="form-control" maxlength="2" value="0" formControlName="horas_semana">
     </div>
 
     <!-- Botones -->
     <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-primary">Añadir</button>
+        <button type="submit" class="btn btn-primary">
+            {{ modo === 'actualizar' ? 'Actualizar' : 'Añadir' }}
+        </button>
         <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
     </div>
 
