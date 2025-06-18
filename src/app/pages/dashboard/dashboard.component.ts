@@ -39,9 +39,14 @@ export class DashboardComponent implements OnInit {
   availability: Availability[] = [];
   actividades: Activity[] = [];
   userinfo: User | null = null;
+  actividadesSemanaActual: Activity[] = [];
+  defaultUserImageUrl: string = 'public\image\default-profile.png';
+
   filtroTipo: string = ''; // Este array siempre debe contener TODOS los eventos cargados inicialmente
-  eventosOriginales: EventInput[] =
-    []; /*--------- TS de Calendario ----------*/
+  eventosOriginales: EventInput[] = [];
+
+
+    /*--------- TS de Calendario ----------*/
 
   calendarOptions: any = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -112,32 +117,33 @@ export class DashboardComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+
     console.log('DashboardComponent initialized');
     this.username = this.authService.getUserName();
 
     this.userService.getByUsername(this.username).subscribe({
       next: (user: User) => {
-        const userId = (user as any).id; // Cargar objetivos e intereses (estos no afectan directamente el calendario)
+        const userId = (user as any).id;
+    this.userinfo = user;
 
         this.panelService.getInterests(userId).subscribe({
-          next: (data: Interests[]) => { console.log('Intereses recibidos:', data); this.intereses = data; },
+          next: (data: Interests[]) => { console.log('Intereses recibidos:', data); this.intereses = data || []; },
           error: (error) => { console.log('Error al cargar intereses:', error); }
         });
           this.calendarEventsService.getActivitiesByUserId(userId).subscribe({
-          next: (data: Activity[]) => { console.log('Actividades recibidos:', data); this.actividades = data; },
-          error: (error) => { console.log('Error al cargar actividades:', error); }
+          next: (data: Activity[]) => { console.log('Actividades recibidas:', data); this.actividades=data || [];
+                                        this.actividadesSemanaActual = this.getActividadesSemanaActual(); },
+         
         });
 
         this.panelService.getAvailability(userId).subscribe({
-          next: (data: Availability[]) => { console.log('Disponibilidad recibidas:', data); this.availability = data; },
+          next: (data: Availability[]) => { console.log('Disponibilidad recibidas:', data); this.availability = data || []; },
           error: (error) => { console.log('Error al cargar actividades:', error); }
         });
 
-
-
         this.panelService.getInterests(userId).subscribe({
           next: (data: Interests[]) => {
-            this.intereses = data;
+            this.intereses = data || [];
           },
           error: (error) => {
             console.log('Error al cargar intereses:', error);
@@ -152,6 +158,23 @@ export class DashboardComponent implements OnInit {
       },
     });
   }
+
+getActividadesSemanaActual(): Activity[] {
+  if (!Array.isArray(this.actividades)) {
+    return [];
+  }
+
+  const diasSemana = [1, 2, 3, 4, 5, 6, 0];
+  return this.actividades.filter(act =>
+    diasSemana.includes(Number(act.day_of_week))
+  );
+}
+
+getImageUser(user: User): string {
+  return user.image && user.image.trim() !== '' ? user.image : this.defaultUserImageUrl;
+}
+
+
 
   saveEvent(
     info: EventDropArg,
@@ -197,8 +220,8 @@ export class DashboardComponent implements OnInit {
     } else if (info.event.id.startsWith('actividad-')) {
       /*          HACERRRR        */
     }
-  } 
-  
+  }
+
   // Función auxiliar para actualizar el evento en `eventosOriginales`
   private updateEventInOriginals(
     eventId: string,

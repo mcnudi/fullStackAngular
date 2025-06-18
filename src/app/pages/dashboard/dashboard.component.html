@@ -84,39 +84,54 @@
         </div>
 
         <!-- Columna derecha -->
-        <div class="col-9">
-          <div
-            class="bg-white rounded shadow-sm p-4 actividades-wrapper h-100 d-flex flex-column"
-          >
-            <h2 class="fw-bold mb-2">ACTIVIDADES DE LA SEMANA</h2>
-            <hr class="mb-3" />
-            <div
-              class="objetivos-list bg-light rounded p-3 flex-grow-1"
-              style="overflow-y: auto"
-            >
-              <ul class="list-unstyled mb-0">
-                @for (actividad of actividades; track $index) {
-                <li
-                  class="actividad-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-white shadow-sm"
-                >
-                  <div class="actividad-info text-truncate">
-                    <strong class="actividad-titulo d-block">{{
-                      actividad.title
-                    }}</strong>
-                    <small class="actividad-horario text-muted"
-                      >{{ actividad.start_time }} -
-                      {{ actividad.end_time }}</small
+                <div class="col-9">
+                  <div
+                    class="bg-white rounded shadow-sm p-4 actividades-wrapper h-100 d-flex flex-column"
+                  >
+                    <h2 class="fw-bold mb-2">ACTIVIDADES DE LA SEMANA</h2>
+                    <hr class="mb-3" />
+                    <div
+                      class="objetivos-list rounded p-3 flex-grow-1"
+                      style="overflow-y: auto"
                     >
+                      <ul class="list-unstyled mb-0">
+                        @if(actividadesSemanaActual.length>0){
+                          @for (actividad of actividadesSemanaActual; track $index) {
+                          <li
+                            class="actividad-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-white shadow-sm"
+                          >
+                            <div class="actividad-info text-truncate">
+                              <strong class="actividad-titulo d-block">{{
+                                actividad.title
+                              }}</strong>
+                              <small class="actividad-horario text-muted"
+                                >{{ actividad.start_time }} -
+                                {{ actividad.end_time }}</small
+                              >
+                            </div>
+                            <button class="btn btn-sm btn-custom btn-actividad px-4">
+                              Ver
+                            </button>
+                          </li>
+                          }
+                        } @else {
+                          <div class="sin-actividades-container text-center">
+                            <img
+                              src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeXA5c25iMmlndWk2MHp5ZXZ2bjd0aXp4Yzdiemg1dnVocGh1MTN6ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jls5k3a7L1N0XRM9d0/giphy.gif"
+                              alt="Sin actividades"
+                              style="max-width: 100%; height: auto;"
+                            />
+                            <h3 class="mt-3">Ups... no tienes actividades aún</h3>
+                            <p>¡Empieza creando tus primeras tareas y rutinas!</p>
+                          </div>
+                        }
+                      </ul>
+                    </div>
+                        <button class="btn-info mt-2 btn-primary-color btn-custom mb-3 mx-auto centered-button">
+                          Agrega Actividad
+                        </button>
                   </div>
-                  <button class="btn btn-sm btn-custom btn-actividad px-4">
-                    Ver
-                  </button>
-                </li>
-                }
-              </ul>
-            </div>
-          </div>
-        </div>
+                </div>
       </div>
     </div>
   </div>
