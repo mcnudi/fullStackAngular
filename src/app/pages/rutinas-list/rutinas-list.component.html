@@ -2,7 +2,7 @@
   <div class="header">
     <h1>Mis rutinas</h1>
     <p class="subtext">{{ rutinas.length }} rutinas</p>
-    <button class="crear-rutina">Crear rutina</button>
+    <button class="crear-rutina" (click)="irAlta()">Crear rutina</button>
   </div>
 
   <div class="search-bar">
@@ -10,7 +10,7 @@
     <span class="icon">🔍</span>
   </div>
 
-  <div *ngFor="let rutina of rutinas" class="rutina-card">
+  <div *ngFor="let rutina of rutinas" class="rutina-card" >
     <div class="rutina-header">
       <strong>{{ rutina.name }}</strong>
       <span *ngIf="rutina.is_default" class="icon-star">⭐</span>
