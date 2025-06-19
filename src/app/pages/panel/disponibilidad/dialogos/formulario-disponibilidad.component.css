@@ -6,16 +6,6 @@
   padding: 2em 2em 2em 2em;
 }
 
-button {
-    background-color: rgba(15, 163, 177, 1); 
-    color: white; 
-    font-size: 20px;
-    font-weight: bold;
-    padding: 2px 15px;
-    border-radius: 8px;
-    border: none;
-}
-
 .titulo_modal {
   padding: 15px;
   background-color: lightgray;
