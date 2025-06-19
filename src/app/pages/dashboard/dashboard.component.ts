@@ -16,12 +16,14 @@ import { User } from '../../interfaces/iuser.interface';
 import { Goals, Interests } from '../../interfaces/ipanel.interface';
 import { Activity } from '../../interfaces/iactivity.interface';
 import { FormsModule } from '@angular/forms';
-import { forkJoin } from 'rxjs'; // <-- Importar forkJoin
+import { forkJoin } from 'rxjs';
+import { FormActivityComponent } from "./form-activity-add/form-activity.component";
+import { FormInfoActivityComponent } from "./form-info-activity/form-info-activity.component"; // <-- Importar forkJoin
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [FullCalendarModule, NgxChartsModule, FormsModule],
+  imports: [FullCalendarModule, NgxChartsModule, FormsModule, FormActivityComponent, FormInfoActivityComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
@@ -42,6 +44,11 @@ export class DashboardComponent implements OnInit {
   actividadesSemanaActual: Activity[] = [];
   profileImage: string =
     'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
+
+  mostrarFormularioActividad = false;
+
+  actividadSeleccionada: any = null;
+mostrarVistaActividad = false;
 
   filtroTipo: string = ''; // Este array siempre debe contener TODOS los eventos cargados inicialmente
   eventosOriginales: EventInput[] = [];
@@ -161,6 +168,24 @@ export class DashboardComponent implements OnInit {
       },
     });
   }
+
+abrirFormularioActividad() {
+    this.mostrarFormularioActividad = true;
+  }
+
+  cerrarFormularioActividad() {
+    this.mostrarFormularioActividad = false;
+  }
+
+  verActividad(actividad: any) {
+  this.actividadSeleccionada = actividad;
+  this.mostrarVistaActividad = true;
+}
+
+cerrarVistaActividad() {
+  this.mostrarVistaActividad = false;
+  this.actividadSeleccionada = null;
+}
 /* No lo tengo muy claro
 getActividadesSemanaActual(): Activity[] {
   if (!Array.isArray(this.actividades)) {
