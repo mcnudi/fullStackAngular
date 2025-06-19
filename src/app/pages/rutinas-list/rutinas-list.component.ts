@@ -1,7 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NgForOf, NgIf, DatePipe } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-rutinas-list',
@@ -13,14 +14,18 @@ import { NgForOf, NgIf, DatePipe } from '@angular/common';
 export class RutinasListComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
-
+  username:string='';
   rutinas: any[] = [];
+router=inject(Router);
+   authService = inject(AuthService);
 
   ngOnInit(): void {
   console.log("🔥 ngOnInit ejecutado"); // 👈 pon este log arriba del todo
 
-  const userId = Number(localStorage.getItem('userId'));
+  //const userId = Number(localStorage.getItem('userId'));
+  const userId=this.authService.getDecodedToken().id;
   const token = localStorage.getItem('token');
+  this.username =this.authService.getUserName();
 
   if (!userId || !token) {
     console.warn('Faltan userId o token en localStorage');
@@ -41,5 +46,8 @@ export class RutinasListComponent implements OnInit {
     },
     error: err => console.error('❌ Error al obtener rutinas:', err)
   });
+  }
+  irAlta(){
+    this.router.navigate(['/app/anadirRutina/usuario/']);
   }
 }
