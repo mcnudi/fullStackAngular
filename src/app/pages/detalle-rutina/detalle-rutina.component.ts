@@ -13,10 +13,10 @@ export class DetalleRutinaComponent {
     this.router.navigate(['/app/rutina/']);
   }
   crearTarea(){
-    this.router.navigate(['anadirRutina/']);
+    this.router.navigate(['app/anadirRutina/usuario']);
   }
   actualizarTarea(){
-    this.router.navigate(['/app/detalleRutina']);
+    this.router.navigate(['/app/anadirRutina/tarea']);
   }
 }
 
