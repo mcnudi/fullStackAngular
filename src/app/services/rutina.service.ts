@@ -18,9 +18,7 @@ export class RutinaService {
   }
 
   modificarRutina(rutina: Irutina): Observable<Irutina> {
-    return this.http.put<Irutina>(
-      `${this.baseURL}`, rutina
-    );
+    return this.http.put<Irutina>(`${this.baseURL}`, rutina);
   }
 
   // obtener rutinas por ID de usuario (requiere token)
@@ -30,5 +28,9 @@ export class RutinaService {
     });
 
     return this.http.get<Irutina[]>(`${this.baseURL}/user/${userId}`, { headers });
+  }
+
+  obtenerRutinas(id:number):Observable<Irutina[]>{
+    return this.http.get<Irutina[]>(`${this.baseURL}/${id}`);
   }
 }
