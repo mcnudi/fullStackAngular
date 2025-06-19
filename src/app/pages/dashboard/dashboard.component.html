@@ -12,16 +12,14 @@
             <!-- Imagen y nombre juntos arriba -->
             <div>
               <!-- Imagen de usuario -->
-      <div class="mb-2">
-        <img
-          [src]="profileImage"
-          alt="Usuario"
-          class="img-fluid rounded-circle"
-          style="width: 120px; height: 120px; object-fit: cover"
-        />
-      </div>
-
-
+                  <div class="mb-2">
+                    <img
+                      [src]="profileImage"
+                      alt="Usuario"
+                      class="img-fluid rounded-circle"
+                      style="width: 120px; height: 120px; object-fit: cover"
+                    />
+                  </div>
               <!-- Título y subtítulo -->
               <div class="mb-1">
                 <div class="fw-bold" style="font-size: 1.1rem">
@@ -96,8 +94,8 @@
                       style="overflow-y: auto"
                     >
                       <ul class="list-unstyled mb-0">
-                        @if(actividadesSemanaActual.length>0){
-                          @for (actividad of actividadesSemanaActual; track $index) {
+                        @if(actividades.length>0){
+                          @for (actividad of actividades; track $index) {
                           <li
                             class="actividad-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-white shadow-sm"
                           >
@@ -110,9 +108,13 @@
                                 {{ actividad.end_time }}</small
                               >
                             </div>
-                            <button class="btn btn-sm btn-custom btn-actividad px-4">
+                            <button
+                              class="btn btn-sm btn-custom btn-actividad px-4"
+                              (click)="verActividad(actividad)"
+                            >
                               Ver
                             </button>
+
                           </li>
                           }
                         } @else {
@@ -128,9 +130,14 @@
                         }
                       </ul>
                     </div>
-                        <button class="btn-info mt-2 btn-primary-color btn-custom mb-3 mx-auto centered-button">
-                          Agrega Actividad
-                        </button>
+                              @if (!mostrarFormularioActividad) {
+                                <button
+                                  (click)="abrirFormularioActividad()"
+                                  class="btn-info mt-2 btn-primary-color btn-custom mb-3 mx-auto centered-button"
+                                >
+                                  Agrega Actividad
+                                </button>
+                                                              }
                   </div>
                 </div>
       </div>
@@ -184,3 +191,23 @@
     </div>
   </div>
 </div>
+
+
+@if (mostrarFormularioActividad) {
+  <div class="modal-overlay" (click)="cerrarFormularioActividad()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <app-form-activity (cerrar)="cerrarFormularioActividad()"></app-form-activity>
+    </div>
+  </div>
+}
+
+@if (mostrarVistaActividad) {
+  <div class="modal-overlay" (click)="cerrarVistaActividad()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <app-form-info-activity
+        [actividad]="actividadSeleccionada"
+        (cerrar)="cerrarVistaActividad()"
+      ></app-form-info-activity>
+    </div>
+  </div>
+}

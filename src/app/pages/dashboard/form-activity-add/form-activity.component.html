@@ -1,0 +1,50 @@
+<div class="container my-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+      <div class="card p-4 shadow">
+        <h2 class="mb-4 text-center">Crear Actividad</h2>
+        <form>
+          <div class="mb-3">
+            <label for="titulo" class="form-label">Título*</label>
+            <input type="text" id="titulo" name="titulo" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción*</label>
+            <input type="text" id="descripcion" name="descripcion" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label for="dia" class="form-label">Día*</label>
+            <input type="text" id="dia" name="dia" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label for="hora" class="form-label">Hora*</label>
+            <input type="text" id="hora" name="hora" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label for="duracion" class="form-label">Duración*</label>
+            <input type="text" id="duracion" name="duracion" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label for="interes" class="form-label">Interés*</label>
+            <input type="text" id="interes" name="interes" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label for="rutina" class="form-label">Rutina</label>
+            <input type="text" id="rutina" name="rutina" class="form-control" disabled>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <button type="submit" class="btn-info mt-2 btn-primary-color btn-custom mb-3 mx-auto centered-button">Crear Actividad</button>
+            <button type="button" class="btn-info mt-2 btn-primary-color btn-custom mb-3 mx-auto centered-button" (click)="cerrarFormulario()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
