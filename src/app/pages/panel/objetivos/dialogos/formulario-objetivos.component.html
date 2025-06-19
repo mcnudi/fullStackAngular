@@ -6,28 +6,43 @@
 
     <!-- Grupo de título -->
     <div class="mb-3">
-        <label for="nombre_objetivo" class="form-label">Título del objetivo:</label>
-        <input id="nombre_objetivo" class="form-control" formControlName="nombre_objetivo">
+        <label for="goals_name" class="form-label">Título del objetivo:</label>
+        <input id="goals_name" class="form-control" formControlName="goals_name">
+    </div>
+
+    <!-- Grupo de interés -->
+    <div class="mb-3">
+        <label for="interest_name" class="form-label">Interés asociado:</label>
+        <select class="form-control" id="interest_name" name="interest_name" class="form-control" formControlName="interest_name">
+        @for (interes of arrayIntereses; let i = $index; track interes) {
+            <option [value]="interes.id">{{ interes.interest_name }}</option>
+        }
+        </select>
     </div>
 
     <!-- Grupo de descripción -->
     <div class="mb-3">
-        <label for="descripcion" class="form-label">Describe tu objetivo:</label>
-        <textarea id="descripcion" class="form-control" rows="3" formControlName="descripcion"></textarea>
+        <label for="description" class="form-label">Describe tu objetivo:</label>
+        <textarea id="description" class="form-control" rows="3" formControlName="description"></textarea>
     </div>
 
     <!-- Grupo de horas -->
     <div class="mb-3">
-        <label for="horas_semana" class="form-label">Horas a la semana:</label>
-        <input id="horas_semana" class="form-control" maxlength="2" value="0" formControlName="horas_semana">
+        <label for="hours_per_week" class="form-label">Horas a la semana:</label>
+        <input id="hours_per_week" class="form-control" maxlength="2" text="0" formControlName="hours_per_week">
     </div>
 
     <!-- Botones -->
-    <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-primary">
+    <div class="d-flex justify-content-center gap-2 mt-3">
+        <button type="submit"
+            class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">
+            <mat-icon>save</mat-icon>
             {{ modo === 'actualizar' ? 'Actualizar' : 'Añadir' }}
         </button>
-        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="button"
+            class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-error"
+            (click)="closeModal()">
+            <mat-icon>cancel</mat-icon>Cancelar
+        </button>
     </div>
-
 </form>
