@@ -1,6 +1,6 @@
 export interface Irutina {
     name: string;
-  descripcion: string;
+  description: string;
   defecto: boolean;
   usuario:string;
   is_shared:boolean;
