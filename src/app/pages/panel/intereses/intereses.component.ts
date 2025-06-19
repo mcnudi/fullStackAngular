@@ -28,11 +28,11 @@ export class InteresesComponent implements OnInit {
       { id: 3, interest_name: 'EDUCACIÓN' }
     ];
   */
-
+ 
   arrayIntereses: Interests [] = [];
 
-  protected openModal () {
-    this.dialog.open(FormularioInteresesComponent, { disableClose: true });
+  openModal (modo: 'añadir' | 'actualizar', elemento: Interests) {
+    this.dialog.open(FormularioInteresesComponent, { data: { modo, elemento }, disableClose: true });
   }
 
   ngOnInit() {
