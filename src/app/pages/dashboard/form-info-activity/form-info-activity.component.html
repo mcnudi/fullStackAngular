@@ -1,0 +1,44 @@
+<h4 class="mb-3">Detalle de Actividad</h4>
+<form>
+  <div class="mb-3">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Título</label>
+    <input
+      type="text"
+      class="form-control"
+      [value]="actividad?.title || ''"
+      disabled
+    />
+  </div>
+      <div class="mb-3">
+    <label class="form-label">Descripción</label>
+    <input
+      type="text"
+      class="form-control"
+      [value]="actividad?.description|| ''"
+      disabled
+    />
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Hora de comienzo</label>
+    <input
+      type="time"
+      class="form-control"
+      [value]="actividad?.start_time || ''"
+      disabled
+    />
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Hora de finalización</label>
+    <input
+      type="time"
+      class="form-control"
+      [value]="actividad?.end_time || ''"
+      disabled
+    />
+  </div>
+  <div class="text-end">
+    <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+  </div>
+</form>
