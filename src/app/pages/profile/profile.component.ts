@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -11,9 +11,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { User, UserUpdate } from '../../interfaces/iuser.interface';
+import { User } from '../../interfaces/iuser.interface';
 import { ToastService } from '../../services/toast.service';
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { DialogService } from '../../services/dialog.service';
@@ -21,6 +21,7 @@ import { DialogService } from '../../services/dialog.service';
 @Component({
   selector: 'app-profile',
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,

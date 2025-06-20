@@ -1,0 +1,44 @@
+  @if (loading) {
+    <app-loading [messages]="mensajesDeCarga"></app-loading>
+  } @else {
+    <div class="container py-4">
+      <h2 class="text-center mb-4 fw-semibold">Tu rutina personalizada</h2>
+  
+      <div class="d-flex flex-column gap-5">
+        @for (dia of diasGenerados; track dia) {
+          <div>
+            <h4 class="fw-semibold mb-3 pb-2 ">
+              <i class="bi bi-calendar-week me-2"></i>{{ dia }}
+            </h4>
+  
+            <div class="row g-4">
+              @for (actividad of groupedActivities[dia]; track actividad.id) {
+                <div class="col-12 col-md-6 col-lg-4">
+                  <div class="actividad-card p-4 h-100 rounded-4 shadow-sm border">
+                    <div class="d-flex align-items-start gap-3">
+                      <div class="fs-3 text-success">
+                        <i class="bi bi-lightning-charge-fill"></i>
+                      </div>
+                      <div>
+                        <h5 class="fw-semibold mb-1">{{ actividad.title }}</h5>
+                        <p class="text-muted mb-1">{{ actividad.description }}</p>
+                        <p class="mb-0 small">
+                          <strong>Hora:</strong> {{ actividad.start_time }} - {{ actividad.end_time }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+  
+      <button
+        class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color guardar-btn">
+        Guardar rutina
+       </button>
+    </div>
+  }
+  

@@ -95,6 +95,13 @@ main {
   cursor: not-allowed;
 }
 
+.btn-custom:disabled:hover {
+  background-color: rgba(200, 200, 200, 0.5);
+  color: rgba(255, 255, 255, 0.7);
+  box-shadow: none;
+  transform: none;
+}
+
 .btn-primary-color {
   background-color: var(--primary-color);
 }
