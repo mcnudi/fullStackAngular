@@ -25,11 +25,14 @@ export class ApplayoutComponent {
   authService = inject(AuthService);
   userService = inject(UserService);
   user: User | null = null;
+  profileImage: string =
+    'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
 
   async ngOnInit() {
     const username = this.authService.getUserName();
     if (username) {
       this.user = await lastValueFrom(this.userService.getByUsername(username));
+      this.profileImage = `data:image/png;base64,${this.user.image}`;
     }
   }
 }

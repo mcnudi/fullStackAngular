@@ -89,7 +89,7 @@
   border-radius: 12px;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
   max-width: 900px; /* antes era 600px */
-  width: 95%;        /* ocupa más espacio en pantalla */
+  width: 95%;        
   max-height: 90vh;
   overflow-y: auto;
 }
