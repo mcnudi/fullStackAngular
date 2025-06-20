@@ -48,9 +48,10 @@ export class UpdateImageComponent {
         .updateImage(username, this.selectedImage)
         .toPromise();
       this.toastService.showSuccess('Imagen actualizada correctamente');
-      this.router.navigate(['app/profile']);
+      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        this.router.navigate(['app/profile']);
+      });
 
-      console.log('Imagen actualizada:', this.selectedImage.name);
     }
   }
 }

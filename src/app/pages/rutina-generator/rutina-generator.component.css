@@ -1,0 +1,35 @@
+.guardar-btn {
+    position: fixed;
+    top: 12rem;
+    right: 15rem;
+    z-index: 1050;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+  }
+  
+  .guardar-btn:hover {
+    transform: scale(1.05);
+  }
+  
+  .actividad-card {
+    background-color: #f9fafb;
+    animation: fadeSlideIn 2s ease forwards;
+
+  }
+  
+  
+  h4 {
+    border-bottom: 1px solid #9c9c9c;
+    padding-bottom: 0.5rem;
+  }
+
+  @keyframes fadeSlideIn {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
