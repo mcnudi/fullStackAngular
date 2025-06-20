@@ -19,11 +19,16 @@
     </div>
 
     <!-- Botones -->
-    <div class="d-flex gap-2">
-
-        <button type="submit" class="btn btn-primary">
+    <div class="d-flex justify-content-center gap-2 mt-3">
+        <button type="submit"
+            class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">
+            <mat-icon>save</mat-icon>
             {{ modo === 'actualizar' ? 'Actualizar' : 'Añadir' }}
         </button>
-        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="button"
+            class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-error"
+            (click)="closeModal()">
+            <mat-icon>cancel</mat-icon>Cancelar
+        </button>
     </div>
 </form>

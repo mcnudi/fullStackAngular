@@ -1,29 +1,33 @@
-import { Component, Inject, Input, OnInit, inject } from '@angular/core';
+import { Component, Inject, OnInit, inject } from '@angular/core';
 
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog'
 import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Interests } from '../../../../interfaces/ipanel.interface';
 import { ToastService } from '../../../../services/toast.service';
+import { MatIcon } from '@angular/material/icon';
+import { PanelService } from '../../../../services/panel.service';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-formulario-intereses',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule],
+  imports: [ReactiveFormsModule, FormsModule, MatIcon],
   templateUrl: './formulario-intereses.component.html',
   styleUrls: ['./formulario-intereses.component.css'],
 })
 export class FormularioInteresesComponent implements OnInit {
+  panelService = inject(PanelService);
+  authService = inject(AuthService);
+  toastService = inject(ToastService);
+
   modo: 'añadir' | 'actualizar';
   interesActual: Interests;
 
   // Recepción de datos del Interés actual desde el componente Objetivos del Panel
   constructor(@Inject(DIALOG_DATA) public data: { modo: 'añadir' | 'actualizar', elemento: Interests }) {
-    console.log(data.elemento!);
     this.modo = data?.modo || 'añadir';
     this.interesActual = data?.elemento
   };
-  
-  toastService = inject(ToastService);
   
   interestsForm = new FormGroup({
     interest_name: new FormControl('', Validators.required),
@@ -46,10 +50,29 @@ export class FormularioInteresesComponent implements OnInit {
   }
 
   async saveInterests() {
-    alert('Se va a guardar el interés...')
     if (this.interestsForm.invalid) {
       this.toastService.showError('Por favor, completa todos los campos.');
       return;
-    }    
+    }
+    const { interest_name, color } = this.interestsForm.value;
+
+      // Si es añadir...
+    this.addInterest({ interest_name, color } as Interests);
+      // Si es actualizar...
+    
+  }
+
+  addInterest(elemento: Interests) {
+    this.panelService.addInterests(this.authService.getDecodedToken().id, elemento.interest_name!, elemento.color!).subscribe( {
+      next: (data: Interests) => {
+
+        //this.dialogRef?.close(data); // devuelve el interés insertado
+        this.toastService.showSuccess('Interés añadido correctamente.');
+        this.dialogRef?.close(this.interestsForm.value);
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   }
 }
