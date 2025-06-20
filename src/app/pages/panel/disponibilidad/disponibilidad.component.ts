@@ -16,36 +16,45 @@ import { MatIcon } from '@angular/material/icon';
   styleUrls: ['./disponibilidad.component.css'],
 })
 export class DisponibilidadComponent implements OnInit {
-  panelService = inject(PanelService)
-  authService = inject(AuthService)
+  panelService = inject(PanelService);
+  authService = inject(AuthService);
   dialog = inject(Dialog)
   changeDetectorRef = inject(ChangeDetectorRef)
 
   /*
     arrayDisponibilidad = [
-      { id: 1, dia: '0', nombre_dia: 'LUNES', hora_inicio: '10:00', hora_fin: '12:00'},
-      { id: 2, dia: '0', nombre_dia: 'LUNES',  hora_inicio: '17:00', hora_fin: '18:30'},
-      { id: 3, dia: '2', nombre_dia: 'MIÉRCOLES',  hora_inicio: '10:00', hora_fin: '12:00'},
-      { id: 4, dia: '2', nombre_dia: 'MIÉRCOLES',  hora_inicio: '17:00', hora_fin: '18:30'},
-      { id: 5, dia: '4', nombre_dia: 'VIERNES',  hora_inicio: '10:00', hora_fin: '12:00'}
+      { id: 1, dia: '1', hora_inicio: '10:00', hora_fin: '12:00'},  --> nombre_dia: 'LUNES'
+      { id: 2, dia: '1', hora_inicio: '17:00', hora_fin: '18:30'},  --> nombre_dia: 'LUNES'
+      { id: 3, dia: '3', hora_inicio: '10:00', hora_fin: '12:00'},  --> nombre_dia: 'MIÉRCOLES'
+      { id: 4, dia: '3', hora_inicio: '17:00', hora_fin: '18:30'},  --> nombre_dia: 'MIÉRCOLES'
+      { id: 5, dia: '5', hora_inicio: '10:00', hora_fin: '12:00'}   --> nombre_dia: 'VIERNES'
     ];
   */
 
-  diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-  uniqueWeekdaysName: string[] = [];
+  diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']; // Para pintar listado disponibilidad
 
   arrayDisponibilidad: Availability [] = [];
 
   openModal (modo: 'añadir' | 'actualizar', elemento: Availability) {
-    this.dialog.open(FormularioDisponibilidadComponent, { data: { modo, elemento }, disableClose: true });
+    const dialogRef = this.dialog.open<Availability>(FormularioDisponibilidadComponent, { data: { modo, elemento }, disableClose: true });
+  
+    dialogRef.closed.subscribe((nuevaDisponibilidad: Availability | undefined) => {
+      if (nuevaDisponibilidad) {
+        // Recargo por completo la lista de disponibilidades porque backend solo devuelve el id del elemento creado, no el objeto Availability completo
+        this.panelService.getAvailability(this.authService.getDecodedToken().id).subscribe({
+          next: (data) => {
+            this.arrayDisponibilidad = data;
+            this.changeDetectorRef.markForCheck();
+          }
+        });
+      }
+    });
   }
 
   ngOnInit() {
     this.panelService.getAvailability(this.authService.getDecodedToken().id).subscribe({
       next: (data: Availability[]) => {
         this.arrayDisponibilidad = data;
-        //const uniqueWeekdays = [...new Set(this.arrayDisponibilidad.map(item => item.weekday))];
-        //this.uniqueWeekdaysName = uniqueWeekdays.map(numero => this.diasSemana[Number(numero)]);
       },
       error: (error) => {
         console.log(error);

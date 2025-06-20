@@ -61,5 +61,7 @@ export class RutinasListComponent implements OnInit {
   irAlta() {
     this.router.navigate(['/app/anadirRutina/usuario/']);
   }
-  
+  irDetalle(){
+    this.router.navigate(['/app/detalles']);
+  }
 }

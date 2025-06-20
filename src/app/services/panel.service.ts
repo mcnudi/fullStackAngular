@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Availability, Goals, Interests } from '../interfaces/ipanel.interface';
 import { AuthService } from './auth.service';
 
@@ -9,9 +9,9 @@ import { AuthService } from './auth.service';
 })
 
 export class PanelService {
-
   authService = inject(AuthService);
   httpClient = inject(HttpClient);
+  
   private API_URL: string = 'http://localhost:3000/api';
 
   // Intereses
@@ -25,6 +25,15 @@ export class PanelService {
       );
   }
 
+  addInterests(idUsuario: number, interestName: string, color: string) : Observable<Interests> {
+    return this.httpClient.post<Interests>(
+      `${this.API_URL}/interests/${idUsuario}/add`,
+      {
+        interestName: interestName,
+        color: color
+      }
+      );
+  }
 
   // Objetivos
   getGoals(idUsuario: number) : Observable<Goals[]> {
@@ -32,11 +41,20 @@ export class PanelService {
   }
 
   removeGoals(idUsuario: number, goalId: number) : Observable<Interests> {
-    console.log(`${this.API_URL}/goals/${idUsuario}/delete/${goalId}`)
     return this.httpClient.delete<Interests>(
       `${this.API_URL}/goals/${idUsuario}/delete/${goalId}`
       );
   }
+  addGoals(idUsuario: number, interestName: string, color: string) : Observable<Interests> {
+    return this.httpClient.post<Interests>(
+      `${this.API_URL}/interests/${idUsuario}/add`,
+      {
+        interestName: interestName,
+        color: color
+      }
+      );
+  }
+
 
 
   // Disponibilidad
@@ -50,8 +68,18 @@ export class PanelService {
       );
   }
 
+  addAvailability(idUsuario: number, dia_semana: number, hora_inicio: string, hora_fin: string) : Observable<Availability> {
+    return this.httpClient.post<Availability>(
+      `${this.API_URL}/availability/${idUsuario}/add`,
+      {
+        weekday: Number(dia_semana),
+        start_time: hora_inicio + ":00",
+        end_time: hora_fin + ":00"
+      }
+      );
+  }
+
   updateAvailability(idUsuario: number, idAvailability: number, availabilityData: Partial<Availability>): Observable<Availability> {
-    debugger;
     return this.httpClient.patch<Availability>(
       `${this.API_URL}/availability/${idUsuario}/${idAvailability}/update`,
       availabilityData

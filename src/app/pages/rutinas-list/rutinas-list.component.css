@@ -13,6 +13,8 @@ body {
 
 .header {
   margin-bottom: 24px;
+  position: relative;
+
 }
 
 .header h1 {
@@ -104,4 +106,12 @@ body {
 
 .rutina-footer span {
   margin-left: 4px;
+}
+
+.botones-flotantes {
+  position: absolute;
+  top: 0;
+  right: -300px;
+  display: flex;
+  gap: 10px;
 }

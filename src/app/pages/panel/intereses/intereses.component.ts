@@ -16,10 +16,10 @@ import { MatIcon } from '@angular/material/icon';
   styleUrls: ['./intereses.component.css'],
 })
 export class InteresesComponent implements OnInit {
-  panelService = inject(PanelService)
-  authService = inject(AuthService)
-  dialog = inject(Dialog)
-  changeDetectorRef = inject(ChangeDetectorRef)
+  panelService = inject(PanelService);
+  authService = inject(AuthService);
+  dialog = inject(Dialog);
+  changeDetectorRef = inject(ChangeDetectorRef);
   
   /*
     arrayIntereses = [
@@ -32,8 +32,16 @@ export class InteresesComponent implements OnInit {
   arrayIntereses: Interests [] = [];
 
   openModal (modo: 'añadir' | 'actualizar', elemento: Interests) {
-    this.dialog.open(FormularioInteresesComponent, { data: { modo, elemento }, disableClose: true });
+    const dialogRef = this.dialog.open<Interests>(FormularioInteresesComponent, { data: { modo, elemento }, disableClose: true });
+
+    dialogRef.closed.subscribe((nuevoInteres: Interests | undefined) => {
+      if (nuevoInteres) {
+        this.arrayIntereses.push(nuevoInteres); // o llama a loadInterests()
+        this.changeDetectorRef.markForCheck();
+      }
+    });
   }
+
 
   ngOnInit() {
     this.panelService.getInterests(this.authService.getDecodedToken().id).subscribe( {
