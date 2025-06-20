@@ -76,4 +76,8 @@ export class DisponibilidadComponent implements OnInit {
       }
     });
   }
+
+  hasAvailability(weekday: number): boolean {
+    return this.arrayDisponibilidad.some(item => item.weekday === weekday);
+  }
 }

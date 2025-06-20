@@ -4,6 +4,7 @@ ul {
 
 .btn-mas {
     height: 30px !important;
+    border-radius: 5px 5px 0 0 !important;
 }
 
 .btn-crud {
@@ -15,6 +16,8 @@ ul {
 
 .header-color-mat {
     background-color: lightgray;
+    border-radius: 0%;
+
 }
 
 .panel-content {
@@ -28,7 +31,6 @@ ul {
     background-color: rgba(55, 151, 52, 0.2);
     padding: 7px;
     border: 1px solid lightgray;
-    border-radius: 7px;
 }
 
 .elemento-disponibilidad {

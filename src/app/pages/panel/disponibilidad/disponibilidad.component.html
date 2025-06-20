@@ -5,9 +5,10 @@
             Disponibilidad
         </h3>
     </mat-expansion-panel-header>
-    <!-- $index es 0-based y se ha acordado que sea 1-based (1-lunes, 7-domingo). Trataremos (i + 1) para cumplirlo-->
-    @for (diaConDisponibilidad of diasSemana; let i = $index; track diaConDisponibilidad) {
-        <mat-expansion-panel [expanded]='true' id=diaConDisponibilidad.value>
+
+    <div class="d-flex flex-column mt-2" style="gap: 1rem;">
+        @for (diaConDisponibilidad of diasSemana; let i = $index; track diaConDisponibilidad) {
+        <mat-expansion-panel [expanded]='hasAvailability(i)' id=diaConDisponibilidad.value>
             <mat-expansion-panel-header class="header-color-mat cabecera-interior">
                 <span class="mb-0">
                     {{ diaConDisponibilidad}}                  
@@ -32,5 +33,8 @@
                 }
             </div>
         </mat-expansion-panel>
-    }
+    }  
+    </div>
+
+
 </mat-expansion-panel>
