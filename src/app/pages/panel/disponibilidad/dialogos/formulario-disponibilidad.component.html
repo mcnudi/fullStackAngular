@@ -6,27 +6,41 @@
 
     <!-- Grupo de día -->
     <div class="mb-3">
-        <label for="dia_semana" class="form-label">Día de la semana:</label>
-        <input type="text" id="dia_semana" class="form-control" formControlName="dia_semana">
+        <label for="weekday" class="form-label">Día de la semana:</label>
+        <select class="form-control" id="weekday" name="weekday" class="form-control"  formControlName="weekday">
+            <option value="1">Lunes</option>
+            <option value="2">Martes</option>
+            <option value="3">Miércoles</option>
+            <option value="4">Jueves</option>
+            <option value="5">Viernes</option>
+            <option value="6">Sábado</option>
+            <option value="7">Domingo</option>
+        </select>
     </div>
 
-    <!-- Grupo de hora inicio -->
-    <div class="mb-3">
-        <label for="hora_inicio" class="form-label">Hora de inicio:</label>
-        <input type="time" step="3600" id="hora_inicio" class="form-control" formControlName="hora_inicio">
-    </div>
-
-    <!-- Grupo de hora fin -->
-    <div class="mb-3">
-        <label for="hora_fin" class="form-label">Hora de fin:</label>
-        <input type="time" step="3600" id="hora_fin" class="form-control" formControlName="hora_fin">
+    <!-- Grupo de horas -->
+    <div class="row">
+        <div class="col-md-6">
+            <label for="start_time" class="form-label">Hora de inicio:</label>
+            <input type="time" step="3600" id="start_time" class="form-control" formControlName="start_time" value="00:00">
+        </div>
+        <div class="col-md-6">
+            <label for="end_time" class="form-label">Hora de fin:</label>
+            <input type="time" step="3600" id="end_time" class="form-control" formControlName="end_time">
+        </div>
     </div>
 
     <!-- Botones -->
-    <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-primary">
+    <div class="d-flex justify-content-center gap-2 mt-3">
+        <button type="submit"
+            class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">
+            <mat-icon>save</mat-icon>
             {{ modo === 'actualizar' ? 'Actualizar' : 'Añadir' }}
         </button>
-        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="button"
+            class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-error"
+            (click)="closeModal()">
+            <mat-icon>cancel</mat-icon>Cancelar
+        </button>
     </div>
 </form>

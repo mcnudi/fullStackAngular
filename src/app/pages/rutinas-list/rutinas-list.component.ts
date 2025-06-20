@@ -50,4 +50,7 @@ router=inject(Router);
   irAlta(){
     this.router.navigate(['/app/anadirRutina/usuario/']);
   }
+  irDetalle(){
+    this.router.navigate(['/app/detalles']);
+  }
 }

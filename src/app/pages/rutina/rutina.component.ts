@@ -27,6 +27,8 @@ export class RutinaComponent {
   valor: Irutina | null = null;
   title:string = "";
   url:string = '';
+  rutina:number=10;
+  tablarutina: Irutina[] = [];
 
   constructor(){
     
@@ -51,15 +53,15 @@ export class RutinaComponent {
       this.title = "Modificar Tarea";
        //const param = this.routerL.snapshot.paramMap.get('tarea');
        //this.rutina = param ? parseInt(param,10):0;
-      //this.serviceRutina.obtenerVersionRutina(this.rutina).subscribe({
-     // next: (res) => {
-        //console.log("Respuesta del backend:", res);
-        //this.tablarutina = res;
-        //this.valor = this.tablarutina[0];
-         //this.initForm();
-      //},
-      //error: (err) => console.error("Error al guardar rutina:", err)
-    //});
+      this.serviceRutina.obtenerRutinas(this.rutina).subscribe({
+      next: (res) => {
+        console.log("Respuesta del backend:", res);
+        this.tablarutina = res;
+        this.valor = this.tablarutina[0];
+         this.initForm();
+      },
+      error: (err) => console.error("Error al guardar rutina:", err)
+    });
     
     }
     else if (this.url.startsWith('/app/anadirRutina/usuario')){
@@ -68,7 +70,7 @@ export class RutinaComponent {
       
     }
 
-   this.initForm();
+   //this.initForm();
   }
 
   async salvar(){
@@ -77,6 +79,7 @@ export class RutinaComponent {
     
     if (this.irutina){
       this.irutina.usuario=this.authService.getDecodedToken().id;
+      this.irutina.id = 10;
       //const userId=this.authService.getDecodedToken().id;
       //this.irutina.usuario=this.username;
       if (this.irutina.defecto){

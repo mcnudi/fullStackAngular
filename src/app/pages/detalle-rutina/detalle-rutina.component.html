@@ -1,0 +1,39 @@
+<article class="col-12 col-sm-4 col-md-4 col-lg-4 p-1 card">
+    <div class="h-100 d-flex flex-column justify-content-between">
+        <p>Nombre de la rutina</p>
+        <p>Descripción de la rutina</p>
+  </div>
+  <div class="d-flex gap-2">
+  <button
+    class="btn-custom btn-primary-color"
+    (click)="volver()"
+  >
+    Volver
+  </button>
+
+  <button
+    class="btn-custom btn-primary-color"
+    type="submit"
+    (click)="crearTarea()"
+  >
+    Crear Tarea
+  </button>
+
+  <button
+    class="btn-custom btn-primary-color"
+    (click)="actualizarTarea()"
+  >
+    Actualizar
+  </button>
+</div>
+  </article>
+<!--<section class="card shadow flex-fill bd-hight m-3 p-3">
+  <h3 class="card-title text-center mb-4">Listado de Usuarios</h3>
+<div class="row gap-1 justify-content-center m-1">
+  @for(usuario of arrayUsuarios;track usuario._id){
+  <article class="col-12 col-sm-4 col-md-4 col-lg-4 p-1">
+    <div class="h-100 d-flex flex-column justify-content-between">
+    <app-usuario [usuario]="usuario" (delete)="delete($event)"></app-usuario>
+  </div>
+  </article>
+}-->

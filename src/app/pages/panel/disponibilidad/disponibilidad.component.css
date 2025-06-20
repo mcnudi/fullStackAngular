@@ -23,7 +23,7 @@ ul {
     gap: 5px;
 }
 
-.elemento_texto_lista {
+.elemento-texto-lista {
     flex-grow: 1;
     background-color: rgba(55, 151, 52, 0.2);
     padding: 7px;
@@ -39,5 +39,5 @@ ul {
 }
 
 .cabecera-interior{
-    height: 30px;
+    height: 30px !important;
 }

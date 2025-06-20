@@ -16,12 +16,16 @@ import { User } from '../../interfaces/iuser.interface';
 import { Goals, Interests } from '../../interfaces/ipanel.interface';
 import { Activity } from '../../interfaces/iactivity.interface';
 import { FormsModule } from '@angular/forms';
-import { forkJoin } from 'rxjs'; // <-- Importar forkJoin
+import { forkJoin } from 'rxjs';
+import { FormActivityComponent } from "./form-activity-add/form-activity.component";
+import { FormInfoActivityComponent } from "./form-info-activity/form-info-activity.component"; // <-- Importar forkJoin
+import { RutinaService } from '../../services/rutina.service';
+import { Irutina } from '../../interfaces/irutina';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [FullCalendarModule, NgxChartsModule, FormsModule],
+  imports: [FullCalendarModule, NgxChartsModule, FormsModule, FormActivityComponent, FormInfoActivityComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
@@ -30,7 +34,8 @@ export class DashboardComponent implements OnInit {
     private calendarEventsService: CalendarEventsService,
     private authService: AuthService,
     private userService: UserService,
-    private panelService: PanelService
+    private panelService: PanelService,
+    private ruinaService: RutinaService
   ) {}
 
   username: string = '';
@@ -38,9 +43,17 @@ export class DashboardComponent implements OnInit {
   intereses: Interests[] = [];
   availability: Availability[] = [];
   actividades: Activity[] = [];
+  rutinas: any[] = [];
   userinfo: User | null = null;
-  actividadesSemanaActual: Activity[] = [];
-  defaultUserImageUrl: string = 'public\image\default-profile.png';
+  profileImage: string =
+    'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
+  mostrarFormularioActividad = false;
+
+  rutinasConActividades: any[] = [];
+
+  actividadSeleccionada: any = null;
+  rutinaSeleccionada: any = null;
+  mostrarVistaActividad = false;
 
   filtroTipo: string = ''; // Este array siempre debe contener TODOS los eventos cargados inicialmente
   eventosOriginales: EventInput[] = [];
@@ -117,40 +130,40 @@ export class DashboardComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-
-    console.log('DashboardComponent initialized');
     this.username = this.authService.getUserName();
 
     this.userService.getByUsername(this.username).subscribe({
       next: (user: User) => {
         const userId = (user as any).id;
-    this.userinfo = user;
+        const token = (user as any ).token;
 
-        this.panelService.getInterests(userId).subscribe({
-          next: (data: Interests[]) => { console.log('Intereses recibidos:', data); this.intereses = data || []; },
-          error: (error) => { console.log('Error al cargar intereses:', error); }
-        });
+        if (user.image) {
+        this.profileImage = `data:image/png;base64,${user.image}`;
+      }
+
+           this.panelService.getInterests(userId).subscribe({
+           next: (data: Interests[]) => { console.log('Intereses recibidos:', data); this.intereses = data || []; },
+          error: (error) => { console.log('Error al cargar intereses:', error); }
+           });
+
           this.calendarEventsService.getActivitiesByUserId(userId).subscribe({
-          next: (data: Activity[]) => { console.log('Actividades recibidas:', data); this.actividades=data || [];
-                                        this.actividadesSemanaActual = this.getActividadesSemanaActual(); },
-         
-        });
+          next: (data: Activity[]) => { console.log('Actividades recibidas:', data); this.actividades=data || [];}});
 
-        this.panelService.getAvailability(userId).subscribe({
-          next: (data: Availability[]) => { console.log('Disponibilidad recibidas:', data); this.availability = data || []; },
-          error: (error) => { console.log('Error al cargar actividades:', error); }
-        });
+          this.panelService.getAvailability(userId).subscribe({
+          next: (data: Availability[]) => { console.log('Disponibilidad recibidas:', data); this.availability = data || []; },
+          error: (error) => { console.log('Error al cargar actividades:', error); }
+          });
 
-        this.panelService.getInterests(userId).subscribe({
-          next: (data: Interests[]) => {
-            this.intereses = data || [];
-          },
-          error: (error) => {
-            console.log('Error al cargar intereses:', error);
-          },
-        }); // Usar forkJoin para esperar que ambas llamadas de eventos se completen
+          this.panelService.getInterests(userId).subscribe({
+          next: (data: Interests[]) => { this.intereses = data || [];},
+          error: (error) => {console.log('Error al cargar intereses:', error);}, });
 
-        this.initializeCalendar(userId); // Cargar información del usuario
+          this.ruinaService.getRutinasByUser(userId,token).subscribe({
+          next: (data: any[]) => { console.log('Rutinas recibidos:', data); this.rutinas = data || []; },
+          error: (error) => { console.log('Error al cargar intereses:', error); }
+          });
+
+          this.initializeCalendar(userId); // Cargar información del usuario
 
       },
       error: (error) => {
@@ -159,22 +172,26 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-getActividadesSemanaActual(): Activity[] {
-  if (!Array.isArray(this.actividades)) {
-    return [];
+
+
+abrirFormularioActividad() {
+    this.mostrarFormularioActividad = true;
   }
 
-  const diasSemana = [1, 2, 3, 4, 5, 6, 0];
-  return this.actividades.filter(act =>
-    diasSemana.includes(Number(act.day_of_week))
-  );
+  cerrarFormularioActividad() {
+    this.mostrarFormularioActividad = false;
+  }
+
+  verActividad(actividad: any) {
+  this.actividadSeleccionada = actividad;
+  this.mostrarVistaActividad = true;
+
 }
 
-getImageUser(user: User): string {
-  return user.image && user.image.trim() !== '' ? user.image : this.defaultUserImageUrl;
+cerrarVistaActividad() {
+  this.mostrarVistaActividad = false;
+  this.actividadSeleccionada = null;
 }
-
-
 
   saveEvent(
     info: EventDropArg,
