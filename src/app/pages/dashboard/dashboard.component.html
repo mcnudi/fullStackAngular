@@ -12,14 +12,14 @@
             <!-- Imagen y nombre juntos arriba -->
             <div>
               <!-- Imagen de usuario -->
-                  <div class="mb-2">
-                    <img
-                      [src]="profileImage"
-                      alt="Usuario"
-                      class="img-fluid rounded-circle"
-                      style="width: 120px; height: 120px; object-fit: cover"
-                    />
-                  </div>
+              <div class="mb-2">
+                <img
+                  [src]="profileImage"
+                  alt="Usuario"
+                  class="img-fluid rounded-circle"
+                  style="width: 120px; height: 120px; object-fit: cover"
+                />
+              </div>
               <!-- Título y subtítulo -->
               <div class="mb-1">
                 <div class="fw-bold" style="font-size: 1.1rem">
@@ -83,63 +83,62 @@
         </div>
 
         <!-- Columna derecha -->
-                <div class="col-9">
-                  <div
-                    class="bg-white rounded shadow-sm p-4 actividades-wrapper h-100 d-flex flex-column"
-                  >
-                    <h2 class="fw-bold mb-2">ACTIVIDADES DE LA SEMANA</h2>
-                    <hr class="mb-3" />
-                    <div
-                      class="objetivos-list rounded p-3 flex-grow-1"
-                      style="overflow-y: auto"
+        <div class="col-9">
+          <div
+            class="bg-white rounded shadow-sm p-4 actividades-wrapper h-100 d-flex flex-column"
+          >
+            <h2 class="fw-bold mb-2">ACTIVIDADES DE LA SEMANA</h2>
+            <hr class="mb-3" />
+            <div
+              class="objetivos-list rounded p-3 flex-grow-1"
+              style="overflow-y: auto"
+            >
+              <ul class="list-unstyled mb-0">
+                @if(actividades.length>0){ 
+                  @for (actividad of actividades; track $index) {
+                    <li
+                      class="actividad-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-white shadow-sm"
                     >
-                      <ul class="list-unstyled mb-0">
-                        @if(actividades.length>0){
-                          @for (actividad of actividades; track $index) {
-                          <li
-                            class="actividad-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-white shadow-sm"
-                          >
-                            <div class="actividad-info text-truncate">
-                              <strong class="actividad-titulo d-block">{{
-                                actividad.title
-                              }}</strong>
-                              <small class="actividad-horario text-muted"
-                                >{{ actividad.start_time }} -
-                                {{ actividad.end_time }}</small
-                              >
-                            </div>
-                            <button
-                              class="btn btn-sm btn-custom btn-actividad px-4"
-                              (click)="verActividad(actividad)"
-                            >
-                              Ver
-                            </button>
-
-                          </li>
-                          }
-                        } @else {
-                          <div class="sin-actividades-container text-center">
-                            <img
-                              src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeXA5c25iMmlndWk2MHp5ZXZ2bjd0aXp4Yzdiemg1dnVocGh1MTN6ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jls5k3a7L1N0XRM9d0/giphy.gif"
-                              alt="Sin actividades"
-                              style="max-width: 100%; height: auto;"
-                            />
-                            <h3 class="mt-3">Ups... no tienes actividades aún</h3>
-                            <p>¡Empieza creando tus primeras tareas y rutinas!</p>
-                          </div>
-                        }
-                      </ul>
-                    </div>
-                              @if (!mostrarFormularioActividad) {
-                                <button
-                                  (click)="abrirFormularioActividad()"
-                                  class="btn-info mt-2 btn-primary-color btn-custom mb-3 mx-auto centered-button"
-                                >
-                                  Agrega Actividad
-                                </button>
-                                                              }
-                  </div>
+                      <div class="actividad-info text-truncate">
+                        <strong class="actividad-titulo d-block">{{
+                          actividad.title
+                        }}</strong>
+                        <small class="actividad-horario text-muted"
+                          >{{ actividad.start_time }} -
+                          {{ actividad.end_time }}</small
+                        >
+                      </div>
+                      <button
+                        class="btn btn-sm btn-custom btn-actividad px-4"
+                        (click)="verActividad(actividad)"
+                      >
+                        Ver
+                      </button>
+                    </li>
+                  } 
+                } @else {
+                <div class="sin-actividades-container text-center">
+                  <img
+                    src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeXA5c25iMmlndWk2MHp5ZXZ2bjd0aXp4Yzdiemg1dnVocGh1MTN6ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jls5k3a7L1N0XRM9d0/giphy.gif"
+                    alt="Sin actividades"
+                    style="max-width: 100%; height: auto"
+                  />
+                  <h3 class="mt-3">Ups... no tienes actividades aún</h3>
+                  <p>¡Empieza creando tus primeras tareas y rutinas!</p>
                 </div>
+                }
+              </ul>
+            </div>
+            @if (!mostrarFormularioActividad) {
+            <button
+              (click)="abrirFormularioActividad()"
+              class="btn-info mt-2 btn-primary-color btn-custom mb-3 mx-auto centered-button"
+            >
+              Agrega Actividad
+            </button>
+            }
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -152,6 +151,17 @@
         style="background: #f6faf4"
       >
         <h6 class="fw-bold mb-3">Filtros</h6>
+        <div class="mb-2 w-100">
+          <label class="form-label">Rutina</label>
+          
+          @if (rutinas) { 
+            <select [(ngModel)]="rutinaSeleccionada" class="form-select">
+              @for (rutina of rutinas; track $index) {
+                <option [value]="rutina.id">{{ rutina.name }}</option>
+              }             
+            </select>
+          }
+        </div>
         <div class="mb-2 w-100">
           <label class="form-label">Tipo de evento</label>
           <select class="form-select" [(ngModel)]="filtroTipo">
@@ -192,22 +202,21 @@
   </div>
 </div>
 
-
 @if (mostrarFormularioActividad) {
-  <div class="modal-overlay" (click)="cerrarFormularioActividad()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <app-form-activity (cerrar)="cerrarFormularioActividad()"></app-form-activity>
-    </div>
+<div class="modal-overlay" (click)="cerrarFormularioActividad()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <app-form-activity
+      (cerrar)="cerrarFormularioActividad()"
+    ></app-form-activity>
   </div>
-}
-
-@if (mostrarVistaActividad) {
-  <div class="modal-overlay" (click)="cerrarVistaActividad()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <app-form-info-activity
-        [actividad]="actividadSeleccionada"
-        (cerrar)="cerrarVistaActividad()"
-      ></app-form-info-activity>
-    </div>
+</div>
+} @if (mostrarVistaActividad) {
+<div class="modal-overlay" (click)="cerrarVistaActividad()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <app-form-info-activity
+      [actividad]="actividadSeleccionada"
+      (cerrar)="cerrarVistaActividad()"
+    ></app-form-info-activity>
   </div>
+</div>
 }

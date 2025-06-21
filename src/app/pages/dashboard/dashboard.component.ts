@@ -17,19 +17,25 @@ import { Goals, Interests } from '../../interfaces/ipanel.interface';
 import { Activity } from '../../interfaces/iactivity.interface';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
-import { FormActivityComponent } from "./form-activity-add/form-activity.component";
-import { FormInfoActivityComponent } from "./form-info-activity/form-info-activity.component"; // <-- Importar forkJoin
+import { FormActivityComponent } from './form-activity-add/form-activity.component';
+import { FormInfoActivityComponent } from './form-info-activity/form-info-activity.component'; // <-- Importar forkJoin
 import { RutinaService } from '../../services/rutina.service';
 import { Irutina } from '../../interfaces/irutina';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [FullCalendarModule, NgxChartsModule, FormsModule, FormActivityComponent, FormInfoActivityComponent],
+  imports: [
+    FullCalendarModule,
+    NgxChartsModule,
+    FormsModule,
+    FormActivityComponent,
+    FormInfoActivityComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
   constructor(
     private calendarEventsService: CalendarEventsService,
     private authService: AuthService,
@@ -53,13 +59,15 @@ export class DashboardComponent implements OnInit {
 
   actividadSeleccionada: any = null;
   rutinaSeleccionada: any = null;
+  rutinaSeleccionadaAnterior: any = null;
+
   mostrarVistaActividad = false;
 
   filtroTipo: string = ''; // Este array siempre debe contener TODOS los eventos cargados inicialmente
+  filtroRutina: string = ''; // Este array siempre debe contener TODAS las rutinas cargadas inicialmente
   eventosOriginales: EventInput[] = [];
 
-
-    /*--------- TS de Calendario ----------*/
+  /*--------- TS de Calendario ----------*/
 
   calendarOptions: any = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -85,7 +93,7 @@ export class DashboardComponent implements OnInit {
     eventDidMount: (info: EventMountArg) => {
       (info.el as HTMLElement).title = info.event.title;
     },
-    eventMouseEnter: function(info: EventMountArg) {
+    eventMouseEnter: function (info: EventMountArg) {
       // Elimina cualquier tooltip existente
       const oldTooltip = document.querySelector('.fc-tooltip');
       if (oldTooltip) {
@@ -135,36 +143,84 @@ export class DashboardComponent implements OnInit {
     this.userService.getByUsername(this.username).subscribe({
       next: (user: User) => {
         const userId = (user as any).id;
-        const token = (user as any ).token;
+        const token = (user as any).token;
 
         if (user.image) {
-        this.profileImage = `data:image/png;base64,${user.image}`;
-      }
+          this.profileImage = `data:image/png;base64,${user.image}`;
+        }
 
-           this.panelService.getInterests(userId).subscribe({
-           next: (data: Interests[]) => { console.log('Intereses recibidos:', data); this.intereses = data || []; },
-          error: (error) => { console.log('Error al cargar intereses:', error); }
-           });
+        this.panelService.getInterests(userId).subscribe({
+          next: (data: Interests[]) => {
+            console.log('Intereses recibidos:', data);
+            this.intereses = data || [];
+          },
+          error: (error) => {
+            console.log('Error al cargar intereses:', error);
+          },
+        });
 
-          this.calendarEventsService.getActivitiesByUserId(userId).subscribe({
-          next: (data: Activity[]) => { console.log('Actividades recibidas:', data); this.actividades=data || [];}});
+        this.ruinaService.getRutinasByUser(userId, token).subscribe({
+          next: (data: any[]) => {
+            console.log('Rutinas recibidos:', data);
+            this.rutinas = data || [];
+            for (let i = 0; i < this.rutinas.length; i++) {
+              if (this.rutinas[i].is_default == 1) {
+                this.rutinaSeleccionada = this.rutinas[i].id;
+                this.rutinaSeleccionadaAnterior = this.rutinaSeleccionada;
+              }
+            }
 
-          this.panelService.getAvailability(userId).subscribe({
-          next: (data: Availability[]) => { console.log('Disponibilidad recibidas:', data); this.availability = data || []; },
-          error: (error) => { console.log('Error al cargar actividades:', error); }
-          });
+            this.calendarEventsService
+              .getActivitiesByRoutineByDefault(userId)
+              .subscribe({
+                next: (data: any[]) => {
+                  console.log('Actividades recibidos:', data);
+                  this.actividades = data || [];
+                  this.rutinaSeleccionada;
+                },
+                error: (error) => {
+                  console.log('Error al cargar actividades:', error);
+                },
+              });
+          },
+          error: (error) => {
+            console.log('Error al cargar intereses:', error);
+          },
+        });
 
-          this.panelService.getInterests(userId).subscribe({
-          next: (data: Interests[]) => { this.intereses = data || [];},
-          error: (error) => {console.log('Error al cargar intereses:', error);}, });
+        /**/
 
-          this.ruinaService.getRutinasByUser(userId,token).subscribe({
-          next: (data: any[]) => { console.log('Rutinas recibidos:', data); this.rutinas = data || []; },
-          error: (error) => { console.log('Error al cargar intereses:', error); }
-          });
+        /**/
 
-          this.initializeCalendar(userId); // Cargar información del usuario
+        /* if(this.rutinaSeleccionada){
+                this.calendarEventsService.getActivitiesByRoutineId(this.rutinaSeleccionada).subscribe({
+                        next: (data: Activity[]) => {
+                                console.log('Actividades recibidas:', data);
+                                this.actividades = data || [];
+                        },
+                });
+        }*/
 
+        this.panelService.getAvailability(userId).subscribe({
+          next: (data: Availability[]) => {
+            console.log('Disponibilidad recibidas:', data);
+            this.availability = data || [];
+          },
+          error: (error) => {
+            console.log('Error al cargar actividades:', error);
+          },
+        });
+
+        this.panelService.getInterests(userId).subscribe({
+          next: (data: Interests[]) => {
+            this.intereses = data || [];
+          },
+          error: (error) => {
+            console.log('Error al cargar intereses:', error);
+          },
+        });
+
+        this.initializeCalendar(userId); // Cargar información del usuario
       },
       error: (error) => {
         console.log('Error al obtener usuario por nombre:', error);
@@ -172,9 +228,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-
-
-abrirFormularioActividad() {
+  abrirFormularioActividad() {
     this.mostrarFormularioActividad = true;
   }
 
@@ -183,15 +237,14 @@ abrirFormularioActividad() {
   }
 
   verActividad(actividad: any) {
-  this.actividadSeleccionada = actividad;
-  this.mostrarVistaActividad = true;
+    this.actividadSeleccionada = actividad;
+    this.mostrarVistaActividad = true;
+  }
 
-}
-
-cerrarVistaActividad() {
-  this.mostrarVistaActividad = false;
-  this.actividadSeleccionada = null;
-}
+  cerrarVistaActividad() {
+    this.mostrarVistaActividad = false;
+    this.actividadSeleccionada = null;
+  }
 
   saveEvent(
     info: EventDropArg,
@@ -275,21 +328,30 @@ cerrarVistaActividad() {
     return `${hours}:${minutes}:${seconds}`; // Formato 'HH:mm:ss'
   }
 
-  aplicarFiltros() {
-    let filtrados = [...this.eventosOriginales]; // Siempre copia desde el original
+  aplicarFiltros() {        
+        debugger
 
-    if (this.filtroTipo) {
-      filtrados = filtrados.filter((ev) =>
-        this.filtroTipo === 'disponibilidad'
-          ? ev.id?.toString().startsWith('disponibilidad-')
-          : ev.id?.toString().startsWith('actividad-')
-      );
-    } // Asigna un nuevo array al `events` de `calendarOptions` para que FullCalendar // detecte el cambio y se re-renderice.
+    // Comprobar si la rutina seleccionada ha cambiado
+    if (this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior) {
+      this.rutinaSeleccionadaAnterior = this.rutinaSeleccionada;
 
-    this.calendarOptions = {
-      ...this.calendarOptions,
-      events: filtrados,
-    };
+      // Llama al servicio para obtener las actividades de la rutina seleccionada
+      this.calendarEventsService
+        .getActivitiesByRoutineId(this.rutinaSeleccionada)
+        .subscribe({
+                next: (data: any[]) => {
+                  console.log('Actividades recibidos:', data);
+                  this.actividades = data || [];
+                  this.rutinaSeleccionada;
+                },
+                error: (error) => {
+                  console.log('Error al cargar actividades:', error);
+                },
+              });
+      return; // Opcional: si solo quieres filtrar por rutina cuando cambia
+    }
+
+    // ...resto de la lógica de filtros (tipo, día, etc.)...
   }
   limpiarFiltros() {
     this.filtroTipo = ''; // Al limpiar, simplemente restaura todos los eventos originales asignando una nueva referencia
@@ -300,48 +362,47 @@ cerrarVistaActividad() {
   }
 
   initializeCalendar(userId: number) {
-            forkJoin({
-          availability: this.panelService.getAvailability(userId),
-          activities: this.calendarEventsService.getActivitiesByUserId(userId),
-        }).subscribe({
-          next: ({ availability, activities }) => {
-            // Mapear eventos de disponibilidad
-            const availabilityEvents: EventInput[] = availability.map(
-              (avail) => ({
-                title: 'Disponible',
-                daysOfWeek: [avail.weekday],
-                startTime: avail.start_time,
-                endTime: avail.end_time,
-                display: 'block',
-                color: '#81c784',
-                id: `disponibilidad-${avail.id}`,
-              })
-            ); // Mapear eventos de actividad
+    forkJoin({
+      availability: this.panelService.getAvailability(userId),
+      activities:
+        this.calendarEventsService.getActivitiesByRoutineByDefault(userId),
+    }).subscribe({
+      next: ({ availability, activities }) => {
+        // Mapear eventos de disponibilidad
+        const availabilityEvents: EventInput[] = availability.map((avail) => ({
+          title: 'Disponible',
+          daysOfWeek: [avail.weekday],
+          startTime: avail.start_time,
+          endTime: avail.end_time,
+          display: 'block',
+          color: '#81c784',
+          id: `disponibilidad-${avail.id}`,
+        })); // Mapear eventos de actividad
 
-            const activityEvents: EventInput[] = activities.map((act) => ({
-              title: `${act.title}${
-                act.description ? ' - ' + act.description : ''
-              }`,
-              daysOfWeek: [act.day_of_week],
-              startTime: act.start_time,
-              endTime: act.end_time,
-              display: 'auto',
-              color: '#64b5f6',
-              id: `actividad-${act.id}`,
-            })); // Combinar todos los eventos
+        const activityEvents: EventInput[] = activities.map((act) => ({
+          title: `${act.title}${
+            act.description ? ' - ' + act.description : ''
+          }`,
+          daysOfWeek: [act.day_of_week],
+          startTime: act.start_time,
+          endTime: act.end_time,
+          display: 'auto',
+          color: '#64b5f6',
+          id: `actividad-${act.id}`,
+        })); // Combinar todos los eventos
 
-            const allEvents = [...availabilityEvents, ...activityEvents]; // Asignar a eventosOriginales (la fuente de verdad)
+        const allEvents = [...availabilityEvents, ...activityEvents]; // Asignar a eventosOriginales (la fuente de verdad)
 
-            this.eventosOriginales = allEvents; // Asignar al calendario
+        this.eventosOriginales = allEvents; // Asignar al calendario
 
-            this.calendarOptions = {
-              ...this.calendarOptions,
-              events: allEvents, // Inicializa el calendario con todos los eventos
-            };
-          },
-          error: (error) => {
-            console.log('Error al cargar eventos del calendario:', error);
-          },
-        });
+        this.calendarOptions = {
+          ...this.calendarOptions,
+          events: allEvents, // Inicializa el calendario con todos los eventos
+        };
+      },
+      error: (error) => {
+        console.log('Error al cargar eventos del calendario:', error);
+      },
+    });
   }
 }

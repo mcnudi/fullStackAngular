@@ -14,12 +14,28 @@ export class CalendarEventsService {
     return this.http.get<any[]>(`${this.apiUrl}?userId=${userId}`);
   }
 
-getActivitiesByUserId(userId: number): Observable<any[]> {
-  return this.http
-    .get<any[]>(`http://localhost:3000/api/activities/activitybyuser/${userId}`)
-    .pipe(
-      catchError(() => of([]))
-    );
-}
+  getActivitiesByRoutineByDefault(userId: number): Observable<any[]> {
+    return this.http
+      .get<any[]>(`http://localhost:3000/api/activities/activitiesByRoutine/isDefault/${userId}`)
+      .pipe(
+        catchError(() => of([]))
+      );
+  }
+
+  getActivitiesByUserId(userId: number): Observable<any[]> {
+    return this.http
+      .get<any[]>(`http://localhost:3000/api/activities/activitybyuser/${userId}`)
+      .pipe(
+        catchError(() => of([]))
+      );
+  }
+
+  getActivitiesByRoutineId(routineId: number): Observable<any[]> {
+    return this.http
+      .get<any[]>(`http://localhost:3000/api/activities/activitybyroutine/${routineId}`)
+      .pipe(
+        catchError(() => of([]))
+      );
+  }
 
 }
