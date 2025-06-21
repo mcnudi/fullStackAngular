@@ -339,14 +339,13 @@ export class DashboardComponent {
         .getActivitiesByRoutineId(this.rutinaSeleccionada)
         .subscribe({
                 next: (data: any[]) => {
-                  console.log('Actividades recibidos:' + this.rutinaSeleccionada, data);
+                  console.log('Actividades recibidas de la rutina :' + this.rutinaSeleccionada, data);
                   this.actividades = data || [];
                   this.rutinaSeleccionadaAnterior = this.rutinaSeleccionada;
                   
                 const disponibilidadEvents = this.calendarOptions.events.filter(
                                 (ev: EventInput) => ev.id && ev.id.toString().startsWith('disponibilidad-')
                         );
-                        console.log('Actividadesssss:', disponibilidadEvents);
                 const activityEvents: EventInput[] = this.actividades.map(act => ({
                         title: `${act.title}${act.description ? ' - ' + act.description : ''}`,
                         daysOfWeek: [act.day_of_week], // 1 (lunes) al 7 (domingo)
