@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Irutina } from '../interfaces/irutina';
+import { Irutina } from '../interfaces/irutina.interface';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -32,5 +32,9 @@ export class RutinaService {
 
   obtenerRutinas(id:number):Observable<Irutina[]>{
     return this.http.get<Irutina[]>(`${this.baseURL}/${id}`);
+  }
+
+  obtenerRutinaVersiones(id:number):Observable<Irutina[]>{
+    return this.http.get<Irutina[]>(`${this.baseURL}/version/${id}`);
   }
 }
