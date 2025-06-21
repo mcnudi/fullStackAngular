@@ -1,14 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { NgForOf, NgIf, DatePipe } from '@angular/common';
+import {  NgIf, DatePipe } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-rutinas-list',
   standalone: true,
-  imports: [NgForOf, NgIf, DatePipe, MatIcon, RouterLink],
+  imports: [NgIf, DatePipe, MatIcon, RouterLink],
   templateUrl: './rutinas-list.component.html',
   styleUrls: ['./rutinas-list.component.css'],
 })
@@ -21,7 +21,7 @@ export class RutinasListComponent implements OnInit {
   authService = inject(AuthService);
 
   ngOnInit(): void {
-    console.log('🔥 ngOnInit ejecutado'); // 👈 pon este log arriba del todo
+    console.log('🔥 ngOnInit ejecutado'); 
 
     //const userId = Number(localStorage.getItem('userId'));
     const userId = this.authService.getDecodedToken().id;
@@ -63,5 +63,8 @@ export class RutinasListComponent implements OnInit {
   }
   irDetalle(){
     this.router.navigate(['/app/detalles']);
-  }
+}
+    verDetalle(id: string) {
+  this.router.navigate(['/app/detalles']);
+}
 }

@@ -4,31 +4,44 @@
       <h1>Mis rutinas</h1>
       <p class="subtext">{{ rutinas.length }} rutinas</p>
     </div>
-  
-    <div class="d-flex flex-column gap-3 botones-flotantes">
+
+    
+    <div class="d-flex flex-column gap-3 botones-flotantes" *ngIf="rutinas.length > 0">
       <button class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color" (click)="irAlta()">Crear rutina</button>
       <button class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color" [routerLink]="['/app/rutinas/generate']">
         <mat-icon>auto_awesome</mat-icon>
-        Generar Rutina con IA</button>
-        <button class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color" (click)="irDetalle()">Detalle rutina</button>
+        Generar Rutina con IA
+      </button>
+      <button class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color" (click)="irDetalle()">Detalle rutina</button>
     </div>
   </div>
-  <div class="search-bar">
+
+  
+  <div class="search-bar" *ngIf="rutinas.length > 0">
     <input type="text" placeholder="Buscar rutinas" />
     <span class="icon">🔍</span>
   </div>
 
-  <div *ngFor="let rutina of rutinas" class="rutina-card" >
-    <div class="rutina-header">
-      <strong>{{ rutina.name }}</strong>
-      <span *ngIf="rutina.is_default" class="icon-star">⭐</span>
-    </div>
-    <p>{{ rutina.description }}</p>
-    <div class="rutina-footer">
-      <span>Última actualización: {{ rutina.created_at | date:'dd/MM/yyyy' }}</span>
-      <div>
-        <a href="#">v1</a> · <span>0 tareas</span>
+  
+  @for (rutina of rutinas; track rutina.id) {
+    <div class="rutina-card" (click)="verDetalle(rutina.id)">
+      <div class="rutina-header">
+        <strong>{{ rutina.name }}</strong>
+        <span *ngIf="rutina.is_default" class="icon-star">⭐</span>
+      </div>
+      <p>{{ rutina.description }}</p>
+      <div class="rutina-footer">
+        <span>Última actualización: {{ rutina.created_at | date:'dd/MM/yyyy' }}</span>
+        <div>
+          <a href="#">v1</a> · <span>0 tareas</span>
+        </div>
       </div>
     </div>
+  }
+
+  
+  <div class="no-rutinas text-center" *ngIf="rutinas.length === 0">
+    <h2>¡Todavía no tienes rutinas!</h2>
+    <button class="btn-custom btn-primary-color mt-3" (click)="irAlta()">Crear rutina</button>
   </div>
 </div>
