@@ -329,7 +329,6 @@ export class DashboardComponent {
   }
 
   aplicarFiltros() {        
-        debugger
 
     // Comprobar si la rutina seleccionada ha cambiado
     if (this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior) {
@@ -340,19 +339,32 @@ export class DashboardComponent {
         .getActivitiesByRoutineId(this.rutinaSeleccionada)
         .subscribe({
                 next: (data: any[]) => {
-                  console.log('Actividades recibidos:', data);
+                  console.log('Actividades recibidos:' + this.rutinaSeleccionada, data);
                   this.actividades = data || [];
-                  this.rutinaSeleccionada;
+                  this.rutinaSeleccionadaAnterior = this.rutinaSeleccionada;
+                  
+                const disponibilidadEvents = this.calendarOptions.events.filter(
+                                (ev: EventInput) => ev.id && ev.id.toString().startsWith('disponibilidad-')
+                        );
+                        console.log('Actividadesssss:', disponibilidadEvents);
+                const activityEvents: EventInput[] = this.actividades.map(act => ({
+                        title: `${act.title}${act.description ? ' - ' + act.description : ''}`,
+                        daysOfWeek: [act.day_of_week], // 1 (lunes) al 7 (domingo)
+                        startTime: act.start_time,
+                        endTime: act.end_time,
+                        display: 'auto',
+                        color: '#64b5f6',
+                        id: `activity-${act.id}`
+                        }));
+                        this.calendarOptions.events = [...disponibilidadEvents, ...activityEvents];                
                 },
                 error: (error) => {
                   console.log('Error al cargar actividades:', error);
                 },
               });
-      return; // Opcional: si solo quieres filtrar por rutina cuando cambia
     }
-
-    // ...resto de la lógica de filtros (tipo, día, etc.)...
   }
+
   limpiarFiltros() {
     this.filtroTipo = ''; // Al limpiar, simplemente restaura todos los eventos originales asignando una nueva referencia
     this.calendarOptions = {
@@ -377,8 +389,9 @@ export class DashboardComponent {
           display: 'block',
           color: '#81c784',
           id: `disponibilidad-${avail.id}`,
-        })); // Mapear eventos de actividad
-
+        })); 
+        
+        // Mapear eventos de actividad
         const activityEvents: EventInput[] = activities.map((act) => ({
           title: `${act.title}${
             act.description ? ' - ' + act.description : ''
