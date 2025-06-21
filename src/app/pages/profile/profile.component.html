@@ -119,7 +119,9 @@
 
               <tr>
                 <td class="text-start"><strong>Fecha de creación</strong></td>
-                <td class="text-start">{{ profile.created_at }}</td>
+                <td class="text-start">
+                  {{ profile.created_at | date: "d / M / y" }}
+                </td>
               </tr>
             </tbody>
           </table>

@@ -12,6 +12,7 @@ import { authGuardGuard } from './auth-guard.guard';
 import { RutinasListComponent } from './pages/rutinas-list/rutinas-list.component';
 import { RutinaComponent } from './pages/rutina/rutina.component';
 import { DetalleRutinaComponent } from './pages/detalle-rutina/detalle-rutina.component';
+import { RutinaGeneratorComponent } from './pages/rutina-generator/rutina-generator.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
@@ -54,6 +55,11 @@ export const routes: Routes = [
         title: 'Rutinator - Mi panel',
       },
       {
+        path: 'rutinas/generate',
+        component: RutinaGeneratorComponent,
+        title: 'Rutinator - Generador Rutinas IA',
+      },
+      {
         path: 'rutina',
         component: RutinasListComponent,
         title: 'Rutinator - Rutinas',
@@ -73,8 +79,8 @@ export const routes: Routes = [
         component: DetalleRutinaComponent,
         title: 'Rutinator - Rutinas',
       },
-
-      { path: 'rutinas/:usuario', component: RutinasListComponent }
+      { path: 'rutinas/:usuario', 
+        component: RutinasListComponent },
 
     ],
   },

@@ -12,8 +12,9 @@ body {
 }
 
 .header {
-  position: relative;
   margin-bottom: 24px;
+  position: relative;
+
 }
 
 .header h1 {
@@ -29,9 +30,6 @@ body {
 }
 
 .crear-rutina {
-  position: absolute;
-  right: 0;
-  top: 0;
   background-color: #ade0e2;
   border: none;
   padding: 10px 18px;
@@ -108,4 +106,12 @@ body {
 
 .rutina-footer span {
   margin-left: 4px;
+}
+
+.botones-flotantes {
+  position: absolute;
+  top: 0;
+  right: -300px;
+  display: flex;
+  gap: 10px;
 }
