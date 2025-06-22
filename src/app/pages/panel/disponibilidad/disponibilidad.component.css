@@ -16,7 +16,7 @@ ul {
 
 .header-color-mat {
     background-color: lightgray;
-    border-radius: 0%;
+    border-radius: 0;
 
 }
 
@@ -31,15 +31,21 @@ ul {
     background-color: rgba(55, 151, 52, 0.2);
     padding: 7px;
     border: 1px solid lightgray;
+    border-radius: 7px;
 }
 
 .elemento-disponibilidad {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 5px;
     flex-grow: 1;
 }
 
 .cabecera-interior{
     height: 30px !important;
+}
+
+.card-body{
+    border-radius: 0 0 5px 5px  !important;
 }

@@ -4,6 +4,7 @@ ul {
 
 .btn-mas {
     height: 30px !important;
+    border-radius: 5px 5px 0 0 !important;
 }
 
 .btn-crud {
@@ -14,6 +15,8 @@ ul {
 
 .header-color-mat {
     background-color: lightgray;
+    border-radius: 0%;
+
 }
 
 .panel-content {
@@ -30,4 +33,8 @@ ul {
     padding: 7px;
     border: 1px solid lightgray;
     border-radius: 7px;
+}
+
+.card-body{
+    border-radius: 0 0 5px 5px  !important;
 }
