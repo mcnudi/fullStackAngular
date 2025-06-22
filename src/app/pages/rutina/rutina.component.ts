@@ -87,6 +87,7 @@ export class RutinaComponent {
       this.serviceRutina.insertRutina(this.irutina).subscribe({//ver el id que devuelve
         next: (res) => {console.log("Respuesta del backend:", res),
                       this.toastService.showSuccess('Se ha dado de alta la rutina');//pòner el id
+                      this.router.navigate(['/app/rutina/']);
                       
         },
         error: (err) => {console.error("Error al guardar rutina:", err),
@@ -99,13 +100,14 @@ export class RutinaComponent {
         this.serviceRutina.modificarRutina(this.irutina).subscribe({
         next: (res) => {console.log("Respuesta del backend:", res),
                     this.toastService.showSuccess('Se ha modificado la rutina');//pòner el id
+                    this.router.navigate(['/app/detalles',rutina]);
         },
         error: (err) => {console.error("Error al modificar la rutina:", err),
                         this.toastService.showError('Error al modificar la rutina');
         }
       });
       }
-      this.router.navigate(['/app/rutina/']);
+      
       }else{
         console.error("Formulario inválido");
         this.toastService.showError('Formulario inválido');

@@ -1,9 +1,10 @@
-<article class="col-12 col-sm-4 col-md-4 col-lg-4 p-3 card m-3">
-    <div class="h-100 d-flex flex-column justify-content-between">
+<div class="d-flex justify-content-center align-items-center mt-3">
+<article class="col-12 col-sm-4 col-md-4 col-lg-4 p-3 card m-3 w-50">
+    <div class="d-flex flex-column justify-content-between m-3">
         <p><strong>{{nombre}}</strong></p>
         <p>{{descripcion}}</p>
   </div>
-  <div class="d-flex gap-2">
+  <div class="d-flex d-flex justify-content-center gap-2">
   <button class="btn-custom btn-primary-color" (click)="volver()"
   >Volver
   </button>
@@ -17,26 +18,27 @@
   </button>
 </div>
   </article>
-
-  <h3 class="card-title text-center mb-4">Últimas versiones</h3>
-<section class="p-1 card">
+</div>
+  <h3 class="card-title text-center mb-2 mt-2">Últimas versiones</h3>
+  <div class="d-flex justify-content-center align-items-center">
+<section class="p-1 card w-50  m-3">
   
-  <div class="d-flex flex-column gap-3 align-items-center">
+  <div class="d-flex flex-column gap-2 align-items-center">
     @for(rutina of tablarutina;track rutina.id){
-      <article class="w-100 p-3 border rounded bg-light">
-      
+      <article class="w-100 p-3 border rounded bg-light rutina-card">
       <div class="container">
-  <div class="row">
-    <div class="col-md-4"><strong>{{rutina.name}}</strong></div>
-    <div class="col-md-4">v{{rutina.version_number}}</div>
+    <div class="row" align-items-center>
+    <div class="col-md-4 w-75 mb-4" ><strong>{{rutina.name}}</strong></div>
+    <div class="col-md-4 w-25 color">v{{rutina.version_number}}</div>
   </div>
-  <div class="row">
-    <div class="col-md-4">{{rutina.description}}</div>
-    <div class="col-md-4">numero</div>
+  <div class="row align-items-center">
+    <div class="col-md-4 w-75">{{rutina.description}}</div>
+    <div class="col-md-4 w-25">numero</div>
   </div>
-  <div class="row">
-    <div class="col-md-4">Ùltima actualización{{rutina.created_at}}</div>
-    <div class="col-md-4"><button class="btn-custom btn-primary-color">Elegir
+  <div class="row align-items-center">
+    <div class="col-md-4 w-75 ">Ùltima actualización{{rutina.created_at | date:'dd/MM/yyyy'}}</div>
+    
+    <div class="col-md-4 w-25"><button class="btn-custom btn-primary-color">Elegir
   </button></div>
   </div>
 </div>
@@ -45,4 +47,5 @@
   </div>
   
 </section>
+</div>
 

@@ -1,11 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RutinaService } from '../../services/rutina.service';
 import { Irutina } from '../../interfaces/irutina.interface';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-detalle-rutina',
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './detalle-rutina.component.html',
   styleUrl: './detalle-rutina.component.css'
 })
@@ -18,6 +19,7 @@ export class DetalleRutinaComponent {
   nombre:string="";
   rutina:string | null ="";
   rutinaN:number=0;
+ // datePipe = new DatePipe('es-ES');
 
   async ngOnInit() {
    
