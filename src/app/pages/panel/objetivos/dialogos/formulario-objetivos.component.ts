@@ -19,6 +19,7 @@ export class FormularioObjetivosComponent implements OnInit {
   panelService = inject(PanelService);
   authService = inject(AuthService);
   toastService = inject(ToastService);
+  dialogRef = inject(DialogRef, { optional: true});
 
   modo: 'añadir' | 'actualizar';
   objetivoActual: Goals;
@@ -33,20 +34,20 @@ export class FormularioObjetivosComponent implements OnInit {
 
   goalsForm = new FormGroup({
     goals_name: new FormControl('', Validators.required),
-    interest_name: new FormControl('', Validators.required),
+    interest_id: new FormControl('', Validators.required),
     description: new FormControl('', ),
     hours_per_week: new FormControl('1', Validators.required)
   });
 
   ngOnInit() {
+    // Carga previa de array de intereses para pintarlos en el desplegable de Interés Asociado
     this.panelService.getInterests(this.authService.getDecodedToken().id).subscribe( {
       next: (data: Interests[]) => {
         this.arrayIntereses = data;
-        
         if (this.arrayIntereses.length > 0) {
-          const ultimoInteres = this.arrayIntereses[this.arrayIntereses.length - 1];
+          // Muestra como selección por defecto el primer Interés
           this.goalsForm.patchValue({
-            interest_name: ultimoInteres.interest_name
+            interest_id: String(this.arrayIntereses[0].id)
           });
         }
       },
@@ -56,16 +57,15 @@ export class FormularioObjetivosComponent implements OnInit {
     })
 
     if (this.modo === 'actualizar' && this.objetivoActual) {
+      const idInteres = 0 // del id de la lista desplegable de Intereses?
       this.goalsForm.patchValue({
         goals_name: this.objetivoActual.goals_name,
-        interest_name: '', //// cambiarlo por el valor del id de la lista desplegable
+        interest_id: String(idInteres),
         description: this.objetivoActual.description,
         hours_per_week: String(this.objetivoActual.hours_per_week)
       });
     }
   }
-
-  private dialogRef = inject(DialogRef, { optional: true});
   
   protected closeModal() {
     this.dialogRef?.close()
@@ -77,19 +77,18 @@ export class FormularioObjetivosComponent implements OnInit {
       this.toastService.showError('Por favor, completa todos los campos.');
       return;
     }
-    const { goals_name, interest_name, description, hours_per_week } = this.goalsForm.value;
 
-      // Si es añadir...
+    const { goals_name, interest_id, description, hours_per_week } = this.goalsForm.value;
+
+      // ---> Si es añadir...
     // !!! dia_semana tendrá que ser numérico !!!
-    this.addGoal({ goals_name, interest_name, description, hours_per_week } as Goals);
-      // Si es actualizar...
+    this.addGoal({ goals_name, interest_id, description, hours_per_week } as Goals);
+      // ---> Si es actualizar...
     
   }
 
   addGoal(elemento: Goals) {
-    alert('Implementando backend.... añadiríamos el objetivo')
-    /*
-    this.panelService.addGoals(this.authService.getDecodedToken().id, elemento.goals_name!, elemento.interest_id!, elemento.description!, elemento.hours_per_week!).subscribe( {
+    this.panelService.addGoals(this.authService.getDecodedToken().id, elemento.interest_id!, elemento.goals_name!, elemento.description!, elemento.hours_per_week!).subscribe( {
       next: (data: Goals) => {
         this.toastService.showSuccess('Objetivo añadida correctamente.');
         this.dialogRef?.close(data);
@@ -98,6 +97,5 @@ export class FormularioObjetivosComponent implements OnInit {
         console.log(error);
       }
     });
-    */
   }
 }
