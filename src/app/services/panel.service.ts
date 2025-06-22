@@ -47,10 +47,10 @@ export class PanelService {
   }
   addGoals(idUsuario: number, interestName: string, color: string) : Observable<Interests> {
     return this.httpClient.post<Interests>(
-      `${this.API_URL}/interests/${idUsuario}/add`,
+      `${this.API_URL}/goals/${idUsuario}/add`,
       {
-        interestName: interestName,
-        color: color
+        //interestName: interestName,
+        //color: color
       }
       );
   }
