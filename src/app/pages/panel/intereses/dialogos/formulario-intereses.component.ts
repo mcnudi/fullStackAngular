@@ -19,6 +19,7 @@ export class FormularioInteresesComponent implements OnInit {
   panelService = inject(PanelService);
   authService = inject(AuthService);
   toastService = inject(ToastService);
+  dialogRef = inject(DialogRef, { optional: true});
 
   modo: 'añadir' | 'actualizar';
   interesActual: Interests;
@@ -42,8 +43,6 @@ export class FormularioInteresesComponent implements OnInit {
       });
     }
   }
-
-  dialogRef = inject(DialogRef, { optional: true});
   
   closeModal() {
     this.dialogRef?.close()

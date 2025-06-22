@@ -12,10 +12,12 @@
 
     <!-- Grupo de interés -->
     <div class="mb-3">
-        <label for="interest_name" class="form-label">Interés asociado:</label>
-        <select class="form-control" id="interest_name" name="interest_name" class="form-control" formControlName="interest_name">
+        <label for="interest_id" class="form-label">Interés asociado:</label>
+        <select class="form-control" id="interest_id" name="interest_id" class="form-control" formControlName="interest_id">
         @for (interes of arrayIntereses; let i = $index; track interes) {
-            <option [value]="interes.id">{{ interes.interest_name }}</option>
+            <option 
+                [value]="interes.id">{{ interes.interest_name }}
+            </option>
         }
         </select>
     </div>

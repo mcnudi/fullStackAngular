@@ -70,12 +70,12 @@ export const routes: Routes = [
         title: 'Rutinator - Rutinas',
       },
       {
-        path: 'anadirRutina/tarea',
+        path: 'anadirRutina/tarea/:id',
         component: RutinaComponent,
         title: 'Rutinator - Rutinas',
       },
       {
-        path: 'detalles',
+        path: 'detalles/:id',
         component: DetalleRutinaComponent,
         title: 'Rutinator - Rutinas',
       },
