@@ -2,10 +2,11 @@ import { Component, inject, Input } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { Irutina } from '../../interfaces/irutina';
+import { Irutina } from '../../interfaces/irutina.interface';
 import { RutinaService } from '../../services/rutina.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-rutina',
@@ -19,6 +20,7 @@ export class RutinaComponent {
   router = inject(Router);
   routerL = inject(ActivatedRoute);
   authService = inject(AuthService);
+  toastService = inject(ToastService);
 
   irutina:Irutina | null=null;
   username:string='';
@@ -27,7 +29,7 @@ export class RutinaComponent {
   valor: Irutina | null = null;
   title:string = "";
   url:string = '';
-  rutina:number=10;
+  //rutina:number=0;
   tablarutina: Irutina[] = [];
 
   constructor(){
@@ -40,37 +42,30 @@ export class RutinaComponent {
   });
   }
 
-  /*rutinaForm: FormGroup = new FormGroup({
-    name: new FormControl('', [Validators.required,this.textoValidator]),
-    descripcion: new FormControl('', [Validators.required,this.textoValidator]),
-    defecto: new FormControl('false', )
-    
-  });*/
-
   async ngOnInit() {
     this.url = this.router.url;
     if (this.url.startsWith('/app/anadirRutina/tarea')){
+      const rutina = this.routerL.snapshot.paramMap.get('id');
+      const rutina1=Number(rutina);
       this.title = "Modificar Tarea";
-       //const param = this.routerL.snapshot.paramMap.get('tarea');
-       //this.rutina = param ? parseInt(param,10):0;
-      this.serviceRutina.obtenerRutinas(this.rutina).subscribe({
+      this.serviceRutina.obtenerRutinas(rutina1).subscribe({
       next: (res) => {
         console.log("Respuesta del backend:", res);
         this.tablarutina = res;
         this.valor = this.tablarutina[0];
          this.initForm();
       },
-      error: (err) => console.error("Error al guardar rutina:", err)
+      error: (err) => {
+        console.error("Error al obtener rutina:", err);
+        this.toastService.showError('Error al obtener rutina');
+      }
     });
     
     }
     else if (this.url.startsWith('/app/anadirRutina/usuario')){
       this.title = "Alta Tarea";
-      //this.username = this.routerL.snapshot.paramMap.get('usuario') || '';
       
     }
-
-   //this.initForm();
   }
 
   async salvar(){
@@ -79,32 +74,43 @@ export class RutinaComponent {
     
     if (this.irutina){
       this.irutina.usuario=this.authService.getDecodedToken().id;
-      this.irutina.id = 10;
-      //const userId=this.authService.getDecodedToken().id;
-      //this.irutina.usuario=this.username;
+      const rutina = this.routerL.snapshot.paramMap.get('id');
+
+      this.irutina.id = Number(rutina);
       if (this.irutina.defecto){
         this.irutina.defecto=true;
       }
       else{
       this.irutina.defecto=false;
       }
-      if (this.url.startsWith('/app/anadirRutina/usuario')){
-      this.serviceRutina.insertRutina(this.irutina).subscribe({
-        next: (res) => console.log("Respuesta del backend:", res),
-        error: (err) => console.error("Error al guardar rutina:", err)
+      if (this.url.startsWith('/app/anadirRutina/usuario')){//Alta
+      this.serviceRutina.insertRutina(this.irutina).subscribe({//ver el id que devuelve
+        next: (res) => {console.log("Respuesta del backend:", res),
+                      this.toastService.showSuccess('Se ha dado de alta la rutina');//pòner el id
+                      
+        },
+        error: (err) => {console.error("Error al guardar rutina:", err),
+                        this.toastService.showError('Se ha dado de alta la rutina');
+        }
+
       });
       }
-      else if (this.url.startsWith('/app/anadirRutina/tarea')){
+      else if (this.url.startsWith('/app/anadirRutina/tarea')){//Modificacion
         this.serviceRutina.modificarRutina(this.irutina).subscribe({
-        next: (res) => console.log("Respuesta del backend:", res),
-        error: (err) => console.error("Error al guardar rutina:", err)
+        next: (res) => {console.log("Respuesta del backend:", res),
+                    this.toastService.showSuccess('Se ha modificado la rutina');//pòner el id
+        },
+        error: (err) => {console.error("Error al modificar la rutina:", err),
+                        this.toastService.showError('Error al modificar la rutina');
+        }
       });
       }
+      this.router.navigate(['/app/rutina/']);
       }else{
-        console.error("Formulario inválido: rutina es null");
+        console.error("Formulario inválido");
+        this.toastService.showError('Formulario inválido');
       }
-  /*const response = await this.serviceRutina.insertRutina(this.user,this.rutinaForm.value);
-  console.log(response);*/
+  
   }
   
   esDefecto(event: MatSlideToggleChange){
@@ -124,13 +130,12 @@ checkControl(controlName: string, errorName: string): boolean | undefined {
     );
   }
 cancelar(){
-  this.router.navigate(['/app/dashboard']);
+  this.router.navigate(['/app/rutina/']);
 }
  irdetalle(){
   this.router.navigate(['/app/detalleRutina']);
 } 
 initForm(){
-  //const valor:Irutina = this.tablarutina[0];
   this.rutinaForm = new FormGroup({
     name: new FormControl(this.valor?.name||"", [Validators.required,this.textoValidator]),
     descripcion: new FormControl(this.valor?.description||"", [Validators.required,this.textoValidator]),
