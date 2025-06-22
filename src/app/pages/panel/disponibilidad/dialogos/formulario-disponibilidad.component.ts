@@ -19,6 +19,7 @@ export class FormularioDisponibilidadComponent implements OnInit {
   panelService = inject(PanelService);
   authService = inject(AuthService);
   toastService = inject(ToastService);
+  dialogRef = inject(DialogRef, { optional: true});
   
   modo: 'añadir' | 'actualizar';
   disponibilidadActual: Availability;
@@ -44,8 +45,6 @@ export class FormularioDisponibilidadComponent implements OnInit {
       });
     }
   }
-
-  private dialogRef = inject(DialogRef, { optional: true});
   
   protected closeModal() {
     this.dialogRef?.close()
