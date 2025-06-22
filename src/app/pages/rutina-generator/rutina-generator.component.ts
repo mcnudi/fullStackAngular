@@ -3,9 +3,11 @@ import { LoadingComponent } from '../../shared/loading/loading.component';
 import {
   MatProgressSpinnerModule,
 } from '@angular/material/progress-spinner';
-import { RutinaGeneratorService } from '../../services/rutina-generator.service';
-import { Activity } from '../../interfaces/iactivity.interface';
-import { interval } from 'rxjs';
+import { RutinaService } from '../../services/rutina.service';
+import { AuthService } from '../../services/auth.service';
+import { RecommendedActivities } from '../../interfaces/irecomendedActivity';
+import { DialogService } from '../../services/dialog.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-rutina-generator',
@@ -16,7 +18,7 @@ import { interval } from 'rxjs';
 export class RutinaGeneratorComponent {
   loading = true;
   seleccionado = '';
-  actividades: Activity[] = [];
+  actividades: RecommendedActivities[] = [];
 
   mensajesDeCarga = [
     'Revisando intereses...',
@@ -24,59 +26,79 @@ export class RutinaGeneratorComponent {
     'Generando rutina ideal...',
     'Casi terminado...',
   ];
+  dias = [
+    'Lunes',
+    'Martes',
+    'Miércoles',
+    'Jueves',
+    'Viernes',
+    'Sábado',
+    'Domingo',
+  ];
+  rutinaService = inject(RutinaService);
+  authService = inject(AuthService);
+  dialogService = inject(DialogService);
+  router = inject(Router);
 
-  rutinaGeneratorService = inject(RutinaGeneratorService);
-
-  groupedActivities: { [dia: string]: Activity[] } = {};
+  groupedActivities: { [dia: string]: RecommendedActivities[] } = {};
   diasGenerados: string[] = [];
 
   ngOnInit() {
-
-    interval(4000).subscribe((index) => {
-      this.rutinaGeneratorService.generarRutina().subscribe({
-        next: (actividades) => {
-          this.actividades = actividades;
-          this.groupActivitiesByDay(actividades);
-          this.loading = false;
-        },
-        error: (err) => {
-          console.error('Error generando rutina', err);
-          this.loading = false;
-        },
-      });
-    });
-
+    this.generarRutina();
   }
 
   getDiaSemana(numero: number): string {
-    const dias = [
-      'Lunes',
-      'Martes',
-      'Miércoles',
-      'Jueves',
-      'Viernes',
-      'Sábado',
-      'Domingo',
-    ];
-    return dias[numero - 1] || 'Desconocido';
+    return this.dias[numero - 1] || 'Desconocido';
   }
 
-  groupActivitiesByDay(actividades: Activity[]): void {
-    const grupos: { [dia: string]: Activity[] } = {};
+  groupActivitiesByDay(actividades: RecommendedActivities[]): void {
+    const grupos: { [dia: string]: RecommendedActivities[] } = {};
     for (const act of actividades) {
-      const diaNombre = this.getDiaSemana(act.day_of_week);
+      const diaNombre = this.getDiaSemana(Number(act.day));
       if (!grupos[diaNombre]) {
         grupos[diaNombre] = [];
       }
       grupos[diaNombre].push(act);
     }
 
-    // Ordena actividades por hora de inicio
     for (const dia in grupos) {
       grupos[dia].sort((a, b) => a.start_time.localeCompare(b.start_time));
     }
 
     this.groupedActivities = grupos;
-    this.diasGenerados = Object.keys(grupos); // 👈 Aquí extraes los días
+
+    this.diasGenerados = this.dias.filter((dia) => grupos[dia]);
+  }
+
+  generarRutina(): void {
+    const userId = this.authService.getDecodedToken().id;
+
+    this.rutinaService.generarRutina(userId).subscribe({
+      next: (actividades) => {
+        if (!actividades || actividades.length === 0) {
+          this.dialogService
+            .confirm(
+              'Error generando rutina',
+              `Vaya... no hemos podido generar una rutina para ti. Asegúrate de haber registrado tus intereses, objetivos y disponibilidad horaria. ¿Quieres revisar tu perfil?`
+            )
+            .then((confirmed) => {
+              if (confirmed) {
+                this.router.navigate(['app/panel']);
+              } else {
+                this.router.navigate(['app/rutina']);
+              }
+            });
+          return;
+        }
+
+        this.actividades = actividades;
+        this.groupActivitiesByDay(actividades);
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error generando rutina', err);
+        this.loading = false;
+      },
+    });
   }
 }
