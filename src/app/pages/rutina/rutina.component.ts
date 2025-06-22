@@ -29,7 +29,7 @@ export class RutinaComponent {
   valor: Irutina | null = null;
   title:string = "";
   url:string = '';
-  rutina:number=10;
+  //rutina:number=0;
   tablarutina: Irutina[] = [];
 
   constructor(){
@@ -45,15 +45,18 @@ export class RutinaComponent {
   async ngOnInit() {
     this.url = this.router.url;
     if (this.url.startsWith('/app/anadirRutina/tarea')){
+      const rutina = this.routerL.snapshot.paramMap.get('id');
+      const rutina1=Number(rutina);
       this.title = "Modificar Tarea";
-      this.serviceRutina.obtenerRutinas(this.rutina).subscribe({
+      this.serviceRutina.obtenerRutinas(rutina1).subscribe({
       next: (res) => {
         console.log("Respuesta del backend:", res);
         this.tablarutina = res;
         this.valor = this.tablarutina[0];
          this.initForm();
       },
-      error: (err) => {console.error("Error al obtener rutina:", err);
+      error: (err) => {
+        console.error("Error al obtener rutina:", err);
         this.toastService.showError('Error al obtener rutina');
       }
     });
@@ -71,7 +74,9 @@ export class RutinaComponent {
     
     if (this.irutina){
       this.irutina.usuario=this.authService.getDecodedToken().id;
-      this.irutina.id = 10;
+      const rutina = this.routerL.snapshot.paramMap.get('id');
+
+      this.irutina.id = Number(rutina);
       if (this.irutina.defecto){
         this.irutina.defecto=true;
       }
@@ -100,6 +105,7 @@ export class RutinaComponent {
         }
       });
       }
+      this.router.navigate(['/app/rutina/']);
       }else{
         console.error("Formulario inválido");
         this.toastService.showError('Formulario inválido');

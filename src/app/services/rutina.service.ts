@@ -35,6 +35,7 @@ export class RutinaService {
   }
 
   obtenerRutinaVersiones(id:number):Observable<Irutina[]>{
+    console.log("la rutina es:",id);
     return this.http.get<Irutina[]>(`${this.baseURL}/version/${id}`);
   }
 }

@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RutinaService } from '../../services/rutina.service';
 import { Irutina } from '../../interfaces/irutina.interface';
 
@@ -11,14 +11,21 @@ import { Irutina } from '../../interfaces/irutina.interface';
 })
 export class DetalleRutinaComponent {
   router = inject(Router);
+  route = inject(ActivatedRoute);
   serviceRutina=inject(RutinaService);
   tablarutina: Irutina[] = [];
   descripcion:string="";
   nombre:string="";
+  rutina:string | null ="";
+  rutinaN:number=0;
 
   async ngOnInit() {
-    const rutina=10;
-    this.serviceRutina.obtenerRutinaVersiones(rutina).subscribe({
+   
+      this.rutina = this.route.snapshot.paramMap.get('id');
+      this.rutinaN = Number(this.rutina)
+      console.log('ID recibido:', this.rutina);
+
+      this.serviceRutina.obtenerRutinaVersiones(this.rutinaN).subscribe({
       next: (res) => {
         console.log("Respuesta del backend:", res);
         this.tablarutina = res;
@@ -31,6 +38,7 @@ export class DetalleRutinaComponent {
       error: (err) => console.error("Error al guardar rutina:", err)
     });
   }
+  
   volver(){
     this.router.navigate(['/app/rutina/']);
   }
@@ -38,7 +46,7 @@ export class DetalleRutinaComponent {
     this.router.navigate(['app/anadirRutina/usuario']);
   }
   actualizarTarea(){
-    this.router.navigate(['/app/anadirRutina/tarea']);
+    this.router.navigate(['/app/anadirRutina/tarea',this.rutina]);
   }
 }
 
