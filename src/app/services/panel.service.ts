@@ -40,17 +40,20 @@ export class PanelService {
     return this.httpClient.get<Goals[]>(`${this.API_URL}/goals/${idUsuario}`)
   }
 
-  removeGoals(idUsuario: number, goalId: number) : Observable<Interests> {
-    return this.httpClient.delete<Interests>(
+  removeGoals(idUsuario: number, goalId: number) : Observable<Goals> {
+    return this.httpClient.delete<Goals>(
       `${this.API_URL}/goals/${idUsuario}/delete/${goalId}`
       );
   }
-  addGoals(idUsuario: number, interestName: string, color: string) : Observable<Interests> {
-    return this.httpClient.post<Interests>(
+  
+  addGoals(idUsuario: number, interestId: number, goalName: string, goalDescription: string, hoursPerWeek: number ) : Observable<Goals> {
+    return this.httpClient.post<Goals>(
       `${this.API_URL}/goals/${idUsuario}/add`,
       {
-        //interestName: interestName,
-        //color: color
+        interests_id: interestId,
+        goals_name: goalName,
+        goals_description: goalDescription,
+        hours_per_week: hoursPerWeek
       }
       );
   }

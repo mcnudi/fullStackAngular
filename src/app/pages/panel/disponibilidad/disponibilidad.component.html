@@ -18,9 +18,11 @@
                 @for (item of arrayDisponibilidad; track item.id) {
                     @if (item.weekday === i + 1 ) {
                         <div class="elemento-disponibilidad">
-                            <button (click)="openModal('actualizar', item)" [id]="item.id" class="btn-crud btn btn-outline-success mt-1">
-                                <mat-icon>edit</mat-icon>
-                            </button>
+                            <!--
+                                <button (click)="openModal('actualizar', item)" [id]="item.id" class="btn-crud btn btn-outline-success mt-1">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            -->
                             <button (click)="deleteAvailability(item)" class="btn-crud btn btn-outline-danger mt-1">
                                 <mat-icon>delete</mat-icon>
                             </button>
