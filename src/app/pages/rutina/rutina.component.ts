@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject} from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -29,7 +29,6 @@ export class RutinaComponent {
   valor: Irutina | null = null;
   title:string = "";
   url:string = '';
-  //rutina:number=0;
   tablarutina: Irutina[] = [];
 
   constructor(){
@@ -47,7 +46,7 @@ export class RutinaComponent {
     if (this.url.startsWith('/app/anadirRutina/tarea')){
       const rutina = this.routerL.snapshot.paramMap.get('id');
       const rutina1=Number(rutina);
-      this.title = "Modificar Tarea";
+      this.title = "Modificar Rutina";
       this.serviceRutina.obtenerRutinas(rutina1).subscribe({
       next: (res) => {
         console.log("Respuesta del backend:", res);
@@ -63,7 +62,7 @@ export class RutinaComponent {
     
     }
     else if (this.url.startsWith('/app/anadirRutina/usuario')){
-      this.title = "Alta Tarea";
+      this.title = "Alta Rutina";
       
     }
   }

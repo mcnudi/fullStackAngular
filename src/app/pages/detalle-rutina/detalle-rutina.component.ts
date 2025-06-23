@@ -20,7 +20,7 @@ export class DetalleRutinaComponent {
   nombre: string = '';
   rutina: string | null = '';
   rutinaN: number = 0;
-  // datePipe = new DatePipe('es-ES');
+ 
 
   async ngOnInit() {
     this.rutina = this.route.snapshot.paramMap.get('id');
@@ -33,9 +33,6 @@ export class DetalleRutinaComponent {
         this.tablarutina = res;
         this.descripcion = this.tablarutina[0].description;
         this.nombre = this.tablarutina[0].name;
-
-        //this.valor = this.tablarutina[0];
-        // this.initForm();
       },
       error: (err) => console.error('Error al guardar rutina:', err),
     });
@@ -49,6 +46,19 @@ export class DetalleRutinaComponent {
   }
   actualizarTarea() {
     this.router.navigate(['/app/anadirRutina/tarea', this.rutina]);
+  }
+
+  elegir(id:number){
+     this.serviceRutina.ponerVersionPorDefecto(this.rutinaN,id).subscribe({
+      next: (res) => {
+        console.log('Respuesta del backend:', res);
+        //this.tablarutina = res;
+        //this.descripcion = this.tablarutina[0].description;
+        //this.nombre = this.tablarutina[0].name;
+      },
+      error: (err) => console.error('Error al buscar la version:', err),
+    });
+   ;
   }
 
 }
