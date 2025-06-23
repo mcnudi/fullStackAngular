@@ -12,7 +12,11 @@ export class FormInfoActivityComponent implements OnInit {
   }
 
  @Input() actividad: any;
-  @Output() cerrar = new EventEmitter<void>();
+@Output() cerrar = new EventEmitter<void>();
+
+ diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+
+
 
 
   cerrarModal() {
