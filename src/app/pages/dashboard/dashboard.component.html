@@ -94,7 +94,7 @@
               style="overflow-y: auto"
             >
               <ul class="list-unstyled mb-0">
-                @if(actividades.length>0){ 
+                @if(actividades.length>0){
                   @for (actividad of actividades; track $index) {
                     <li
                       class="actividad-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-white shadow-sm"
@@ -115,7 +115,7 @@
                         Ver
                       </button>
                     </li>
-                  } 
+                  }
                 } @else {
                 <div class="sin-actividades-container text-center">
                   <img
@@ -153,12 +153,12 @@
         <h6 class="fw-bold mb-3">Filtros</h6>
         <div class="mb-2 w-100">
           <label class="form-label">Rutina</label>
-          
-          @if (rutinas) { 
+
+          @if (rutinas) {
             <select [(ngModel)]="rutinaSeleccionada" class="form-select">
               @for (rutina of rutinas; track $index) {
                 <option [value]="rutina.id">{{ rutina.name }}</option>
-              }             
+              }
             </select>
           }
         </div>
@@ -206,6 +206,9 @@
 <div class="modal-overlay" (click)="cerrarFormularioActividad()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <app-form-activity
+     [rutinasDisponibles]="rutinas"
+     [disponibilidad]="availability"
+     [actividades]="actividades"
       (cerrar)="cerrarFormularioActividad()"
     ></app-form-activity>
   </div>

@@ -4,45 +4,106 @@
       <div class="card p-4 shadow">
         <h2 class="mb-4 text-center">Crear Actividad</h2>
         <form>
+
+          <!-- Título -->
           <div class="mb-3">
             <label for="titulo" class="form-label">Título*</label>
-            <input type="text" id="titulo" name="titulo" class="form-control">
+            <input type="text" id="titulo" name="titulo" class="form-control" />
           </div>
 
+          <!-- Descripción -->
           <div class="mb-3">
             <label for="descripcion" class="form-label">Descripción*</label>
-            <input type="text" id="descripcion" name="descripcion" class="form-control">
-          </div>
-          <div class="mb-3">
-                  <label for="dia" class="form-label">Día*</label>
-                  <select id="dia" name="dia" class="form-control">
-                    <option value="0">Domingo</option>
-                    <option value="1">Lunes</option>
-                    <option value="2">Martes</option>
-                    <option value="3">Miércoles</option>
-                    <option value="4">Jueves</option>
-                    <option value="5">Viernes</option>
-                    <option value="6">Sábado</option>
-                  </select>
-          </div>
-          <div class="mb-3">
-            <label for="hora" class="form-label">Hora de Inicio*</label>
-            <input type="time" id="hora" name="hora" class="form-control">
+            <input type="text" id="descripcion" name="descripcion" class="form-control" />
           </div>
 
+          <!-- Día dinámico -->
           <div class="mb-3">
-            <label for="duracion" class="form-label">Hora Final*</label>
-            <input type="time" id="duracion" name="duracion" class="form-control">
+            <label for="dia" class="form-label">Día*</label>
+            <select
+              id="dia"
+              name="dia"
+              class="form-select"
+              [value]="diaSeleccionado"
+              (change)="diaSeleccionado = +($any($event.target).value); onDiaChange()"
+            >
+              @for (dia of diasDisponibles; track $index) {
+                <option [value]="dia">{{ diaLabels[dia] }}</option>
+              }
+            </select>
           </div>
+
+          <!-- Hora de inicio -->
+          <div class="mb-3">
+            <label for="horaInicio" class="form-label">Hora de Inicio*</label>
+            <select
+              id="horaInicio"
+              name="horaInicio"
+              class="form-select"
+              [value]="horaInicio"
+              (change)="horaInicio = $any($event.target).value"
+            >
+              <option value="" disabled selected>Seleccione hora</option>
+              @for (hora of horasFiltradas; track $index) {
+                <option [value]="hora">{{ hora }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Hora final -->
+          <div class="mb-3">
+            <label for="horaFinal" class="form-label">Hora Final*</label>
+            <select
+              id="horaFinal"
+              name="horaFinal"
+              class="form-select"
+              [value]="horaFinal"
+              (change)="horaFinal = $any($event.target).value"
+            >
+              <option value="" disabled selected>Seleccione hora</option>
+              @for (hora of horasFiltradas; track $index) {
+                <option [value]="hora">{{ hora }}</option>
+              }
+            </select>
+          </div>
+        <!-- Validación de diferencia de horas -->
+        @if (!esValidoElRangoDeHoras() && horaInicio && horaFinal) {
+          <div class="text-danger mb-3">
+            La hora final debe ser al menos una hora posterior a la hora de inicio.
+          </div>
+        }
+
+          <!-- Rutinas -->
           <div class="mb-3">
             <label for="rutina" class="form-label">Rutina</label>
-            <input type="text" id="rutina" name="rutina" class="form-control" disabled>
+            <select
+              id="rutina"
+              name="rutina"
+              class="form-select"
+              [value]="rutinaSeleccionada"
+              (change)="rutinaSeleccionada = +($any($event.target).value)"
+            >
+              <option value="" disabled selected>Seleccione rutina</option>
+              @for (rutina of rutinasDisponibles; track $index) {
+                <option [value]="rutina.id">{{ rutina.name }}</option>
+              }
+            </select>
           </div>
 
+          <!-- Botones -->
           <div class="d-flex justify-content-between">
-            <button type="submit" class="btn-info mt-2 btn-primary-color btn-custom mb-3 mx-auto centered-button">Crear Actividad</button>
-            <button type="button" class="btn-info mt-2 btn-primary-color btn-custom mb-3 mx-auto centered-button" (click)="cerrarFormulario()">Cancelar</button>
+            <button type="submit" class="btn-custom mt-2 mb-3 mx-auto centered-button">
+              Crear Actividad
+            </button>
+            <button
+              type="button"
+              class="btn-custom mt-2 mb-3 mx-auto centered-button"
+              (click)="cerrarFormulario()"
+            >
+              Cancelar
+            </button>
           </div>
+
         </form>
       </div>
     </div>
