@@ -4,6 +4,7 @@ import { RutinaService } from '../../services/rutina.service';
 import { Irutina } from '../../interfaces/irutina.interface';
 import { DatePipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-detalle-rutina',
@@ -15,6 +16,7 @@ export class DetalleRutinaComponent {
   router = inject(Router);
   route = inject(ActivatedRoute);
   serviceRutina = inject(RutinaService);
+  toastService = inject(ToastService);
   tablarutina: Irutina[] = [];
   descripcion: string = '';
   nombre: string = '';
@@ -34,7 +36,7 @@ export class DetalleRutinaComponent {
         this.descripcion = this.tablarutina[0].description;
         this.nombre = this.tablarutina[0].name;
       },
-      error: (err) => console.error('Error al guardar rutina:', err),
+      error: (err) => console.error('Error al obtener la rutina:', err),
     });
   }
 
@@ -52,6 +54,7 @@ export class DetalleRutinaComponent {
      this.serviceRutina.ponerVersionPorDefecto(this.rutinaN,id).subscribe({
       next: (res) => {
         console.log('Respuesta del backend:', res);
+        this.toastService.showSuccess('Se ha cambiado la version por defecto');//pòner el id
         //this.tablarutina = res;
         //this.descripcion = this.tablarutina[0].description;
         //this.nombre = this.tablarutina[0].name;
