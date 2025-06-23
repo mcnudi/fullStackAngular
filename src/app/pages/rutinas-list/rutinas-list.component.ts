@@ -1,14 +1,21 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {  NgIf, DatePipe } from '@angular/common';
+import { NgIf, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms'; 
 import { AuthService } from '../../services/auth.service';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-rutinas-list',
   standalone: true,
-  imports: [NgIf, DatePipe, MatIcon, RouterLink],
+  imports: [
+    NgIf,
+    DatePipe,
+    FormsModule,
+    MatIcon,
+    RouterLink
+  ],
   templateUrl: './rutinas-list.component.html',
   styleUrls: ['./rutinas-list.component.css'],
 })
@@ -20,10 +27,14 @@ export class RutinasListComponent implements OnInit {
   router = inject(Router);
   authService = inject(AuthService);
 
-  ngOnInit(): void {
-    console.log('🔥 ngOnInit ejecutado'); 
+  filtroBusqueda: string = '';
 
-    //const userId = Number(localStorage.getItem('userId'));
+  currentPage: number = 1;
+  pageSize: number = 5;
+
+  ngOnInit(): void {
+    console.log('🔥 ngOnInit ejecutado');
+
     const userId = this.authService.getDecodedToken().id;
     const token = localStorage.getItem('token');
     this.username = this.authService.getUserName();
@@ -61,10 +72,34 @@ export class RutinasListComponent implements OnInit {
   irAlta() {
     this.router.navigate(['/app/anadirRutina/usuario/']);
   }
-  /*irDetalle(){
-    this.router.navigate(['/app/detalles']);
-}*/
-    verDetalle(id: string) {
-  this.router.navigate(['/app/detalles',id]);
-}
+
+  verDetalle(id: string) {
+    this.router.navigate(['/app/detalles', id]);
+  }
+
+  
+  get rutinasFiltradas() {
+    const filtro = this.filtroBusqueda.toLowerCase();
+    return this.rutinas.filter(rutina =>
+      rutina.name?.toLowerCase().includes(filtro)
+    );
+  }
+
+  
+  get paginatedRutinas() {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.rutinasFiltradas.slice(start, start + this.pageSize);
+  }
+
+  nextPage() {
+    if ((this.currentPage * this.pageSize) < this.rutinasFiltradas.length) {
+      this.currentPage++;
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
 }
