@@ -44,4 +44,8 @@ export class RutinaService {
       `${this.baseURL}/generate/${id}`
     );
   }
+
+  ponerVersionPorDefecto(rutina:number, idVersion:number):Observable<number> {
+    return this.http.put<number>(`${this.baseURL}/version/${rutina}`,{idVersion});
+  }
 }
