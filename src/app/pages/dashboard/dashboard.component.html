@@ -25,60 +25,13 @@
                 <div class="fw-bold" style="font-size: 1.1rem">
                   {{ username }}
                 </div>
-                <div style="font-size: 0.95rem; color: #555">
+                <div style="padding: 1.1rem 0; font-size: 0.95rem; color: #555;">
                   Gráficos/Estadísticas
                 </div>
               </div>
             </div>
 
-            <!-- Gráfico ocupa el espacio restante -->
-            <div style="position: relative">
-              <button
-                (click)="chartType = 'pie'"
-                class="btn btn-link position-absolute top-50 start-0 translate-middle-y px-1"
-              >
-                ◀
-              </button>
-
-              <button
-                (click)="chartType = 'bar'"
-                class="btn btn-link position-absolute top-50 end-0 translate-middle-y px-1"
-              >
-                ▶
-              </button>
-
-              <div
-                class="px-3 h-100 d-flex align-items-center justify-content-center"
-              >
-                @if (chartType === 'pie') {
-                <ngx-charts-pie-chart
-                  [view]="[240, 180]"
-                  [results]="pieChartData"
-                  [scheme]="'fire'"
-                  [gradient]="false"
-                  [legend]="true"
-                  [legendPosition]="legendPosition"
-                  [labels]="true"
-                  [doughnut]="false"
-                ></ngx-charts-pie-chart>
-                } @if (chartType === 'bar') {
-                <ngx-charts-bar-vertical
-                  [view]="[240, 180]"
-                  [results]="barChartData"
-                  [scheme]="'fire'"
-                  [gradient]="false"
-                  [legend]="true"
-                  [xAxis]="true"
-                  [yAxis]="true"
-                  [legendPosition]="legendPosition"
-                  [showXAxisLabel]="true"
-                  [showYAxisLabel]="true"
-                  xAxisLabel="Categoría"
-                  yAxisLabel="Valor"
-                ></ngx-charts-bar-vertical>
-                }
-              </div>
-            </div>
+ <!-- CARLOS INCLUYE AQUI LO DE LOS FILTROS Y TIRAMOS DE AQUÍ -->
           </div>
         </div>
 
