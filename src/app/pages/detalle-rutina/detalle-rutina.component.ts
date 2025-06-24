@@ -1,10 +1,11 @@
-import { Component, inject} from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RutinaService } from '../../services/rutina.service';
 import { Irutina } from '../../interfaces/irutina.interface';
 import { DatePipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { ToastService } from '../../services/toast.service';
+import { IRutinaPaginada } from '../../interfaces/i-rutina-paginada';
 
 @Component({
   selector: 'app-detalle-rutina',
@@ -22,22 +23,24 @@ export class DetalleRutinaComponent {
   nombre: string = '';
   rutina: string | null = '';
   rutinaN: number = 0;
- 
+  page: number = 1;
 
   async ngOnInit() {
     this.rutina = this.route.snapshot.paramMap.get('id');
     this.rutinaN = Number(this.rutina);
     console.log('ID recibido:', this.rutina);
 
-    this.serviceRutina.obtenerRutinaVersiones(this.rutinaN).subscribe({
-      next: (res) => {
-        console.log('Respuesta del backend:', res);
-        this.tablarutina = res;
-        this.descripcion = this.tablarutina[0].description;
-        this.nombre = this.tablarutina[0].name;
-      },
-      error: (err) => console.error('Error al obtener la rutina:', err),
-    });
+    this.serviceRutina.obtenerRutinaVersiones(this.rutinaN,this.page).subscribe({
+        next: (res:IRutinaPaginada) => {
+          
+          console.log('Respuesta del backend:', res);
+          this.tablarutina = res.data;
+
+          this.descripcion = this.tablarutina[0].description;
+          this.nombre = this.tablarutina[0].name;
+        },
+        error: (err) => console.error('Error al obtener la rutina:', err),
+      });
   }
 
   volver() {
@@ -50,19 +53,40 @@ export class DetalleRutinaComponent {
     this.router.navigate(['/app/anadirRutina/tarea', this.rutina]);
   }
 
-  elegir(id:number){
-     this.serviceRutina.ponerVersionPorDefecto(this.rutinaN,id).subscribe({
+  elegir(id: number) {
+    this.serviceRutina.ponerVersionPorDefecto(this.rutinaN, id).subscribe({
       next: (res) => {
         console.log('Respuesta del backend:', res);
-        this.toastService.showSuccess('Se ha cambiado la version por defecto');//pòner el id
+        this.toastService.showSuccess('Se ha cambiado la version por defecto'); //pòner el id
         //this.tablarutina = res;
         //this.descripcion = this.tablarutina[0].description;
         //this.nombre = this.tablarutina[0].name;
       },
       error: (err) => console.error('Error al buscar la version:', err),
     });
-   ;
   }
-
+  avanzar() {
+    this.page++;
+    this.serviceRutina.obtenerRutinaVersiones(this.rutinaN,this.page).subscribe({
+        next: (res) => {
+          console.log('Respuesta del backend:', res);
+          this.tablarutina = res.data;
+          this.descripcion = this.tablarutina[0].description;
+          this.nombre = this.tablarutina[0].name;
+        },
+        error: (err) => console.error('Error al obtener la rutina:', err),
+      });
+  }
+  atras() {
+    this.page--;
+    this.serviceRutina.obtenerRutinaVersiones(this.rutinaN,this.page).subscribe({
+        next: (res) => {
+          console.log('Respuesta del backend:', res);
+          this.tablarutina = res.data;
+          this.descripcion = this.tablarutina[0].description;
+          this.nombre = this.tablarutina[0].name;
+        },
+        error: (err) => console.error('Error al obtener la rutina:', err),
+      });
+  }
 }
-
