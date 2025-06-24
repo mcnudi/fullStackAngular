@@ -309,12 +309,7 @@ export class DashboardComponent {
     return `${hours}:${minutes}:${seconds}`; // Formato 'HH:mm:ss'
   }
 
-<<<<<<< HEAD
   aplicarFiltros() {        
-=======
-  aplicarFiltros() {
-        debugger
->>>>>>> origin/develop
 
     // Comprobar si la rutina seleccionada ha cambiado
     if (this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior) {
