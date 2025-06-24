@@ -74,21 +74,11 @@
         }
 
           <!-- Rutinas -->
-          <div class="mb-3">
-            <label for="rutina" class="form-label">Rutina</label>
-            <select
-              id="rutina"
-              name="rutina"
-              class="form-select"
-              [value]="rutinaSeleccionada"
-              (change)="rutinaSeleccionada = +($any($event.target).value)"
-            >
-              <option value="" disabled selected>Seleccione rutina</option>
-              @for (rutina of rutinasDisponibles; track $index) {
-                <option [value]="rutina.id">{{ rutina.name }}</option>
-              }
-            </select>
-          </div>
+            <!-- Mostrar la rutina seleccionada -->
+              <div class="mb-3">
+                <label class="form-label">Rutina</label>
+                <input type="text" class="form-control" [value]="rutinaSeleccionada.values.name" readonly>
+              </div>
 
           <!-- Botones -->
           <div class="d-flex justify-content-between">

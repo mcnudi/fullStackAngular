@@ -52,7 +52,7 @@ export class DashboardComponent {
     'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
   mostrarFormularioActividad = false;
 
-  routineId:number = 12;
+
   actividadesPorRutina: any[] = [];
 
   rutinasConActividades: any[] = [];
@@ -126,18 +126,6 @@ export class DashboardComponent {
   };
 
   ngOnInit(): void {
-
-    /*Incorporado metodo para extraer las rotinas por ID*/
-    this.calendarEventsService.getActivitiesByRoutineId(this.routineId).subscribe({
-      next: (actividades) => {
-
-        console.log('Actividades recibidas de la rutina por id_number:', actividades);
-        this.actividadesPorRutina = actividades;
-      },
-      error: (error) => {
-        console.error('Error al obtener actividades por rutina:', error);
-      }
-    });
 
         /*Conseguimos la información del usuario*/
         this.username = this.authService.getUserName();
@@ -309,7 +297,7 @@ export class DashboardComponent {
     return `${hours}:${minutes}:${seconds}`; // Formato 'HH:mm:ss'
   }
 
-  aplicarFiltros() {        
+  aplicarFiltros() {
 
     // Comprobar si la rutina seleccionada ha cambiado
     if (this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior) {
@@ -323,7 +311,7 @@ export class DashboardComponent {
                   console.log('Actividades recibidas de la rutina :' + this.rutinaSeleccionada, data);
                   this.actividades = data || [];
                   this.rutinaSeleccionadaAnterior = this.rutinaSeleccionada;
-                  
+
                 const disponibilidadEvents = this.calendarOptions.events.filter(
                                 (ev: EventInput) => ev.id && ev.id.toString().startsWith('disponibilidad-')
                         );
@@ -336,7 +324,7 @@ export class DashboardComponent {
                         color: '#64b5f6',
                         id: `activity-${act.id}`
                         }));
-                        this.calendarOptions.events = [...disponibilidadEvents, ...activityEvents];                
+                        this.calendarOptions.events = [...disponibilidadEvents, ...activityEvents];
                 },
                 error: (error) => {
                   console.log('Error al cargar actividades:', error);
@@ -369,8 +357,8 @@ export class DashboardComponent {
           display: 'block',
           color: '#81c784',
           id: `disponibilidad-${avail.id}`,
-        })); 
-        
+        }));
+
         // Mapear eventos de actividad
         const activityEvents: EventInput[] = activities.map((act) => ({
           title: `${act.title}${
