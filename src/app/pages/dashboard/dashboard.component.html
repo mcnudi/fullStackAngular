@@ -1,67 +1,86 @@
-<!-- Contenedor principal que ocupa toda la pantalla y divide en dos partes iguales -->
 <div class="mt-3" style="height: 100vh; display: flex; flex-direction: column">
-  <!-- Sección superior: 50% altura -->
   <div class="info-usuario-up" style="background: #f6faf4; flex: 1">
     <div class="container h-100">
       <div class="row g-4 h-100">
-        <!-- Columna izquierda -->
-<div class="col-3">
-  <div class="bg-white rounded shadow-sm p-3 text-center h-100 d-flex flex-column">
-    <!-- Imagen y nombre juntos arriba -->
-    <div>
-      <!-- Imagen de usuario -->
-      <div class="mb-2">
-        <img
-          [src]="profileImage"
-          alt="Usuario"
-          class="img-fluid rounded-circle"
-          style="width: 120px; height: 120px; object-fit: cover"
-        />
-      </div>
-      <!-- Título y subtítulo -->
-      <div class="mb-3">
-        <div class="fw-bold" style="font-size: 1.1rem">
-          {{ username }}
+        <div class="col-3">
+          <div
+            class="bg-white rounded shadow-sm p-3 text-center h-100 d-flex flex-column"
+          >
+            <div>
+              <div class="mb-2">
+                <img
+                  [src]="profileImage"
+                  alt="Usuario"
+                  class="img-fluid rounded-circle"
+                  style="width: 120px; height: 120px; object-fit: cover"
+                />
+              </div>
+              <div class="mb-3">
+                <div class="fw-bold" style="font-size: 1.1rem">
+                  {{ username }}
+                </div>
+              </div>
+            </div>
+
+            <div class="text-start mt-4 p-3 border rounded shadow-sm">
+              <h5 class="fw-bold mb-4 text-primary">Filtros de Eventos</h5>
+
+              <div class="mb-4">
+                <label for="routine-select" class="form-label text-muted mb-1"
+                  >Seleccionar Rutina</label
+                >
+                @if (rutinas.length > 0 && rutinaSeleccionada !== null) {
+                <select
+                  id="routine-select"
+                  [(ngModel)]="rutinaSeleccionada"
+                  class="form-select form-select-lg"
+                  (ngModelChange)="aplicarFiltros()"
+                >
+                  @for (rutina of rutinas; track $index) {
+                  <option [value]="rutina.id">{{ rutina.name }}</option>
+                  }
+                </select>
+                } @else {
+                <select
+                  id="routine-select"
+                  class="form-select form-select-lg"
+                  disabled
+                >
+                  <option>Cargando rutinas...</option>
+                </select>
+                }
+              </div>
+
+              <div class="mb-4">
+                <label
+                  for="event-type-select"
+                  class="form-label text-muted mb-1"
+                  >Tipo de Evento</label
+                >
+                <select
+                  id="event-type-select"
+                  class="form-select form-select-lg"
+                  [(ngModel)]="filtroTipo"
+                  (ngModelChange)="aplicarFiltros()"
+                >
+                  <option value="">Todos los eventos</option>
+                  <option value="disponibilidad">Disponibilidad</option>
+                  <option value="actividad">Actividad</option>
+                </select>
+              </div>
+
+              <div class="d-grid">
+                <button
+                  class="btn btn-outline-secondary btn-lg"
+                  (click)="limpiarFiltros()"
+                >
+                  Limpiar Filtros
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Filtros -->
-    <div class="text-start mt-3">
-      <h6 class="fw-bold mb-3">Filtros</h6>
-      <div class="mb-3">
-        <label class="form-label">Rutina</label>
-        @if (rutinas.length > 0 && rutinaSeleccionada !== null) {
-          <select [(ngModel)]="rutinaSeleccionada" class="form-select">
-            @for (rutina of rutinas; track $index) {
-              <option [value]="rutina.id">{{ rutina.name }}</option>
-            }
-          </select>
-        } @else {
-          <select class="form-select" disabled>
-            <option>Cargando rutinas...</option>
-          </select>
-        }
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Tipo de evento</label>
-        <select class="form-select" [(ngModel)]="filtroTipo">
-          <option value="">Todos</option>
-          <option value="disponibilidad">Disponibilidad</option>
-          <option value="actividad">Actividad</option>
-        </select>
-      </div>
-
-      <div class="d-flex justify-content-between gap-2">
-        <button class="btn btn-info w-50" (click)="aplicarFiltros()">Aplicar</button>
-        <button class="btn btn-outline-secondary w-50" (click)="limpiarFiltros()">Limpiar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-        <!-- Columna derecha -->
         <div class="col-9">
           <div
             class="bg-white rounded shadow-sm p-4 actividades-wrapper h-100 d-flex flex-column"
@@ -73,29 +92,28 @@
               style="overflow-y: auto"
             >
               <ul class="list-unstyled mb-0">
-                @if(actividades.length>0){
-                  @for (actividad of actividades; track $index) {
-                    <li
-                      class="actividad-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-white shadow-sm"
+                @if(actividades.length>0){ @for (actividad of actividades; track
+                $index) {
+                <li
+                  class="actividad-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-white shadow-sm"
+                >
+                  <div class="actividad-info text-truncate">
+                    <strong class="actividad-titulo d-block">{{
+                      actividad.title
+                    }}</strong>
+                    <small class="actividad-horario text-muted"
+                      >{{ actividad.start_time }} -
+                      {{ actividad.end_time }}</small
                     >
-                      <div class="actividad-info text-truncate">
-                        <strong class="actividad-titulo d-block">{{
-                          actividad.title
-                        }}</strong>
-                        <small class="actividad-horario text-muted"
-                          >{{ actividad.start_time }} -
-                          {{ actividad.end_time }}</small
-                        >
-                      </div>
-                      <button
-                        class="btn btn-sm btn-custom btn-actividad px-4"
-                        (click)="verActividad(actividad)"
-                      >
-                        Ver
-                      </button>
-                    </li>
-                  }
-                } @else {
+                  </div>
+                  <button
+                    class="btn btn-sm btn-custom btn-actividad px-4"
+                    (click)="verActividad(actividad)"
+                  >
+                    Ver
+                  </button>
+                </li>
+                } } @else {
                 <div class="sin-actividades-container text-center">
                   <img
                     src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeXA5c25iMmlndWk2MHp5ZXZ2bjd0aXp4Yzdiemg1dnVocGh1MTN6ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jls5k3a7L1N0XRM9d0/giphy.gif"
@@ -122,11 +140,8 @@
     </div>
   </div>
 
-
-<div class="container my-4">
-  <div class="row">
-
-    </div>
+  <div class="container my-4">
+    <div class="row"></div>
 
     <div class="col-12">
       <div
@@ -148,14 +163,13 @@
   </div>
 </div>
 
-
 @if (mostrarFormularioActividad) {
 <div class="modal-overlay" (click)="cerrarFormularioActividad()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <app-form-activity
-     [rutinaSeleccionada]="rutinaSeleccionada"
-     [disponibilidad]="availability"
-     [actividades]="actividades"
+      [rutinaSeleccionada]="rutinaSeleccionada"
+      [disponibilidad]="availability"
+      [actividades]="actividades"
       (cerrar)="cerrarFormularioActividad()"
     ></app-form-activity>
   </div>
