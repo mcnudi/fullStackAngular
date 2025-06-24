@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Irutina } from '../interfaces/irutina.interface';
 import { Observable } from 'rxjs';
 import { RecommendedActivities } from '../interfaces/irecomendedActivity';
+import { IRutinaPaginada } from '../interfaces/i-rutina-paginada';
 
 @Injectable({
   providedIn: 'root',
@@ -34,9 +35,9 @@ export class RutinaService {
     return this.http.get<Irutina[]>(`${this.baseURL}/${id}`);
   }
 
-  obtenerRutinaVersiones(id:number):Observable<Irutina[]>{
+  obtenerRutinaVersiones(id:number,page:number):Observable<IRutinaPaginada>{
     console.log("la rutina es:",id);
-    return this.http.get<Irutina[]>(`${this.baseURL}/version/${id}`);
+    return this.http.get<IRutinaPaginada>(`${this.baseURL}/version/${id}/${page}`);
   }
   
   generarRutina(id: number): Observable<RecommendedActivities[]> {

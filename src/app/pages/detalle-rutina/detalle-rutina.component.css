@@ -15,3 +15,14 @@ section{
 .color{
     color:#0fa3b1
 }
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem; /* Espacio entre los elementos */
+}
+
+.info-pagina {
+  margin: 0;
+}
