@@ -1,7 +1,7 @@
 
 import { Availability } from './../../interfaces/ipanel.interface';
 import { PanelService } from './../../services/panel.service';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { EventInput, EventMountArg, EventDropArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -11,16 +11,15 @@ import { CalendarEventsService } from '../../services/dashboard-user.service';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import esLocale from '@fullcalendar/core/locales/es';
-import { LegendPosition, NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { User } from '../../interfaces/iuser.interface';
-import { Goals, Interests } from '../../interfaces/ipanel.interface';
+import { Interests } from '../../interfaces/ipanel.interface';
 import { Activity } from '../../interfaces/iactivity.interface';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { FormActivityComponent } from './form-activity-add/form-activity.component';
 import { FormInfoActivityComponent } from './form-info-activity/form-info-activity.component'; // <-- Importar forkJoin
 import { RutinaService } from '../../services/rutina.service';
-import { Irutina } from '../../interfaces/irutina.interface';
 
 @Component({
   selector: 'app-dashboard',
@@ -45,15 +44,16 @@ export class DashboardComponent {
   ) {}
 
   username: string = '';
-  objetivos: Goals[] = [];
   intereses: Interests[] = [];
   availability: Availability[] = [];
   actividades: Activity[] = [];
   rutinas: any[] = [];
-  userinfo: User | null = null;
   profileImage: string =
     'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
   mostrarFormularioActividad = false;
+
+  routineId:number = 12;
+  actividadesPorRutina: any[] = [];
 
   rutinasConActividades: any[] = [];
 
@@ -123,45 +123,38 @@ export class DashboardComponent {
         tooltip.remove();
       });
     },
-  }; /*--------- TS de Gráfico ----------*/
-
-  legendPosition = LegendPosition.Below;
-
-  chartType: 'pie' | 'bar' = 'pie';
-  pieChartData = [
-    { name: 'Tiempo Libre (h)', value: 10 },
-    { name: 'Tiempo usado (h)', value: 8 },
-  ];
-  barChartData = [
-    { name: 'Tareas Realizadas', value: 5 },
-    { name: 'Tareas Pendientes', value: 15 },
-  ];
+  };
 
   ngOnInit(): void {
-    this.username = this.authService.getUserName();
 
-    this.userService.getByUsername(this.username).subscribe({
-      next: (user: User) => {
-        const userId = (user as any).id;
-        const token = (user as any).token;
+    /*Incorporado metodo para extraer las rotinas por ID*/
+    this.calendarEventsService.getActivitiesByRoutineId(this.routineId).subscribe({
+      next: (actividades) => {
 
-        if (user.image) {
-          this.profileImage = `data:image/png;base64,${user.image}`;
-        }
+        console.log('Actividades recibidas de la rutina por id_number:', actividades);
+        this.actividadesPorRutina = actividades;
+      },
+      error: (error) => {
+        console.error('Error al obtener actividades por rutina:', error);
+      }
+    });
 
-        this.panelService.getInterests(userId).subscribe({
-          next: (data: Interests[]) => {
-            console.log('Intereses recibidos:', data);
-            this.intereses = data || [];
-          },
-          error: (error) => {
-            console.log('Error al cargar intereses:', error);
-          },
-        });
+        /*Conseguimos la información del usuario*/
+        this.username = this.authService.getUserName();
 
+        this.userService.getByUsername(this.username).subscribe({
+          next: (user: User) => {
+            const userId = (user as any).id;
+            const token = (user as any).token;
+
+            if (user.image) {
+              this.profileImage = `data:image/png;base64,${user.image}`;
+            }
+
+        /* Conseguimos rutinas por usuario */
         this.ruinaService.getRutinasByUser(userId, token).subscribe({
           next: (data: any[]) => {
-            console.log('Rutinas recibidos:', data);
+            console.log('Rutinas recibidas: ', data);
             this.rutinas = data || [];
             for (let i = 0; i < this.rutinas.length; i++) {
               if (this.rutinas[i].is_default == 1) {
@@ -169,12 +162,14 @@ export class DashboardComponent {
                 this.rutinaSeleccionadaAnterior = this.rutinaSeleccionada;
               }
             }
-
+             },
+        });
+            /*Conseguimos Actividades de la Rutina por defecto (is_selected=1)*/
             this.calendarEventsService
               .getActivitiesByRoutineByDefault(userId)
               .subscribe({
                 next: (data: any[]) => {
-                  console.log('Actividades recibidos:', data);
+                  console.log('Actividades recibidass de la Rutina por defecto:', data);
                   this.actividades = data || [];
                   this.rutinaSeleccionada;
                 },
@@ -182,25 +177,8 @@ export class DashboardComponent {
                   console.log('Error al cargar actividades:', error);
                 },
               });
-          },
-          error: (error) => {
-            console.log('Error al cargar intereses:', error);
-          },
-        });
 
-        /**/
-
-        /**/
-
-        /* if(this.rutinaSeleccionada){
-                this.calendarEventsService.getActivitiesByRoutineId(this.rutinaSeleccionada).subscribe({
-                        next: (data: Activity[]) => {
-                                console.log('Actividades recibidas:', data);
-                                this.actividades = data || [];
-                        },
-                });
-        }*/
-
+          /*Conseguimos Disponibilidad del usuaroi*/
         this.panelService.getAvailability(userId).subscribe({
           next: (data: Availability[]) => {
             console.log('Disponibilidad recibidas:', data);
@@ -211,12 +189,13 @@ export class DashboardComponent {
           },
         });
 
+        /*Conseguimos intereses*/
         this.panelService.getInterests(userId).subscribe({
           next: (data: Interests[]) => {
             this.intereses = data || [];
           },
           error: (error) => {
-            console.log('Error al cargar intereses:', error);
+            console.log('Error al cargar intereses para el calendario:', error);
           },
         });
 
@@ -227,9 +206,11 @@ export class DashboardComponent {
       },
     });
   }
+/* Metodos para el formulario  */
 
   abrirFormularioActividad() {
     this.mostrarFormularioActividad = true;
+
   }
 
   cerrarFormularioActividad() {
@@ -245,7 +226,7 @@ export class DashboardComponent {
     this.mostrarVistaActividad = false;
     this.actividadSeleccionada = null;
   }
-
+/*-------------------------------------*/
   saveEvent(
     info: EventDropArg,
     updatedEvent: { id: string; start: Date | null; end: Date | null }
@@ -328,7 +309,12 @@ export class DashboardComponent {
     return `${hours}:${minutes}:${seconds}`; // Formato 'HH:mm:ss'
   }
 
+<<<<<<< HEAD
   aplicarFiltros() {        
+=======
+  aplicarFiltros() {
+        debugger
+>>>>>>> origin/develop
 
     // Comprobar si la rutina seleccionada ha cambiado
     if (this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior) {

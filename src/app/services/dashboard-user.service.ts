@@ -32,7 +32,11 @@ export class CalendarEventsService {
 
   getActivitiesByRoutineId(routineId: number): Observable<any[]> {
     return this.http
+<<<<<<< HEAD
       .get<any[]>(`http://localhost:3000/api/activities/activitiesByRoutine/${routineId}`)
+=======
+      .get<any[]>(`http://localhost:3000/api/activities/selectActivitiesByRoutine/${routineId}`)
+>>>>>>> origin/develop
       .pipe(
         catchError(() => of([]))
       );
