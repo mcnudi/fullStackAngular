@@ -24,6 +24,10 @@ export class DetalleRutinaComponent {
   rutina: string | null = '';
   rutinaN: number = 0;
   page: number = 1;
+  pageTotales:number = 0;
+  deshabilitarD:boolean=false;
+  deshabilitarA:boolean=true;
+
 
   async ngOnInit() {
     this.rutina = this.route.snapshot.paramMap.get('id');
@@ -32,9 +36,8 @@ export class DetalleRutinaComponent {
 
     this.serviceRutina.obtenerRutinaVersiones(this.rutinaN,this.page).subscribe({
         next: (res:IRutinaPaginada) => {
-          
-          console.log('Respuesta del backend:', res);
           this.tablarutina = res.data;
+          this.pageTotales = res.totalPage;
 
           this.descripcion = this.tablarutina[0].description;
           this.nombre = this.tablarutina[0].name;
@@ -57,36 +60,50 @@ export class DetalleRutinaComponent {
     this.serviceRutina.ponerVersionPorDefecto(this.rutinaN, id).subscribe({
       next: (res) => {
         console.log('Respuesta del backend:', res);
-        this.toastService.showSuccess('Se ha cambiado la version por defecto'); //pòner el id
-        //this.tablarutina = res;
-        //this.descripcion = this.tablarutina[0].description;
-        //this.nombre = this.tablarutina[0].name;
+        this.toastService.showSuccess('Se ha cambiado la version por defecto');
       },
       error: (err) => console.error('Error al buscar la version:', err),
     });
   }
   avanzar() {
-    this.page++;
-    this.serviceRutina.obtenerRutinaVersiones(this.rutinaN,this.page).subscribe({
+    if (this.page<this.pageTotales){
+      this.deshabilitarA = false;
+      this.deshabilitarD = false;
+      this.page++;
+      if (this.page===this.pageTotales){
+        this.deshabilitarD = true;
+        this.deshabilitarA = false;
+      }
+      this.serviceRutina.obtenerRutinaVersiones(this.rutinaN,this.page).subscribe({
         next: (res) => {
           console.log('Respuesta del backend:', res);
           this.tablarutina = res.data;
-          this.descripcion = this.tablarutina[0].description;
-          this.nombre = this.tablarutina[0].name;
         },
         error: (err) => console.error('Error al obtener la rutina:', err),
       });
+    }else{
+      this.deshabilitarD = true;
+    }
   }
   atras() {
-    this.page--;
+    if (this.page>1){
+      this.deshabilitarA = false;
+      this.deshabilitarD = false;
+      this.page--;
+      if (this.page===1){
+        this.deshabilitarA = true;
+        this.deshabilitarD = false;
+      }
     this.serviceRutina.obtenerRutinaVersiones(this.rutinaN,this.page).subscribe({
         next: (res) => {
           console.log('Respuesta del backend:', res);
           this.tablarutina = res.data;
-          this.descripcion = this.tablarutina[0].description;
-          this.nombre = this.tablarutina[0].name;
         },
         error: (err) => console.error('Error al obtener la rutina:', err),
       });
+    }
+    else{
+      this.deshabilitarA = true;
+    }
   }
 }
