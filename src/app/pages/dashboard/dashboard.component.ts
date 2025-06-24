@@ -230,6 +230,7 @@ export class DashboardComponent {
 
   abrirFormularioActividad() {
     this.mostrarFormularioActividad = true;
+
   }
 
   cerrarFormularioActividad() {
@@ -328,7 +329,7 @@ export class DashboardComponent {
     return `${hours}:${minutes}:${seconds}`; // Formato 'HH:mm:ss'
   }
 
-  aplicarFiltros() {        
+  aplicarFiltros() {
         debugger
 
     // Comprobar si la rutina seleccionada ha cambiado

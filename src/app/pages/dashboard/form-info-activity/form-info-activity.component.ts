@@ -6,14 +6,14 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   styleUrls: ['./form-info-activity.component.css']
 })
 export class FormInfoActivityComponent implements OnInit {
+  @Input() actividad: any;
+  @Output() cerrar = new EventEmitter<void>();
+
+
 
   ngOnInit(): void {
 
   }
-
- @Input() actividad: any;
-  @Output() cerrar = new EventEmitter<void>();
-
 
   cerrarModal() {
     this.cerrar.emit();

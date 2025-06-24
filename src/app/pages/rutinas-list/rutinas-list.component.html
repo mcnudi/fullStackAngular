@@ -5,29 +5,25 @@
       <p class="subtext">{{ rutinas.length }} rutinas</p>
     </div>
 
-    
     <div class="d-flex flex-column gap-3 botones-flotantes" *ngIf="rutinas.length > 0">
       <button class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color" (click)="irAlta()">Crear rutina</button>
       <button class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color" [routerLink]="['/app/rutinas/generate']">
         <mat-icon>auto_awesome</mat-icon>
         Generar Rutina con IA
       </button>
-     <!-- <button class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color" (click)="irDetalle()">Detalle rutina</button>-->
     </div>
   </div>
 
-  
   <div class="search-bar" *ngIf="rutinas.length > 0">
-    <input type="text" placeholder="Buscar rutinas" />
-    <span class="icon">🔍</span>
+    <input type="text" placeholder="Buscar rutinas" [(ngModel)]="filtroBusqueda" />
+    <mat-icon class="icon">search</mat-icon>
   </div>
 
-  
-  @for (rutina of rutinas; track rutina.id) {
+  @for (rutina of paginatedRutinas; track rutina.id) {
     <div class="rutina-card" (click)="verDetalle(rutina.id)">
       <div class="rutina-header">
         <strong>{{ rutina.name }}</strong>
-        <span *ngIf="rutina.is_default" class="icon-star">⭐</span>
+        <mat-icon *ngIf="rutina.is_default" class="icon-star">star</mat-icon>
       </div>
       <p>{{ rutina.description }}</p>
       <div class="rutina-footer">
@@ -39,7 +35,14 @@
     </div>
   }
 
-  
+  <div class="pagination" *ngIf="rutinasFiltradas.length > pageSize">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">Anterior</button>
+    <span>Página {{ currentPage }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage * pageSize >= rutinasFiltradas.length">
+      Siguiente
+    </button>
+  </div>
+
   <div class="no-rutinas text-center" *ngIf="rutinas.length === 0">
     <h2>¡Todavía no tienes rutinas!</h2>
     <button class="btn-custom btn-primary-color mt-3" (click)="irAlta()">Crear rutina</button>
