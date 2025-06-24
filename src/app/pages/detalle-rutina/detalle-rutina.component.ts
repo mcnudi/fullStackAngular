@@ -3,13 +3,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RutinaService } from '../../services/rutina.service';
 import { Irutina } from '../../interfaces/irutina.interface';
 import { DatePipe } from '@angular/common';
-import { MatIcon } from '@angular/material/icon';
 import { ToastService } from '../../services/toast.service';
 import { IRutinaPaginada } from '../../interfaces/i-rutina-paginada';
+//import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-detalle-rutina',
-  imports: [DatePipe, MatIcon],
+  imports: [DatePipe,MatIconModule],
   templateUrl: './detalle-rutina.component.html',
   styleUrl: './detalle-rutina.component.css',
 })

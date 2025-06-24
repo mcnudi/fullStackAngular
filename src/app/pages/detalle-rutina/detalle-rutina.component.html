@@ -8,17 +8,21 @@
     </div>
     <div class="d-flex d-flex justify-content-center gap-2">
       <button class="btn-custom btn-primary-color" (click)="volver()">
+        <mat-icon>arrow_back</mat-icon>
         Volver
       </button>
+     
       <button
         class="btn-custom btn-primary-color"
         type="submit"
         (click)="crearTarea()"
       >
+      <mat-icon>note_add</mat-icon>
         Crear Tarea
       </button>
 
       <button class="btn-custom btn-primary-color" (click)="actualizarTarea()">
+        <mat-icon>update</mat-icon>
         Actualizar
       </button>
     </div>
@@ -50,8 +54,8 @@
             <div class="col-md-4 w-25">
               <button
                 class="btn-custom btn-primary-color"
-                (click)="elegir(rutina.idVersion)"
-              >
+                (click)="elegir(rutina.idVersion)">
+                <mat-icon>radio_button_checked</mat-icon>
                 Elegir
               </button>
             </div>
@@ -63,21 +67,26 @@
     <div class="paginacion">
       @if(deshabilitarA){
       <button class="btn-custom btn-primary-color" disabled (click)="atras()">
+        <mat-icon>chevron_left</mat-icon>
         Atras
       </button>
       }@else{
         <button class="btn-custom btn-primary-color" (click)="atras()">
+          <mat-icon>chevron_left</mat-icon>
         Atras
       </button>
       }
       <p class="info-pagina">Página {{ page }} de {{ pageTotales }}</p>
        @if(deshabilitarD){
       <button class="btn-custom btn-primary-color" disabled (click)="avanzar()">
-        Avanzar
+        <mat-icon>chevron_right</mat-icon>
+        
+        Siguiente
       </button>
     }@else{
       <button class="btn-custom btn-primary-color" (click)="avanzar()">
-        Avanzar
+        <mat-icon>chevron_right</mat-icon>
+        Siguiente
       </button>
     }
     </div>
