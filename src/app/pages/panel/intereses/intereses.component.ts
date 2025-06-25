@@ -76,7 +76,7 @@ export class InteresesComponent implements OnInit {
     const confirmed = await this.dialogService.confirm(
       'Confirmar borrado',
       `¿Estás seguro de que quieres elimiarlo?
-      Si confirmas se borrarán automáticamente los Objetivos asociados`
+      ¡¡Si confirmas se borrarán automáticamente los OBJETIVOS asociados y todas las ACTIVIDADES asociadas a estos en las RUTINAS!!`
     );
 
     if (confirmed) {

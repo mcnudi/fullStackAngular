@@ -34,20 +34,19 @@ export class FormularioObjetivosComponent implements OnInit {
 
   goalsForm = new FormGroup({
     goals_name: new FormControl('', Validators.required),
-    interest_id: new FormControl('', Validators.required),
+    users_interests_id: new FormControl('', Validators.required),
     description: new FormControl('', ),
     hours_per_week: new FormControl('1', Validators.required)
   });
 
   ngOnInit() {
-    // Carga previa de array de intereses para pintarlos en el desplegable de Interés Asociado
+    // Carga previa de array de UsersInterests para pintarlos en el desplegable de Interés Asociado
     this.panelService.getInterests(this.authService.getDecodedToken().id).subscribe( {
       next: (data: Interests[]) => {
         this.arrayIntereses = data;
         if (this.arrayIntereses.length > 0) {
-          // Muestra como selección por defecto el primer Interés
           this.goalsForm.patchValue({
-            interest_id: String(this.arrayIntereses[0].id)
+            users_interests_id: String(this.arrayIntereses[0].id) // Muestra como selección por defecto el primer Interés
           });
         }
       },
@@ -57,10 +56,9 @@ export class FormularioObjetivosComponent implements OnInit {
     })
 
     if (this.modo === 'actualizar' && this.objetivoActual) {
-      const idInteres = 0 // del id de la lista desplegable de Intereses?
       this.goalsForm.patchValue({
         goals_name: this.objetivoActual.goals_name,
-        interest_id: String(idInteres),
+        users_interests_id: String(this.objetivoActual.users_interests_id),
         description: this.objetivoActual.description,
         hours_per_week: String(this.objetivoActual.hours_per_week)
       });
@@ -73,25 +71,49 @@ export class FormularioObjetivosComponent implements OnInit {
 
   async saveGoals() {
     if (this.goalsForm.invalid) {
-      console.log(this.goalsForm)
       this.toastService.showError('Por favor, completa todos los campos.');
       return;
     }
 
-    const { goals_name, interest_id, description, hours_per_week } = this.goalsForm.value;
+    const { goals_name, users_interests_id, description, hours_per_week } = this.goalsForm.value;
 
-      // ---> Si es añadir...
-    // !!! dia_semana tendrá que ser numérico !!!
-    this.addGoal({ goals_name, interest_id, description, hours_per_week } as Goals);
-      // ---> Si es actualizar...
-    
+    const goal: Goals = {
+      goals_name: goals_name!,
+      users_interests_id: Number(users_interests_id),
+      description: description ?? '',
+      hours_per_week: Number(hours_per_week)
+    };
+
+    if (this.modo === 'añadir') {
+      this.addGoal(goal);
+    } else { // 'actualizar'
+      this.updateGoal({ id: this.objetivoActual.id, users_interests_id, goals_name, description, hours_per_week } as Goals);
+    }  
   }
 
   addGoal(elemento: Goals) {
-    this.panelService.addGoals(this.authService.getDecodedToken().id, elemento.interest_id!, elemento.goals_name!, elemento.description!, elemento.hours_per_week!).subscribe( {
+    this.panelService.addGoals(this.authService.getDecodedToken().id, elemento.users_interests_id!, elemento.goals_name!, elemento.description!, elemento.hours_per_week!).subscribe( {
       next: (data: Goals) => {
-        this.toastService.showSuccess('Objetivo añadida correctamente.');
-        this.dialogRef?.close(data);
+        this.toastService.showSuccess('Objetivo añadido correctamente.');
+        this.dialogRef?.close(this.goalsForm.value);
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
+  updateGoal(elementoActualizador: Goals) {
+    this.panelService.updateGoals(
+                                      this.authService.getDecodedToken().id,
+                                      elementoActualizador.id!, 
+                                      elementoActualizador.users_interests_id!,
+                                      elementoActualizador.goals_name!,
+                                      elementoActualizador.description!,
+                                      elementoActualizador.hours_per_week!).subscribe( {
+      next: (data: Interests) => {
+        this.toastService.showSuccess('Interés Actualizado correctamente.');
+        this.dialogRef?.close(this.goalsForm.value);
       },
       error: (error) => {
         console.log(error);
