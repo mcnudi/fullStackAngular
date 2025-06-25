@@ -6,6 +6,9 @@ import { DatePipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { ToastService } from '../../services/toast.service';
 import { IRutinaPaginada } from '../../interfaces/i-rutina-paginada';
+import { InputDialogComponent } from '../../shared/select-dialog/input-dialog.component';
+import { DialogService } from '../../services/dialog.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-detalle-rutina',
@@ -18,6 +21,8 @@ export class DetalleRutinaComponent {
   route = inject(ActivatedRoute);
   serviceRutina = inject(RutinaService);
   toastService = inject(ToastService);
+  dialogService = inject(DialogService);
+  userService = inject(UserService);
 
   tablarutina: Irutina[] = [];
   descripcion: string = '';
@@ -25,9 +30,9 @@ export class DetalleRutinaComponent {
   rutina: string | null = '';
   rutinaN: number = 0;
   page: number = 1;
-  pageTotales:number = 0;
-  deshabilitarD:boolean=false;
-  deshabilitarA:boolean=true;
+  pageTotales: number = 0;
+  deshabilitarD: boolean = false;
+  deshabilitarA: boolean = true;
 
   // datePipe = new DatePipe('es-ES');
 
@@ -36,8 +41,10 @@ export class DetalleRutinaComponent {
     this.rutinaN = Number(this.rutina);
     console.log('ID recibido:', this.rutina);
 
-    this.serviceRutina.obtenerRutinaVersiones(this.rutinaN,this.page).subscribe({
-        next: (res:IRutinaPaginada) => {
+    this.serviceRutina
+      .obtenerRutinaVersiones(this.rutinaN, this.page)
+      .subscribe({
+        next: (res: IRutinaPaginada) => {
           this.tablarutina = res.data;
           this.pageTotales = res.totalPage;
 
@@ -68,46 +75,48 @@ export class DetalleRutinaComponent {
     });
   }
   avanzar() {
-    if (this.page<this.pageTotales){
+    if (this.page < this.pageTotales) {
       this.deshabilitarA = false;
       this.deshabilitarD = false;
       this.page++;
-      if (this.page===this.pageTotales){
+      if (this.page === this.pageTotales) {
         this.deshabilitarD = true;
         this.deshabilitarA = false;
       }
-      this.serviceRutina.obtenerRutinaVersiones(this.rutinaN,this.page).subscribe({
-        next: (res) => {
-          console.log('Respuesta del backend:', res);
-          this.tablarutina = res.data;
-        },
-        error: (err) => console.error('Error al obtener la rutina:', err),
-      });
-    }else{
+      this.serviceRutina
+        .obtenerRutinaVersiones(this.rutinaN, this.page)
+        .subscribe({
+          next: (res) => {
+            console.log('Respuesta del backend:', res);
+            this.tablarutina = res.data;
+          },
+          error: (err) => console.error('Error al obtener la rutina:', err),
+        });
+    } else {
       this.deshabilitarD = true;
     }
   }
   atras() {
-    if (this.page>1){
+    if (this.page > 1) {
       this.deshabilitarA = false;
       this.deshabilitarD = false;
       this.page--;
-      if (this.page===1){
+      if (this.page === 1) {
         this.deshabilitarA = true;
         this.deshabilitarD = false;
       }
-    this.serviceRutina.obtenerRutinaVersiones(this.rutinaN,this.page).subscribe({
-        next: (res) => {
-          console.log('Respuesta del backend:', res);
-          this.tablarutina = res.data;
-        },
-        error: (err) => console.error('Error al obtener la rutina:', err),
-      });
-    }
-    else{
+      this.serviceRutina
+        .obtenerRutinaVersiones(this.rutinaN, this.page)
+        .subscribe({
+          next: (res) => {
+            console.log('Respuesta del backend:', res);
+            this.tablarutina = res.data;
+          },
+          error: (err) => console.error('Error al obtener la rutina:', err),
+        });
+    } else {
       this.deshabilitarA = true;
     }
-
   }
   descargarPdf(id: number) {
     console.log('Descargando PDF para la rutina con ID:', id);
@@ -124,5 +133,23 @@ export class DetalleRutinaComponent {
         console.error('Error al descargar el PDF:', err);
       },
     });
+  }
+
+  async abrirDialogoCompartir(): Promise<void> {
+    const correo = await this.dialogService.open(
+      InputDialogComponent,
+      {
+        title: 'Compartir rutina',
+        message: 'Introduce el correo del destinatario',
+      }
+    );
+    
+
+    if (correo) {
+      this.serviceRutina.compartirRutina(this.rutinaN, correo).subscribe({
+        next: () => this.toastService.showSuccess('Rutina enviada correctamente'),
+        error: (err) => this.toastService.showError('Error al enviar la rutina')
+      });
+    }
   }
 }
