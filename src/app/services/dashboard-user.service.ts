@@ -3,7 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { Category } from '../interfaces/iCategory';
+import { Category } from '../interfaces/icategory.interface';
+
+
+
+
+
 
 @Injectable({ providedIn: 'root' })
 export class CalendarEventsService {

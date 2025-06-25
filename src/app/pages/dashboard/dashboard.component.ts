@@ -19,7 +19,7 @@ import { forkJoin } from 'rxjs';
 import { FormActivityComponent } from './form-activity-add/form-activity.component';
 import { FormInfoActivityComponent } from './form-info-activity/form-info-activity.component'; // <-- Importar forkJoin
 import { RutinaService } from '../../services/rutina.service';
-import { Category } from '../../interfaces/iCategory';
+import { Category } from '../../interfaces/icategory.interface';
 
 @Component({
   selector: 'app-dashboard',

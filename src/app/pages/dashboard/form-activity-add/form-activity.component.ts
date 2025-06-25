@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Availability } from '../../../interfaces/ipanel.interface';
 import { Irutina } from '../../../interfaces/irutina.interface';
-import { Category } from '../../../interfaces/iCategory';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms'
+import { Category } from '../../../interfaces/icategory.interface';
 
 @Component({
   selector: 'app-form-activity',
