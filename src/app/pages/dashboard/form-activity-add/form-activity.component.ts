@@ -1,3 +1,4 @@
+import { RutinaService } from './../../../services/rutina.service';
 import {
   Component,
   EventEmitter,
@@ -12,6 +13,7 @@ import { Availability } from '../../../interfaces/ipanel.interface';
 import { Category } from '../../../interfaces/icategory.interface';
 import { CalendarEventsService } from '../../../services/dashboard-user.service';
 
+
 @Component({
   selector: 'app-form-activity',
   standalone: true,
@@ -22,9 +24,12 @@ import { CalendarEventsService } from '../../../services/dashboard-user.service'
 export class FormActivityComponent {
   @Input({ required: true }) objetoRutinaDefecto: any[] = [];
   @Input() disponibilidad: Availability[] = [];
+  @Input() rutinaSeleccionada: number | null[] | undefined;
   @Input() actividades: any[] = [];
   @Input() categorias: Category[] = [];
   @Output() cerrar = new EventEmitter<void>();
+
+  rutinaId: any;
 
   private calendarEventsService = inject(CalendarEventsService);
   private fb = inject(FormBuilder);
@@ -48,6 +53,7 @@ export class FormActivityComponent {
     categoria: this.fb.control<number | null>(null, Validators.required)
   });
 
+
   constructor() {
 effect(() => {
   const dia = this.form.get('dia')?.value;
@@ -59,6 +65,8 @@ effect(() => {
   }
 
   ngOnInit() {
+console.log(this.rutinaSeleccionada)
+
     const diasDisponibilidad = this.disponibilidad
       .map(d => d.weekday)
       .filter((d): d is number => typeof d === 'number');
@@ -139,30 +147,35 @@ effect(() => {
     }
 const valoresForm = this.form.value;
 
-const nuevaActividad2 = {
-  routines_versions_id: this.objetoRutinaDefecto[1]?.routines_versions_id ?? 0,
+const rutinaId = Array.isArray(this.rutinaSeleccionada) || this.rutinaSeleccionada === undefined
+  ? 0
+  : this.rutinaSeleccionada;
+/*
+const nuevaActividad = {
+  routines_versions_id: this.rutinaId,
   title: valoresForm.titulo ?? '',
-  description: valoresForm.descripcion ?? '', // ← aquí garantizas string, no null
+  description: valoresForm.descripcion ?? '',
+  activity_categories_id: valoresForm.categoria ?? 0,
+  day_of_week: "2"                       /*(valoresForm.dia ?? '').toString(),
+  start_time: (valoresForm.horaInicio ?? '') + ':00',
+  end_time: (valoresForm.horaFinal ?? '') + ':00'
+};*/
+
+const nuevaActividad2 = {
+  routines_versions_id: rutinaId,
+  title: valoresForm.titulo ?? '',
+  description: valoresForm.descripcion ?? '',
   activity_categories_id: valoresForm.categoria ?? 0,
   day_of_week: (valoresForm.dia ?? '').toString(),
   start_time: (valoresForm.horaInicio ?? '') + ':00',
   end_time: (valoresForm.horaFinal ?? '') + ':00'
 };
 
-const nuevaActividad = {
-  routines_versions_id: 13,
-  title: 'Ejercicio de prueba',
-  description: 'Actividad creada como prueba desde el componente',
-  activity_categories_id: 1,
-  day_of_week: '1',
-  start_time: '09:00:00',
-  end_time: '09:30:00'
-};
-
-
-
     this.calendarEventsService.addNewActivity(nuevaActividad2).subscribe({
+
+
       next: () => {
+         console.log(nuevaActividad2)
         alert('Actividad creada correctamente');
         this.cerrar.emit();
       },
