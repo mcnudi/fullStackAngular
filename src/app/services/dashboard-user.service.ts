@@ -4,10 +4,7 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Category } from '../interfaces/icategory.interface';
-
-
-
-
+import { Activity } from '../interfaces/iactivity.interface';
 
 
 @Injectable({ providedIn: 'root' })
