@@ -9,7 +9,7 @@ import { Availability } from '../../../interfaces/ipanel.interface';
 export class FormActivityComponent implements OnInit {
 
   @Output() cerrar = new EventEmitter<void>();
-  @Input() rutinasDisponibles: any[] = [];
+  @Input() rutinaSeleccionada: any[] = [];
   @Input() disponibilidad: Availability[] = [];
   @Input() actividades: any[] = [];
 
@@ -20,7 +20,6 @@ export class FormActivityComponent implements OnInit {
   diaSeleccionado: number | null = null;
   horaInicio: string | null = null;
   horaFinal: string | null = null;
-  rutinaSeleccionada: number | null = null;
 
   horasFiltradas: string[] = [];
 

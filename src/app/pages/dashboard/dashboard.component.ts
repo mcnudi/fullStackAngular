@@ -1,7 +1,6 @@
-
 import { Availability } from './../../interfaces/ipanel.interface';
 import { PanelService } from './../../services/panel.service';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { EventInput, EventMountArg, EventDropArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -11,16 +10,15 @@ import { CalendarEventsService } from '../../services/dashboard-user.service';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import esLocale from '@fullcalendar/core/locales/es';
-import { LegendPosition, NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { User } from '../../interfaces/iuser.interface';
-import { Goals, Interests } from '../../interfaces/ipanel.interface';
+import { Interests } from '../../interfaces/ipanel.interface';
 import { Activity } from '../../interfaces/iactivity.interface';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { FormActivityComponent } from './form-activity-add/form-activity.component';
 import { FormInfoActivityComponent } from './form-info-activity/form-info-activity.component'; // <-- Importar forkJoin
 import { RutinaService } from '../../services/rutina.service';
-import { Irutina } from '../../interfaces/irutina.interface';
 
 @Component({
   selector: 'app-dashboard',
@@ -45,15 +43,15 @@ export class DashboardComponent {
   ) {}
 
   username: string = '';
-  objetivos: Goals[] = [];
   intereses: Interests[] = [];
   availability: Availability[] = [];
   actividades: Activity[] = [];
   rutinas: any[] = [];
-  userinfo: User | null = null;
   profileImage: string =
     'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
   mostrarFormularioActividad = false;
+
+  actividadesPorRutina: any[] = [];
 
   rutinasConActividades: any[] = [];
 
@@ -74,16 +72,8 @@ export class DashboardComponent {
     initialView: 'timeGridWeek',
     locale: esLocale,
     selectable: true, // Permite seleccionar rangos de fechas
-    editable: true, // Permite arrastrar eventos
+    editable: false, // Permite arrastrar eventos
     dayMaxEvents: true,
-    eventDrop: (info: EventDropArg) => {
-      const updatedEvent = {
-        id: info.event.id,
-        start: info.event.start,
-        end: info.event.end,
-      };
-      this.saveEvent(info, updatedEvent);
-    },
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
@@ -123,21 +113,10 @@ export class DashboardComponent {
         tooltip.remove();
       });
     },
-  }; /*--------- TS de Gráfico ----------*/
-
-  legendPosition = LegendPosition.Below;
-
-  chartType: 'pie' | 'bar' = 'pie';
-  pieChartData = [
-    { name: 'Tiempo Libre (h)', value: 10 },
-    { name: 'Tiempo usado (h)', value: 8 },
-  ];
-  barChartData = [
-    { name: 'Tareas Realizadas', value: 5 },
-    { name: 'Tareas Pendientes', value: 15 },
-  ];
+  };
 
   ngOnInit(): void {
+    /*Conseguimos la información del usuario*/
     this.username = this.authService.getUserName();
 
     this.userService.getByUsername(this.username).subscribe({
@@ -149,58 +128,37 @@ export class DashboardComponent {
           this.profileImage = `data:image/png;base64,${user.image}`;
         }
 
-        this.panelService.getInterests(userId).subscribe({
-          next: (data: Interests[]) => {
-            console.log('Intereses recibidos:', data);
-            this.intereses = data || [];
-          },
-          error: (error) => {
-            console.log('Error al cargar intereses:', error);
-          },
-        });
-
+        /* Conseguimos rutinas por usuario */
         this.ruinaService.getRutinasByUser(userId, token).subscribe({
           next: (data: any[]) => {
-            console.log('Rutinas recibidos:', data);
+            console.log('Rutinas recibidas: ', data);
             this.rutinas = data || [];
             for (let i = 0; i < this.rutinas.length; i++) {
               if (this.rutinas[i].is_default == 1) {
                 this.rutinaSeleccionada = this.rutinas[i].id;
-                this.rutinaSeleccionadaAnterior = this.rutinaSeleccionada;
+                this.rutinaSeleccionadaAnterior = this.rutinas[i].id; // Inicializa también aquí
               }
             }
-
-            this.calendarEventsService
-              .getActivitiesByRoutineByDefault(userId)
-              .subscribe({
-                next: (data: any[]) => {
-                  console.log('Actividades recibidos:', data);
-                  this.actividades = data || [];
-                  this.rutinaSeleccionada;
-                },
-                error: (error) => {
-                  console.log('Error al cargar actividades:', error);
-                },
-              });
-          },
-          error: (error) => {
-            console.log('Error al cargar intereses:', error);
           },
         });
+        /*Conseguimos Actividades de la Rutina por defecto (is_selected=1)*/
+        this.calendarEventsService
+          .getActivitiesByRoutineByDefault(userId)
+          .subscribe({
+            next: (data: any[]) => {
+              console.log(
+                'Actividades recibidass de la Rutina por defecto:',
+                data
+              );
+              this.actividades = data || [];
+              this.rutinaSeleccionada;
+            },
+            error: (error) => {
+              console.log('Error al cargar actividades:', error);
+            },
+          });
 
-        /**/
-
-        /**/
-
-        /* if(this.rutinaSeleccionada){
-                this.calendarEventsService.getActivitiesByRoutineId(this.rutinaSeleccionada).subscribe({
-                        next: (data: Activity[]) => {
-                                console.log('Actividades recibidas:', data);
-                                this.actividades = data || [];
-                        },
-                });
-        }*/
-
+        /*Conseguimos Disponibilidad del usuaroi*/
         this.panelService.getAvailability(userId).subscribe({
           next: (data: Availability[]) => {
             console.log('Disponibilidad recibidas:', data);
@@ -211,12 +169,13 @@ export class DashboardComponent {
           },
         });
 
+        /*Conseguimos intereses*/
         this.panelService.getInterests(userId).subscribe({
           next: (data: Interests[]) => {
             this.intereses = data || [];
           },
           error: (error) => {
-            console.log('Error al cargar intereses:', error);
+            console.log('Error al cargar intereses para el calendario:', error);
           },
         });
 
@@ -227,10 +186,10 @@ export class DashboardComponent {
       },
     });
   }
+  /* Metodos para el formulario  */
 
   abrirFormularioActividad() {
     this.mostrarFormularioActividad = true;
-
   }
 
   cerrarFormularioActividad() {
@@ -247,80 +206,6 @@ export class DashboardComponent {
     this.actividadSeleccionada = null;
   }
 
-  saveEvent(
-    info: EventDropArg,
-    updatedEvent: { id: string; start: Date | null; end: Date | null }
-  ): void {
-    if (info.event.id.startsWith('disponibilidad-')) {
-      const id = Number(info.event.id.split('-')[1]?.trim());
-      const userId = this.authService.getDecodedToken()?.id;
-
-      if (userId === undefined || id === undefined || isNaN(id)) {
-        console.error(
-          'No se pudo obtener ID de usuario o de evento para actualizar disponibilidad.'
-        );
-        info.revert(); // Revierte el cambio visual en el calendario si los IDs no son válidos
-        return;
-      }
-
-      // FullCalendar devuelve 0 para domingo, 1 para lunes, etc.
-      // Asegúrate de que el backend espera este mismo formato para 'weekday'.
-      const updatedAvailability = {
-        start_time: this.getDateOnTime(updatedEvent.start),
-        end_time: this.getDateOnTime(updatedEvent.end),
-        weekday: updatedEvent.start ? updatedEvent.start.getDay() : undefined,
-        user_id: userId,
-      };
-      this.panelService
-        .updateAvailability(userId, id, updatedAvailability)
-        .subscribe({
-          next: (response) => {
-            console.log('Disponibilidad actualizada:', response); // ¡Importante! Actualiza `eventosOriginales` después del éxito
-            this.updateEventInOriginals(
-              info.event.id,
-              updatedEvent.start,
-              updatedEvent.end
-            );
-            this.initializeCalendar(userId);
-          },
-          error: (error) => {
-            console.error('Error al actualizar disponibilidad:', error);
-            info.revert(); // Revierte el cambio visual si hubo un error en la API
-          },
-        });
-    } else if (info.event.id.startsWith('actividad-')) {
-      /*          HACERRRR        */
-    }
-  }
-
-  // Función auxiliar para actualizar el evento en `eventosOriginales`
-  private updateEventInOriginals(
-    eventId: string,
-    newStart: Date | null,
-    newEnd: Date | null
-  ): void {
-    const index = this.eventosOriginales.findIndex(
-      (event) => event.id === eventId
-    );
-    if (index > -1) {
-      // ¡CRUCIAL! Crea un nuevo objeto de evento copiando el original
-      const updatedOriginalEvent = { ...this.eventosOriginales[index] };
-      if (newStart) {
-        // Para eventos recurrentes, actualiza 'startTime' y 'daysOfWeek'
-        updatedOriginalEvent.start = this.getDateOnTime(newStart); // 'getDay()' devuelve 0 para Domingo, 1 para Lunes, etc.
-        updatedOriginalEvent.date = [newStart.getDay()];
-      }
-      if (newEnd) {
-        // Para eventos recurrentes, actualiza 'endTime'
-        updatedOriginalEvent.end = this.getDateOnTime(newEnd);
-      } // Actualiza el array `eventosOriginales` de forma inmutable // Esto crea un nuevo array, lo que es detectado por Angular.
-      this.eventosOriginales = this.eventosOriginales.map((event, i) =>
-        i === index ? updatedOriginalEvent : event
-      );
-    } // Después de actualizar eventosOriginales, re-aplica el filtro para refrescar el calendario.
-    this.aplicarFiltros();
-  }
-
   getDateOnTime(date: Date | null): string {
     if (!date) return '';
     const hours = date.getHours().toString().padStart(2, '0');
@@ -330,36 +215,84 @@ export class DashboardComponent {
   }
 
   aplicarFiltros() {
-        debugger
+    debugger;
+    if (this.filtroTipo === 'actividad' || this.filtroTipo === '') {
+      console.log('Filtro de Actividades aplicado o Todos seleccionado');
+      // Comprobar si la rutina seleccionada ha cambiado o si el filtro es 'Todos' o 'actividad'
+      if (
+        this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior ||
+        this.filtroTipo === 'actividad' ||
+        this.filtroTipo === ''
+      ) {
+        this.rutinaSeleccionadaAnterior = this.rutinaSeleccionada;
 
-    // Comprobar si la rutina seleccionada ha cambiado
-    if (this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior) {
-      this.rutinaSeleccionadaAnterior = this.rutinaSeleccionada;
+        // Llama al servicio para obtener las actividades de la rutina seleccionada
+        this.calendarEventsService
+          .getActivitiesByRoutineId(this.rutinaSeleccionada)
+          .subscribe({
+            next: (data: any[]) => {
+              console.log(
+                'Actividades recibidas de la rutina :' +
+                  this.rutinaSeleccionada,
+                data
+              );
+              this.actividades = data || [];
 
-      // Llama al servicio para obtener las actividades de la rutina seleccionada
-      this.calendarEventsService
-        .getActivitiesByRoutineId(this.rutinaSeleccionada)
-        .subscribe({
-                next: (data: any[]) => {
-                  console.log('Actividades recibidos:', data);
-                  this.actividades = data || [];
-                  this.rutinaSeleccionada;
-                },
-                error: (error) => {
-                  console.log('Error al cargar actividades:', error);
-                },
-              });
-      return; // Opcional: si solo quieres filtrar por rutina cuando cambia
+              const activityEvents: EventInput[] = this.actividades.map(
+                (act) => ({
+                  title: `${act.title}${
+                    act.description ? ' - ' + act.description : ''
+                  }`,
+                  daysOfWeek: [act.day_of_week], // 1 (lunes) al 7 (domingo)
+                  startTime: act.start_time,
+                  endTime: act.end_time,
+                  display: 'auto',
+                  color: '#64b5f6',
+                  id: `activity-${act.id}`,
+                })
+              );
+
+              // Mantener eventos de disponibilidad si el filtro no es 'actividad' exclusivo
+              let disponibilidadEvents: EventInput[] = [];
+              if (this.filtroTipo !== 'actividad') {
+                disponibilidadEvents = this.eventosOriginales.filter(
+                  (ev: EventInput) =>
+                    ev.id && ev.id.toString().startsWith('disponibilidad-')
+                );
+              }
+
+              this.calendarOptions.events = [
+                ...disponibilidadEvents,
+                ...activityEvents,
+              ];
+            },
+            error: (error) => {
+              console.log('Error al cargar actividades:', error);
+            },
+          });
+      }
+    } else if (this.filtroTipo === 'disponibilidad') {
+      console.log('Filtro de Disponibilidad aplicado');
+      // Si el filtro es 'Disponibilidad', solo muestra los eventos de disponibilidad
+      this.calendarOptions.events = this.eventosOriginales.filter(
+        (ev: EventInput) =>
+          ev.id && ev.id.toString().startsWith('disponibilidad-')
+      );
+    }
+  }
+
+  limpiarFiltros() {
+    this.filtroTipo = '';
+    // Restablecer la rutina seleccionada a la predeterminada (si es que la tienes guardada)
+    // o al primer elemento de la lista si no hay una predeterminada.
+    for (let i = 0; i < this.rutinas.length; i++) {
+      if (this.rutinas[i].is_default == 1) {
+        this.rutinaSeleccionada = this.rutinas[i].id;
+        break; // Una vez encontrada, salimos del bucle
+      }
     }
 
-    // ...resto de la lógica de filtros (tipo, día, etc.)...
-  }
-  limpiarFiltros() {
-    this.filtroTipo = ''; // Al limpiar, simplemente restaura todos los eventos originales asignando una nueva referencia
-    this.calendarOptions = {
-      ...this.calendarOptions,
-      events: [...this.eventosOriginales],
-    };
+    this.aplicarFiltros(); // Llama a aplicarFiltros para que se restablezca el calendario con la rutina por defecto y todos los tipos.
   }
 
   initializeCalendar(userId: number) {
@@ -378,8 +311,9 @@ export class DashboardComponent {
           display: 'block',
           color: '#81c784',
           id: `disponibilidad-${avail.id}`,
-        })); // Mapear eventos de actividad
+        }));
 
+        // Mapear eventos de actividad
         const activityEvents: EventInput[] = activities.map((act) => ({
           title: `${act.title}${
             act.description ? ' - ' + act.description : ''

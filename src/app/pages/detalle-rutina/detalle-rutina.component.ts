@@ -19,6 +19,7 @@ export class DetalleRutinaComponent {
   route = inject(ActivatedRoute);
   serviceRutina = inject(RutinaService);
   toastService = inject(ToastService);
+
   tablarutina: Irutina[] = [];
   descripcion: string = '';
   nombre: string = '';
@@ -29,6 +30,7 @@ export class DetalleRutinaComponent {
   deshabilitarD:boolean=false;
   deshabilitarA:boolean=true;
 
+  // datePipe = new DatePipe('es-ES');
 
   async ngOnInit() {
     this.rutina = this.route.snapshot.paramMap.get('id');
@@ -106,5 +108,22 @@ export class DetalleRutinaComponent {
     else{
       this.deshabilitarA = true;
     }
+
+  }
+  descargarPdf(id: number) {
+    console.log('Descargando PDF para la rutina con ID:', id);
+    this.serviceRutina.descargarPdf(id).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `rutina-${id}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Error al descargar el PDF:', err);
+      },
+    });
   }
 }

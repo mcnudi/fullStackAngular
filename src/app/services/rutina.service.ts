@@ -49,4 +49,10 @@ export class RutinaService {
   ponerVersionPorDefecto(rutina:number, idVersion:number):Observable<number> {
     return this.http.put<number>(`${this.baseURL}/version/${rutina}`,{idVersion});
   }
+
+  descargarPdf(rutinaId: number) {
+    return this.http.get(`${this.baseURL}/generatePdf/${rutinaId}`, {
+      responseType: 'blob', 
+    });
+  }
 }
