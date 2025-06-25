@@ -3,7 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { Category } from '../interfaces/iCategory';
+import { Category } from '../interfaces/icategory.interface';
+import { Activity } from '../interfaces/iactivity.interface';
+
 
 @Injectable({ providedIn: 'root' })
 export class CalendarEventsService {
@@ -46,5 +48,16 @@ export class CalendarEventsService {
         catchError(() => of([]))
       );
   }
+    addNewActivity(actividad: {
+      routines_versions_id: number;
+      title: string | null;
+      description: string;
+      activity_categories_id: number;
+      day_of_week: string;
+      start_time: string | null;
+      end_time: string | null;
+    }): Observable<any> {
+      return this.http.post('http://localhost:3000/api/activities/create', actividad);
+    }
 
 }
