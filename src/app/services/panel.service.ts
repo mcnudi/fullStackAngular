@@ -31,7 +31,7 @@ export class PanelService {
   removeInterests(idUsuario: number, interestName: string) : Observable<Interests> {
     return this.httpClient.delete<Interests>(
       `${this.API_URL}/interests/${idUsuario}/delete/${interestName}`
-      );
+    );
   }
 
   addInterests(idUsuario: number, interestName: string, color: string) : Observable<Interests> {
@@ -41,12 +41,12 @@ export class PanelService {
         interestName: interestName,
         color: color
       }
-      );
+    );
   }
 
-  // Objetivos
-  getGoals(idUsuario: number) : Observable<Goals[]> {
-    return this.httpClient.get<Goals[]>(`${this.API_URL}/goals/${idUsuario}`)
+  userHasInterests(idUsuario: number) : Observable<{hasInterests: boolean}> {
+    console.log(`${this.API_URL}/interests/userHasInterests/${idUsuario}`)
+    return this.httpClient.get<{ hasInterests: boolean }>(`${this.API_URL}/interests/userHasInterests/${idUsuario}`);
   }
 
   updateInterests(idUsuario: number, interestId: number, interestName: string, color: string) : Observable<Interests> {
@@ -59,10 +59,15 @@ export class PanelService {
     );
   }
 
+  // Objetivos
+  getGoals(idUsuario: number) : Observable<Goals[]> {
+    return this.httpClient.get<Goals[]>(`${this.API_URL}/goals/${idUsuario}`)
+  }
+
   removeGoals(idUsuario: number, goalId: number) : Observable<Goals> {
     return this.httpClient.delete<Goals>(
       `${this.API_URL}/goals/${idUsuario}/delete/${goalId}`
-      );
+    );
   }
   
   addGoals(idUsuario: number, interestId: number, goalName: string, goalDescription: string, hoursPerWeek: number ) : Observable<Goals> {
@@ -74,10 +79,20 @@ export class PanelService {
         goals_description: goalDescription,
         hours_per_week: hoursPerWeek
       }
-      );
+    );
   }
 
-
+  updateGoals(idUsuario: number, goalsId: number, usersInterestsId: number, goalsName: string, description: string, hoursPerWeek: number) : Observable<Goals> {
+    return this.httpClient.patch<Goals>(
+      `${this.API_URL}/goals/${idUsuario}/update/${goalsId}`,
+      {
+        users_interests_id: usersInterestsId,
+        goals_name: goalsName,
+        description: description,
+        hours_per_week: hoursPerWeek
+      }
+    );
+  }
 
   // Disponibilidad
   getAvailability(idUsuario: number) : Observable<Availability[]> {
@@ -87,7 +102,7 @@ export class PanelService {
   removeAvailability(idUsuario: number, idAvailability: number) : Observable<Availability> {
     return this.httpClient.delete<Availability>(
       `${this.API_URL}/availability/${idUsuario}/${idAvailability}/delete`
-      );
+    );
   }
 
   addAvailability(idUsuario: number, dia_semana: number, hora_inicio: string, hora_fin: string) : Observable<Availability> {
@@ -98,7 +113,7 @@ export class PanelService {
         start_time: hora_inicio + ":00",
         end_time: hora_fin + ":00"
       }
-      );
+    );
   }
 
   updateAvailability(idUsuario: number, idAvailability: number, availabilityData: Partial<Availability>): Observable<Availability> {
@@ -107,6 +122,4 @@ export class PanelService {
       availabilityData
     );
   }
-
-
 }

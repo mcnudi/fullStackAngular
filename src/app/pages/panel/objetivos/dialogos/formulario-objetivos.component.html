@@ -12,8 +12,8 @@
 
     <!-- Grupo de interés -->
     <div class="mb-3">
-        <label for="interest_id" class="form-label">Interés asociado:</label>
-        <select class="form-control" id="interest_id" name="interest_id" class="form-control" formControlName="interest_id">
+        <label for="users_interests_id" class="form-label">Interés asociado:</label>
+        <select class="form-control" id="users_interests_id" name="users_interests_id" class="form-control" formControlName="users_interests_id">
         @for (interes of arrayIntereses; let i = $index; track interes) {
             <option 
                 [value]="interes.id">{{ interes.interest_name }}
@@ -39,7 +39,7 @@
         <button type="submit"
             class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">
             <mat-icon>save</mat-icon>
-            {{ modo === 'actualizar' ? 'Actualizar' : 'Añadir' }}
+            {{ modo === 'actualizar' ? 'Actualizar' : 'Añadir' }} <!-- Label del botón en función del modo -->
         </button>
         <button type="button"
             class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-error"

@@ -7,7 +7,7 @@ export interface Interests {
 export interface Goals {
   id?: number;
   users_id?: number;
-  interest_id?: number;
+  users_interests_id?: number;
   goals_name?: string;
   description?: string;
   hours_per_week?: number;
