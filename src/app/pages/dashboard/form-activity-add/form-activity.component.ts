@@ -1,119 +1,174 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  inject,
+  signal,
+  effect
+} from '@angular/core';
+import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Availability } from '../../../interfaces/ipanel.interface';
-import { Irutina } from '../../../interfaces/irutina.interface';
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms'
 import { Category } from '../../../interfaces/icategory.interface';
+import { CalendarEventsService } from '../../../services/dashboard-user.service';
 
 @Component({
   selector: 'app-form-activity',
+  standalone: true,
+  imports: [ReactiveFormsModule],
   templateUrl: './form-activity.component.html',
-  styleUrls: ['./form-activity.component.css']
+  styleUrl: './form-activity.component.css'
 })
-export class FormActivityComponent implements OnInit {
-
-  @Output() cerrar = new EventEmitter<void>();
-  @Input() objetoRutinaDefecto: any[] = [];
+export class FormActivityComponent {
+  @Input({ required: true }) objetoRutinaDefecto: any[] = [];
   @Input() disponibilidad: Availability[] = [];
   @Input() actividades: any[] = [];
-  @Input() categorias:Category []=[]
-  categoriaSeleccionada: number | null = null;
+  @Input() categorias: Category[] = [];
+  @Output() cerrar = new EventEmitter<void>();
 
-  horas: string[] = [];
-  diasDisponibles: number[] = [];
+  private calendarEventsService = inject(CalendarEventsService);
+  private fb = inject(FormBuilder);
+
   diaLabels = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Otro'];
+  horas = Array.from({ length: 48 }, (_, i) => {
+    const h = Math.floor(i / 2).toString().padStart(2, '0');
+    const m = i % 2 === 0 ? '00' : '30';
+    return `${h}:${m}`;
+  });
 
-  diaSeleccionado: number | null = null;
-  horaInicio: string | null = null;
-  horaFinal: string | null = null;
+  diasDisponibles = signal<number[]>([]);
+  horasFiltradas = signal<string[]>([]);
 
-  horasFiltradas: string[] = [];
+  form = this.fb.group({
+    titulo: this.fb.control<string | null>(null, Validators.required),
+    descripcion: this.fb.control<string | null>(null, Validators.required),
+    dia: this.fb.control<number | null>(null, Validators.required),
+    horaInicio: this.fb.control<string | null>(null, Validators.required),
+    horaFinal: this.fb.control<string | null>(null, Validators.required),
+    categoria: this.fb.control<number | null>(null, Validators.required)
+  });
+
+  constructor() {
+effect(() => {
+  const dia = this.form.get('dia')?.value;
+  if (dia !== undefined) {
+    this.actualizarHoras(dia);
+  }
+});
+
+  }
 
   ngOnInit() {
-    console.log("Esto es lo que esta llegando al formulario ",this.categorias)
-    // Generar ho
-    // ras cada 30 minutos: 00:00, 00:30, ..., 23:30
-    for (let h = 0; h < 24; h++) {
-      this.horas.push(h.toString().padStart(2, '0') + ':00');
-      this.horas.push(h.toString().padStart(2, '0') + ':30');
-    }
-
     const diasDisponibilidad = this.disponibilidad
       .map(d => d.weekday)
       .filter((d): d is number => typeof d === 'number');
 
     const diasActividades = this.actividades
-      .map(a => parseInt(a.day_of_week, 10))
-      .filter(d => !isNaN(d));
+      .map(a => a?.day_of_week)
+      .filter((d): d is string => typeof d === 'string')
+      .map(d => parseInt(d, 10))
+      .filter(n => !isNaN(n));
 
-    this.diasDisponibles = Array.from(new Set([...diasDisponibilidad, ...diasActividades])).sort();
+    const unicos = [...new Set([...diasDisponibilidad, ...diasActividades])].sort();
+    this.diasDisponibles.set(unicos);
 
-    if (this.diasDisponibles.length > 0) {
-      this.diaSeleccionado = this.diasDisponibles[0];
-      this.actualizarHoras();
+    if (unicos.length > 0) {
+      this.form.patchValue({ dia: unicos[0] });
     }
   }
 
-  onDiaChange() {
-    this.actualizarHoras();
-    this.horaInicio = null;
-    this.horaFinal = null;
-  }
-
-  actualizarHoras() {
-    if (this.diaSeleccionado === null) {
-      this.horasFiltradas = [];
+  actualizarHoras(diaSeleccionado: number | null) {
+    if (diaSeleccionado === null) {
+      this.horasFiltradas.set([]);
       return;
     }
 
-    const bloques = this.disponibilidad.filter(d => d.weekday === this.diaSeleccionado);
-    const actividadesDia = this.actividades.filter(a => parseInt(a.day_of_week, 10) === this.diaSeleccionado);
+    const bloques = this.disponibilidad.filter(d => d.weekday === diaSeleccionado);
+    const actividadesDia = this.actividades.filter(
+      a =>
+        typeof a?.day_of_week === 'string' &&
+        parseInt(a.day_of_week, 10) === diaSeleccionado
+    );
 
-    const horasSet = new Set<string>();
-
+    const disponibles = new Set<string>();
     for (const bloque of bloques) {
-      if (typeof bloque.start_time === 'string' && typeof bloque.end_time === 'string') {
-        const inicio = bloque.start_time.slice(0, 5);
-        const fin = bloque.end_time.slice(0, 5);
+      const inicio = typeof bloque.start_time === 'string' ? bloque.start_time.slice(0, 5) : '';
+      const fin = typeof bloque.end_time === 'string' ? bloque.end_time.slice(0, 5) : '';
+      if (!inicio || !fin) continue;
 
-        for (const h of this.horas) {
-          if (h >= inicio && h <= fin) {
-            horasSet.add(h);
-          }
-        }
+      for (const h of this.horas) {
+        if (h >= inicio && h <= fin) disponibles.add(h);
       }
     }
 
     for (const actividad of actividadesDia) {
-      if (typeof actividad.start_time === 'string' && typeof actividad.end_time === 'string') {
-        const inicioAct = actividad.start_time.slice(0, 5);
-        const finAct = actividad.end_time.slice(0, 5);
+      const inicio = typeof actividad.start_time === 'string' ? actividad.start_time.slice(0, 5) : '';
+      const fin = typeof actividad.end_time === 'string' ? actividad.end_time.slice(0, 5) : '';
+      if (!inicio || !fin) continue;
 
-        for (const h of this.horas) {
-          if (h >= inicioAct && h <= finAct) {
-            horasSet.delete(h);
-          }
-        }
+      for (const h of this.horas) {
+        if (h >= inicio && h <= fin) disponibles.delete(h);
       }
     }
 
-    this.horasFiltradas = Array.from(horasSet).sort();
+    this.horasFiltradas.set([...disponibles].sort());
   }
 
-  esValidoElRangoDeHoras(): boolean {
-    if (!this.horaInicio || !this.horaFinal) return true;
+  rangoValido(): boolean {
+    const inicio = this.form.get('horaInicio')?.value;
+    const fin = this.form.get('horaFinal')?.value;
 
-    const [hiH, hiM] = this.horaInicio.split(':').map(Number);
-    const [hfH, hfM] = this.horaFinal.split(':').map(Number);
+    if (!inicio || !fin || !inicio.includes(':') || !fin.includes(':')) return true;
 
-    const inicioMin = hiH * 60 + hiM;
-    const finMin = hfH * 60 + hfM;
+    const [hiH, hiM] = inicio.split(':').map(Number);
+    const [hfH, hfM] = fin.split(':').map(Number);
 
-    return finMin - inicioMin >= 30;
+    return (hfH * 60 + hfM) - (hiH * 60 + hiM) >= 30;
   }
 
-  cerrarFormulario() {
-    this.cerrar.emit();
+  enviar() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      alert('Por favor complete todos los campos requeridos');
+      return;
+    }
+
+    if (!this.rangoValido()) {
+      alert('La hora final debe ser al menos 30 minutos después de la hora de inicio');
+      return;
+    }
+const valoresForm = this.form.value;
+
+const nuevaActividad2 = {
+  routines_versions_id: this.objetoRutinaDefecto[1]?.routines_versions_id ?? 0,
+  title: valoresForm.titulo ?? '',
+  description: valoresForm.descripcion ?? '', // ← aquí garantizas string, no null
+  activity_categories_id: valoresForm.categoria ?? 0,
+  day_of_week: (valoresForm.dia ?? '').toString(),
+  start_time: (valoresForm.horaInicio ?? '') + ':00',
+  end_time: (valoresForm.horaFinal ?? '') + ':00'
+};
+
+const nuevaActividad = {
+  routines_versions_id: 13,
+  title: 'Ejercicio de prueba',
+  description: 'Actividad creada como prueba desde el componente',
+  activity_categories_id: 1,
+  day_of_week: '1',
+  start_time: '09:00:00',
+  end_time: '09:30:00'
+};
+
+
+
+    this.calendarEventsService.addNewActivity(nuevaActividad2).subscribe({
+      next: () => {
+        alert('Actividad creada correctamente');
+        this.cerrar.emit();
+      },
+      error: () => {
+        alert('Error creando actividad');
+      }
+    });
   }
 }

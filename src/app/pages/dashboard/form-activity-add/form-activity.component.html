@@ -1,121 +1,68 @@
-<div class="container my-4">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-10 col-lg-8">
-      <div class="card p-4 shadow">
-        <h2 class="mb-4 text-center">Crear Actividad</h2>
-        <form>
+<form [formGroup]="form" (ngSubmit)="enviar()" class="container my-4">
+  <div class="card p-4 shadow">
+    <h2 class="mb-4 text-center">Crear Actividad</h2>
 
-          <!-- Título -->
-          <div class="mb-3">
-            <label for="titulo" class="form-label">Título*</label>
-            <input type="text" id="titulo" name="titulo" class="form-control" />
-          </div>
+    <div class="mb-3">
+      <label for="titulo">Título*</label>
+      <input id="titulo" formControlName="titulo" class="form-control" />
+    </div>
 
-          <!-- Descripción -->
-          <div class="mb-3">
-            <label for="descripcion" class="form-label">Descripción*</label>
-            <input type="text" id="descripcion" name="descripcion" class="form-control" />
-          </div>
+    <div class="mb-3">
+      <label for="descripcion">Descripción*</label>
+      <input id="descripcion" formControlName="descripcion" class="form-control" />
+    </div>
 
-          <!-- Día dinámico -->
-          <div class="mb-3">
-            <label for="dia" class="form-label">Día*</label>
-            <select
-              id="dia"
-              name="dia"
-              class="form-select"
-              [value]="diaSeleccionado"
-              (change)="diaSeleccionado = +($any($event.target).value); onDiaChange()"
-            >
-              @for (dia of diasDisponibles; track $index) {
-                <option [value]="dia">{{ diaLabels[dia] }}</option>
-              }
-            </select>
-          </div>
-
-          <!-- Hora de inicio -->
-          <div class="mb-3">
-            <label for="horaInicio" class="form-label">Hora de Inicio*</label>
-            <select
-              id="horaInicio"
-              name="horaInicio"
-              class="form-select"
-              [value]="horaInicio"
-              (change)="horaInicio = $any($event.target).value"
-            >
-              <option value="" disabled selected>Seleccione hora</option>
-              @for (hora of horasFiltradas; track $index) {
-                <option [value]="hora">{{ hora }}</option>
-              }
-            </select>
-          </div>
-
-          <!-- Hora final -->
-          <div class="mb-3">
-            <label for="horaFinal" class="form-label">Hora Final*</label>
-            <select
-              id="horaFinal"
-              name="horaFinal"
-              class="form-select"
-              [value]="horaFinal"
-              (change)="horaFinal = $any($event.target).value"
-            >
-              <option value="" disabled selected>Seleccione hora</option>
-              @for (hora of horasFiltradas; track $index) {
-                <option [value]="hora">{{ hora }}</option>
-              }
-            </select>
-          </div>
-        <!-- Validación de diferencia de horas -->
-        @if (!esValidoElRangoDeHoras() && horaInicio && horaFinal) {
-          <div class="text-danger mb-3">
-            La hora final debe ser al menos una hora posterior a la hora de inicio.
-          </div>
+    <div class="mb-3">
+      <label for="dia">Día*</label>
+      <select id="dia" formControlName="dia" class="form-select">
+        @for (dia of diasDisponibles(); track dia) {
+          <option [value]="dia">{{ diaLabels[dia] }}</option>
         }
-          <!-- Categoría -->
-          <div class="mb-3">
-            <label for="categoria" class="form-label">Categoría*</label>
-            <select
-              id="categoria"
-              name="categoria"
-              class="form-select"
-              ngModelOptions="{ standalone: true }"
-            >
-              <option value="" disabled selected>Seleccione una categoría</option>
-              @for (categoria of categorias; track categoria.id) {
-                <option [value]="categoria.id">{{ categoria.category_name}}</option>
-              }
-            </select>
-          </div>
+      </select>
+    </div>
 
-          <!-- Rutinas -->
-            <!-- Mostrar la rutina seleccionada -->
-              <div class="mb-3">
-              <label class="form-label">Rutina</label>
-              <input
-                type="text"
-                class="form-control"
-                [value]="objetoRutinaDefecto[0]?.name"
-                disabled
-              />
-            </div>
+    <div class="mb-3">
+      <label for="horaInicio">Hora de Inicio*</label>
+      <select id="horaInicio" formControlName="horaInicio" class="form-select">
+        <option value="">Seleccione hora</option>
+        @for (hora of horasFiltradas(); track hora) {
+          <option [value]="hora">{{ hora }}</option>
+        }
+      </select>
+    </div>
 
-          <!-- Botones -->
-          <div class="d-flex justify-content-between">
-            <button type="submit" class="mt-2 btn-primary-color btn-custom mb-3 mx-auto centered-button">
-              Crear Actividad
-            </button>
-            <button
-              type="button"
-              class="mt-2 btn-primary-color btn-custom mb-3 mx-auto centered-button"
-              (click)="cerrarFormulario()"
-            >
-              Cancelar
-            </button>
-          </div>
+    <div class="mb-3">
+      <label for="horaFinal">Hora Final*</label>
+      <select id="horaFinal" formControlName="horaFinal" class="form-select">
+        <option value="">Seleccione hora</option>
+        @for (hora of horasFiltradas(); track hora) {
+          <option [value]="hora">{{ hora }}</option>
+        }
+      </select>
+    </div>
 
-        </form>
-      </div>
+    @if (!rangoValido() && form.get('horaInicio')?.value && form.get('horaFinal')?.value) {
+      <div class="text-danger mb-3">La hora final debe tener al menos 30 minutos de diferencia con la de inicio.</div>
+    }
+
+    <div class="mb-3">
+      <label for="categoria">Categoría*</label>
+      <select id="categoria" formControlName="categoria" class="form-select">
+        <option value="">Seleccione una categoría</option>
+        @for (cat of categorias; track cat.id) {
+          <option [value]="cat.id">{{ cat.category_name }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label>Rutina</label>
+      <input class="form-control" [value]="objetoRutinaDefecto[0]?.name" disabled />
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <button type="submit" class="btn btn-primary">Crear Actividad</button>
+      <button type="button" class="btn btn-secondary" (click)="cerrar.emit()">Cancelar</button>
     </div>
   </div>
-</div>
+</form>

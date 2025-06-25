@@ -124,6 +124,7 @@ eventosFiltradosPorRutina: EventInput[] = [];
 
   ngOnInit(): void {
 
+
     /*Conseguimos la información del usuario*/
     this.username = this.authService.getUserName();
 
