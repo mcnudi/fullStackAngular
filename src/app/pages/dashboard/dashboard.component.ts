@@ -192,6 +192,7 @@ eventosFiltradosPorRutina: EventInput[] = [];
           },
         });
 
+
         /*Conseguimos intereses*/
         this.panelService.getInterests(userId).subscribe({
           next: (data: Interests[]) => {
@@ -213,7 +214,16 @@ eventosFiltradosPorRutina: EventInput[] = [];
 
   abrirFormularioActividad() {
     this.mostrarFormularioActividad = true;
-     //Me devuelve un 12
+
+            this.ruinaService.obtenerRutinas(this.rutinaSeleccionada).subscribe({
+          next: (data: any[]) => {
+            this.objetoRutinaDefecto = data || [];
+          },
+          error: (error) => {
+            console.log('Error al cargar rutinas :', error);
+          },
+
+        });
   }
 
   cerrarFormularioActividad() {

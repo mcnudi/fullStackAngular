@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Availability } from '../../../interfaces/ipanel.interface';
+import { Irutina } from '../../../interfaces/irutina.interface';
 
 @Component({
   selector: 'app-form-activity',
@@ -9,7 +10,7 @@ import { Availability } from '../../../interfaces/ipanel.interface';
 export class FormActivityComponent implements OnInit {
 
   @Output() cerrar = new EventEmitter<void>();
-  @Input() objetoRutinaFormulario: any[] = [];
+  @Input() objetoRutinaDefecto: any[] = [];
   @Input() disponibilidad: Availability[] = [];
   @Input() actividades: any[] = [];
 
@@ -24,7 +25,9 @@ export class FormActivityComponent implements OnInit {
   horasFiltradas: string[] = [];
 
   ngOnInit() {
-    // Generar horas cada 30 minutos: 00:00, 00:30, ..., 23:30
+    console.log("Esto es lo que esta llegando al formulario ",this.objetoRutinaDefecto)
+    // Generar ho
+    // ras cada 30 minutos: 00:00, 00:30, ..., 23:30
     for (let h = 0; h < 24; h++) {
       this.horas.push(h.toString().padStart(2, '0') + ':00');
       this.horas.push(h.toString().padStart(2, '0') + ':30');
