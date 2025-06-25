@@ -42,6 +42,7 @@ export class DashboardComponent {
     private panelService: PanelService,
     private ruinaService: RutinaService
   ) {}
+eventosFiltradosPorRutina: EventInput[] = [];
 
   username: string = '';
   intereses: Interests[] = [];
@@ -52,6 +53,10 @@ export class DashboardComponent {
   profileImage: string =
     'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
   mostrarFormularioActividad = false;
+
+  objetoRutinaDefecto:any[]=[];
+
+
 
   actividadesPorRutina: any[] = [];
 
@@ -138,7 +143,8 @@ export class DashboardComponent {
             for (let i = 0; i < this.rutinas.length; i++) {
               if (this.rutinas[i].is_default == 1) {
                 this.rutinaSeleccionada = this.rutinas[i].id;
-                this.rutinaSeleccionadaAnterior = this.rutinas[i].id; // Inicializa también aquí
+                this.objetoRutinaDefecto = this.rutinas[i];
+ // Inicializa también aquí
               }
             }
           },
@@ -169,7 +175,6 @@ export class DashboardComponent {
                 data
               );
               this.actividades = data || [];
-              this.rutinaSeleccionada;
             },
             error: (error) => {
               console.log('Error al cargar actividades:', error);
@@ -208,6 +213,7 @@ export class DashboardComponent {
 
   abrirFormularioActividad() {
     this.mostrarFormularioActividad = true;
+     //Me devuelve un 12
   }
 
   cerrarFormularioActividad() {
@@ -232,72 +238,73 @@ export class DashboardComponent {
     return `${hours}:${minutes}:${seconds}`; // Formato 'HH:mm:ss'
   }
 
-  aplicarFiltros() {
-    debugger;
-    if (this.filtroTipo === 'actividad' || this.filtroTipo === '') {
-      console.log('Filtro de Actividades aplicado o Todos seleccionado');
-      // Comprobar si la rutina seleccionada ha cambiado o si el filtro es 'Todos' o 'actividad'
-      if (
-        this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior ||
-        this.filtroTipo === 'actividad' ||
-        this.filtroTipo === ''
-      ) {
-        this.rutinaSeleccionadaAnterior = this.rutinaSeleccionada;
+ aplicarFiltros() {
+  if (this.filtroTipo === 'actividad' || this.filtroTipo === '') {
+    console.log('Filtro de Actividades aplicado o Todos seleccionado');
 
-        // Llama al servicio para obtener las actividades de la rutina seleccionada
-        this.calendarEventsService
-          .getActivitiesByRoutineId(this.rutinaSeleccionada)
-          .subscribe({
-            next: (data: any[]) => {
-              console.log(
-                'Actividades recibidas de la rutina :' +
-                  this.rutinaSeleccionada,
-                data
+    if (
+      this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior ||
+      this.filtroTipo === 'actividad' ||
+      this.filtroTipo === ''
+    ) {
+      this.rutinaSeleccionadaAnterior = this.rutinaSeleccionada;
+
+
+      this.calendarEventsService
+        .getActivitiesByRoutineId(this.rutinaSeleccionada)
+        .subscribe({
+          next: (data: any[]) => {
+            console.log(
+              'Actividades recibidas de la rutina :' +
+                this.rutinaSeleccionada,
+              data
+            );
+            this.actividades = data || [];
+
+            const activityEvents: EventInput[] = this.actividades.map(
+              (act) => ({
+                title: `${act.title}${
+                  act.description ? ' - ' + act.description : ''
+                }`,
+                daysOfWeek: [act.day_of_week],
+                startTime: act.start_time,
+                endTime: act.end_time,
+                display: 'auto',
+                color: '#64b5f6',
+                id: `activity-${act.id}`,
+              })
+            );
+
+            // Actualizamos la nueva variable sin tocar eventosOriginales
+            this.eventosFiltradosPorRutina = activityEvents;
+
+            let disponibilidadEvents: EventInput[] = [];
+            if (this.filtroTipo !== 'actividad') {
+              disponibilidadEvents = this.eventosOriginales.filter(
+                (ev: EventInput) =>
+                  ev.id && ev.id.toString().startsWith('disponibilidad-')
               );
-              this.actividades = data || [];
+            }
 
-              const activityEvents: EventInput[] = this.actividades.map(
-                (act) => ({
-                  title: `${act.title}${
-                    act.description ? ' - ' + act.description : ''
-                  }`,
-                  daysOfWeek: [act.day_of_week], // 1 (lunes) al 7 (domingo)
-                  startTime: act.start_time,
-                  endTime: act.end_time,
-                  display: 'auto',
-                  color: '#64b5f6',
-                  id: `activity-${act.id}`,
-                })
-              );
-
-              // Mantener eventos de disponibilidad si el filtro no es 'actividad' exclusivo
-              let disponibilidadEvents: EventInput[] = [];
-              if (this.filtroTipo !== 'actividad') {
-                disponibilidadEvents = this.eventosOriginales.filter(
-                  (ev: EventInput) =>
-                    ev.id && ev.id.toString().startsWith('disponibilidad-')
-                );
-              }
-
-              this.calendarOptions.events = [
-                ...disponibilidadEvents,
-                ...activityEvents,
-              ];
-            },
-            error: (error) => {
-              console.log('Error al cargar actividades:', error);
-            },
-          });
-      }
-    } else if (this.filtroTipo === 'disponibilidad') {
-      console.log('Filtro de Disponibilidad aplicado');
-      // Si el filtro es 'Disponibilidad', solo muestra los eventos de disponibilidad
-      this.calendarOptions.events = this.eventosOriginales.filter(
-        (ev: EventInput) =>
-          ev.id && ev.id.toString().startsWith('disponibilidad-')
-      );
+            this.calendarOptions.events = [
+              ...disponibilidadEvents,
+              ...activityEvents,
+            ];
+          },
+          error: (error) => {
+            console.log('Error al cargar actividades:', error);
+          },
+        });
     }
+  } else if (this.filtroTipo === 'disponibilidad') {
+    console.log('Filtro de Disponibilidad aplicado');
+    this.calendarOptions.events = this.eventosOriginales.filter(
+      (ev: EventInput) =>
+        ev.id && ev.id.toString().startsWith('disponibilidad-')
+    );
   }
+}
+
 
   limpiarFiltros() {
     this.filtroTipo = '';

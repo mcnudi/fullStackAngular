@@ -9,7 +9,7 @@ import { Availability } from '../../../interfaces/ipanel.interface';
 export class FormActivityComponent implements OnInit {
 
   @Output() cerrar = new EventEmitter<void>();
-  @Input() rutinaSeleccionada: any[] = [];
+  @Input() objetoRutinaFormulario: any[] = [];
   @Input() disponibilidad: Availability[] = [];
   @Input() actividades: any[] = [];
 

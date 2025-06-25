@@ -167,7 +167,7 @@
 <div class="modal-overlay" (click)="cerrarFormularioActividad()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <app-form-activity
-      [rutinaSeleccionada]="rutinaSeleccionada"
+      [objetoRutinaFormulario]="objetoRutinaDefecto"
       [disponibilidad]="availability"
       [actividades]="actividades"
       (cerrar)="cerrarFormularioActividad()"
