@@ -19,6 +19,7 @@ import { forkJoin } from 'rxjs';
 import { FormActivityComponent } from './form-activity-add/form-activity.component';
 import { FormInfoActivityComponent } from './form-info-activity/form-info-activity.component'; // <-- Importar forkJoin
 import { RutinaService } from '../../services/rutina.service';
+import { Category } from '../../interfaces/iCategory';
 
 @Component({
   selector: 'app-dashboard',
@@ -46,6 +47,7 @@ export class DashboardComponent {
   intereses: Interests[] = [];
   availability: Availability[] = [];
   actividades: Activity[] = [];
+  categorias: Category[] = [];
   rutinas: any[] = [];
   profileImage: string =
     'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
@@ -141,6 +143,22 @@ export class DashboardComponent {
             }
           },
         });
+          /*Sacar categorias.*/
+        this.calendarEventsService
+          .getAllCategories()
+          .subscribe({
+            next: (data: any[]) => {
+              console.log(
+                'Categorias:',
+                data
+              );
+              this.categorias = data || [];
+            },
+            error: (error) => {
+              console.log('Error al cargar categorias:', error);
+            },
+          });
+
         /*Conseguimos Actividades de la Rutina por defecto (is_selected=1)*/
         this.calendarEventsService
           .getActivitiesByRoutineByDefault(userId)

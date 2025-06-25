@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { Category } from '../interfaces/iCategory';
 
 @Injectable({ providedIn: 'root' })
 export class CalendarEventsService {
@@ -33,6 +34,14 @@ export class CalendarEventsService {
   getActivitiesByRoutineId(routineId: number): Observable<any[]> {
     return this.http
       .get<any[]>(`http://localhost:3000/api/activities/selectActivitiesByRoutine/${routineId}`)
+      .pipe(
+        catchError(() => of([]))
+      );
+  }
+
+    getAllCategories(): Observable<Category[]> {
+    return this.http
+      .get<Category[]>(`http://localhost:3000/api/categories/getAllCategories`)
       .pipe(
         catchError(() => of([]))
       );
