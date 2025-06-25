@@ -65,7 +65,12 @@ effect(() => {
   }
 
   ngOnInit() {
-console.log(this.rutinaSeleccionada)
+this.form.get('categoria')?.valueChanges.subscribe(value => {
+  if (typeof value === 'string') {
+    this.form.get('categoria')?.setValue(Number(value), { emitEvent: false });
+  }
+});
+
 
     const diasDisponibilidad = this.disponibilidad
       .map(d => d.weekday)
@@ -150,16 +155,6 @@ const valoresForm = this.form.value;
 const rutinaId = Array.isArray(this.rutinaSeleccionada) || this.rutinaSeleccionada === undefined
   ? 0
   : this.rutinaSeleccionada;
-/*
-const nuevaActividad = {
-  routines_versions_id: this.rutinaId,
-  title: valoresForm.titulo ?? '',
-  description: valoresForm.descripcion ?? '',
-  activity_categories_id: valoresForm.categoria ?? 0,
-  day_of_week: "2"                       /*(valoresForm.dia ?? '').toString(),
-  start_time: (valoresForm.horaInicio ?? '') + ':00',
-  end_time: (valoresForm.horaFinal ?? '') + ':00'
-};*/
 
 const nuevaActividad2 = {
   routines_versions_id: rutinaId,

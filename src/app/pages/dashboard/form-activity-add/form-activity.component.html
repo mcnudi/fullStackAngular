@@ -48,12 +48,13 @@
 <div class="mb-3">
   <label for="categoria">Categoría*</label>
   <select id="categoria" formControlName="categoria" class="form-select">
-    <option [ngValue]="null" disabled>Seleccione una categoría</option>
+    <option value="" disabled selected>Seleccione una categoría</option>
     @for (cat of categorias; track cat.id) {
-      <option [ngValue]="cat.id">{{ cat.category_name }}</option>
+      <option [value]="cat.id">{{ cat.category_name }}</option>
     }
   </select>
 </div>
+
 
 
     <div class="mb-3">
