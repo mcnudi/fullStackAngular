@@ -7,13 +7,13 @@
       <p>{{ descripcion }}</p>
     </div>
     <div class="d-flex d-flex justify-content-center gap-2">
-      <button class="d-flex align-content-center btn-custom btn-primary-color" (click)="volver()">
+      <button class="btn-custom btn-primary-color d-flex align-items-center justify-content-center gap-2" (click)="volver()">
         <mat-icon>arrow_back</mat-icon>
         Volver
       </button>
      
       <button
-        class="d-flex align-content-center btn-custom btn-primary-color"
+        class="btn-custom btn-primary-color d-flex align-items-center justify-content-center gap-2"
         type="submit"
         (click)="crearTarea()"
       >
@@ -21,7 +21,7 @@
         Crear Tarea
       </button>
 
-      <button class="d-flex align-content-center btn-custom btn-primary-color" (click)="actualizarTarea()">
+      <button class="btn-custom btn-primary-color d-flex align-items-center justify-content-center gap-2" (click)="actualizarTarea()">
         <mat-icon>update</mat-icon>
         Actualizar
       </button>
