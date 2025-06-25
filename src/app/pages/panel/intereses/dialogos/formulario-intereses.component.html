@@ -11,10 +11,11 @@
     </div>
 
     <!-- Grupo de color -->
-    <div class="mb-3">
+    <div class="mb-3 d-flex justify-content-between">
         <label for="color" class="form-label">Color a mostrar:</label>
-        <div class="d-flex gap-2">
-            <input type="color" id="color" class="form-control" formControlName="color">
+        <div >
+            <input type="color" value="#6600ff" oninput="colorhex.value=value" formControlName="color">
+            <output id="colorhex">#6600ff</output>
         </div>
     </div>
 
@@ -23,7 +24,7 @@
         <button type="submit"
             class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">
             <mat-icon>save</mat-icon>
-            {{ modo === 'actualizar' ? 'Actualizar' : 'Añadir' }}
+            {{ modo === 'actualizar' ? 'Actualizar' : 'Añadir' }} <!-- Label del botón en función del modo -->
         </button>
         <button type="button"
             class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-error"

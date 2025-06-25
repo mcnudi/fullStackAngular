@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { Availability, Goals, Interests } from '../interfaces/ipanel.interface';
 import { AuthService } from './auth.service';
 
@@ -14,6 +14,15 @@ export class PanelService {
   
   private API_URL: string = 'http://localhost:3000/api';
 
+  // Experimental
+  private actualizarObjetivosSubject = new Subject<void>();
+  actualizarObjetivos$ = this.actualizarObjetivosSubject.asObservable();
+
+  notificarActualizacionObjetivos() {
+    this.actualizarObjetivosSubject.next();
+  }
+  // FIN Experimental
+  
   // Intereses
   getInterests(idUsuario: number) : Observable<Interests[]> {
     return this.httpClient.get<Interests[]>(`${this.API_URL}/interests/${idUsuario}`)
@@ -38,6 +47,16 @@ export class PanelService {
   // Objetivos
   getGoals(idUsuario: number) : Observable<Goals[]> {
     return this.httpClient.get<Goals[]>(`${this.API_URL}/goals/${idUsuario}`)
+  }
+
+  updateInterests(idUsuario: number, interestId: number, interestName: string, color: string) : Observable<Interests> {
+    return this.httpClient.patch<Interests>(
+      `${this.API_URL}/interests/${idUsuario}/update/${interestId}`,
+      {
+        interestName: interestName,
+        color: color
+      }
+    );
   }
 
   removeGoals(idUsuario: number, goalId: number) : Observable<Goals> {
