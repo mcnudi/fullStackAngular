@@ -35,24 +35,40 @@ export class RutinaService {
     return this.http.get<Irutina[]>(`${this.baseURL}/${id}`);
   }
 
-  obtenerRutinaVersiones(id:number,page:number):Observable<IRutinaPaginada>{
-    console.log("la rutina es:",id);
-    return this.http.get<IRutinaPaginada>(`${this.baseURL}/version/${id}/${page}`);
+  obtenerRutinaVersiones(
+    id: number,
+    page: number
+  ): Observable<IRutinaPaginada> {
+    console.log('la rutina es:', id);
+    return this.http.get<IRutinaPaginada>(
+      `${this.baseURL}/version/${id}/${page}`
+    );
   }
-  
+
   generarRutina(id: number): Observable<RecommendedActivities[]> {
     return this.http.get<RecommendedActivities[]>(
       `${this.baseURL}/generate/${id}`
     );
   }
 
-  ponerVersionPorDefecto(rutina:number, idVersion:number):Observable<number> {
-    return this.http.put<number>(`${this.baseURL}/version/${rutina}`,{idVersion});
+  ponerVersionPorDefecto(
+    rutina: number,
+    idVersion: number
+  ): Observable<number> {
+    return this.http.put<number>(`${this.baseURL}/version/${rutina}`, {
+      idVersion,
+    });
   }
 
   descargarPdf(rutinaId: number) {
     return this.http.get(`${this.baseURL}/generatePdf/${rutinaId}`, {
-      responseType: 'blob', 
+      responseType: 'blob',
+    });
+  }
+
+  compartirRutina(rutinaId: number, correo: string): Observable<any> {
+    return this.http.post(`${this.baseURL}/sendMail/${rutinaId}`, {
+      email: correo,
     });
   }
 }
