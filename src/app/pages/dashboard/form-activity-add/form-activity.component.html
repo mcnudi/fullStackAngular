@@ -72,13 +72,33 @@
             La hora final debe ser al menos una hora posterior a la hora de inicio.
           </div>
         }
+          <!-- Categoría -->
+          <div class="mb-3">
+            <label for="categoria" class="form-label">Categoría*</label>
+            <select
+              id="categoria"
+              name="categoria"
+              class="form-select"
+              ngModelOptions="{ standalone: true }"
+            >
+              <option value="" disabled selected>Seleccione una categoría</option>
+              @for (categoria of categorias; track categoria.id) {
+                <option [value]="categoria.id">{{ categoria.category_name}}</option>
+              }
+            </select>
+          </div>
 
           <!-- Rutinas -->
             <!-- Mostrar la rutina seleccionada -->
               <div class="mb-3">
-                <label class="form-label">Rutina</label>
-              <input type="text" class="form-control" [value]="objetoRutinaDefecto[0]?.name" readonly>
-              </div>
+              <label class="form-label">Rutina</label>
+              <input
+                type="text"
+                class="form-control"
+                [value]="objetoRutinaDefecto[0]?.name"
+                disabled
+              />
+            </div>
 
           <!-- Botones -->
           <div class="d-flex justify-content-between">
