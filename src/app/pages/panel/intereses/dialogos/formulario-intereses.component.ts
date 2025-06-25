@@ -39,7 +39,7 @@ export class FormularioInteresesComponent implements OnInit {
     if (this.modo === 'actualizar' && this.interesActual) {
       this.interestsForm.patchValue({
         interest_name: this.interesActual.interest_name,
-        color: '#' + this.interesActual.color // Formato hexadecimal.... cuando inserte en BD tal vez ya lleve el #
+        color: this.interesActual.color // Formato hexadecimal.... cuando inserte en BD tal vez ya lleve el #
       });
     }
   }
@@ -55,18 +55,33 @@ export class FormularioInteresesComponent implements OnInit {
     }
     const { interest_name, color } = this.interestsForm.value;
 
-      // Si es añadir...
-    this.addInterest({ interest_name, color } as Interests);
-      // Si es actualizar...
-    
+    if (this.modo === 'añadir') {
+      this.addInterest({ interest_name, color } as Interests);
+    } else { // 'actualizar'
+      this.updateInterest({ id: this.interesActual.id, interest_name, color } as Interests);
+    }
   }
 
   addInterest(elemento: Interests) {
     this.panelService.addInterests(this.authService.getDecodedToken().id, elemento.interest_name!, elemento.color!).subscribe( {
       next: (data: Interests) => {
-
-        //this.dialogRef?.close(data); // devuelve el interés insertado
         this.toastService.showSuccess('Interés añadido correctamente.');
+        this.dialogRef?.close(this.interestsForm.value);
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
+  updateInterest(elementoActualizador: Interests) {
+    this.panelService.updateInterests(
+                                      this.authService.getDecodedToken().id,
+                                      elementoActualizador.id!, 
+                                      elementoActualizador.interest_name!,
+                                      elementoActualizador.color!).subscribe( {
+      next: (data: Interests) => {
+        this.toastService.showSuccess('Interés Actualizado correctamente.');
         this.dialogRef?.close(this.interestsForm.value);
       },
       error: (error) => {
