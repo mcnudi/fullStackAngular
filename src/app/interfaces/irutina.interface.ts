@@ -5,6 +5,7 @@ export interface Irutina {
   usuario:string;
   is_shared:boolean;
   is_frequent:boolean;
+  is_default:boolean;
   id:number;
   version_number:number;
   idVersion:number;

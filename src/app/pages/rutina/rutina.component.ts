@@ -7,10 +7,11 @@ import { RutinaService } from '../../services/rutina.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-rutina',
-  imports: [ReactiveFormsModule, MatIconModule,MatSlideToggleModule],
+  imports: [ReactiveFormsModule, MatIconModule,MatSlideToggleModule,NgClass],
   templateUrl: './rutina.component.html',
   styleUrl: './rutina.component.css'
 })
@@ -37,7 +38,7 @@ export class RutinaComponent {
     this.rutinaForm = new FormGroup({
     name: new FormControl(this.valor?.name||"", [Validators.required,this.textoValidator]),
     descripcion: new FormControl(this.valor?.description||"", [Validators.required,this.textoValidator]),
-    defecto: new FormControl('false', )
+    //defecto: new FormControl('false', )
     
   });
   }
@@ -53,6 +54,7 @@ export class RutinaComponent {
         console.log("Respuesta del backend:", res);
         this.tablarutina = res;
         this.valor = this.tablarutina[0];
+        this.defect =this.valor.is_default;
          this.initForm();
       },
       error: (err) => {
@@ -76,12 +78,13 @@ export class RutinaComponent {
       this.irutina.usuario=this.authService.getDecodedToken().id;
       const rutina = this.routerL.snapshot.paramMap.get('id');
       this.irutina.id = Number(rutina);
-      if (this.irutina.defecto){
+      this.irutina.defecto = this.defect;
+      /*if (this.irutina.defecto){
         this.irutina.defecto=true;
       }
       else{
       this.irutina.defecto=false;
-      }
+      }*/
       if (this.url.startsWith('/app/anadirRutina/usuario')){//Alta
       this.serviceRutina.insertRutina(this.irutina).subscribe({//ver el id que devuelve
         next: (res) => {console.log("Respuesta del backend:", res),
@@ -114,8 +117,11 @@ export class RutinaComponent {
   
   }
   
-  esDefecto(event: MatSlideToggleChange){
-    this.defect = event.checked;
+  esDefecto(){
+    if (this.defect===true)
+      this.defect = false;
+    else 
+      this.defect=true;
   }
 
    textoValidator(control: AbstractControl): any {
@@ -143,8 +149,8 @@ cancelar(){
 initForm(){
   this.rutinaForm = new FormGroup({
     name: new FormControl(this.valor?.name||"", [Validators.required,this.textoValidator]),
-    descripcion: new FormControl(this.valor?.description||"", [Validators.required,this.textoValidator]),
-    defecto: new FormControl('false', )
+    descripcion: new FormControl(this.valor?.description||"", [Validators.required,this.textoValidator])
+    //defecto: new FormControl('false', )
   });
 }
 }
