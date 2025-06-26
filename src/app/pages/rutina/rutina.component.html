@@ -62,16 +62,25 @@
                 }
                 </td>
               </tr>
-
              <tr>
               <td class="td-label text-start"></td>
                 <td class="text-start">
-                 <mat-slide-toggle 
+                  <div class="d-flex align-items-center gap-2">
+                  <span class="pill-element d-flex align-items-center gap-1 p-2" (click)="esDefecto()">
+                    <mat-icon [ngClass]="{ 'invisible': defect }">remove_circle</mat-icon>
+                    <mat-icon [ngClass]="{ 'invisible': !defect }">check_circle</mat-icon>
+                  </span>
+                  <span>Añadir como rutina por defecto</span>
+                  </div>
+                  <!--<span class="pill-element"></span> --> 
+                 <!-- <button class="pill-element">Botón pastilla</button>-->
+                 <!----> 
+                 <!--<mat-slide-toggle class="custom-slide-toggle"
                   formControlName="defecto"
                   (change)="esDefecto($event)"
                   [checked]="defect">
                 </mat-slide-toggle>
-                 <span class="me-3">Añadir como rutina por defecto</span>
+                 <span class="me-3">Añadir como rutina por defecto</span>-->
                 </td>
                 
               </tr>

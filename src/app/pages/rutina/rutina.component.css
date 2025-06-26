@@ -19,3 +19,12 @@ table td {
   white-space: nowrap;
   vertical-align: middle;
 }
+
+.pill-element {
+  
+  
+  
+  
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
