@@ -76,4 +76,9 @@ export class DisponibilidadComponent implements OnInit {
       }
     });
   }
+
+  hasDisponibilidad(diaIndex: number): boolean {
+    return this.arrayDisponibilidad.some(item => item.weekday === diaIndex + 1);
+  }
+
 }

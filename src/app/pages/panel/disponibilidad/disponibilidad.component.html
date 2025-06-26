@@ -7,7 +7,7 @@
     </mat-expansion-panel-header>
     <!-- $index es 0-based y se ha acordado que sea 1-based (1-lunes, 7-domingo). Trataremos (i + 1) para cumplirlo-->
     @for (diaConDisponibilidad of diasSemana; let i = $index; track diaConDisponibilidad) {
-        <mat-expansion-panel [expanded]='true' id=diaConDisponibilidad.value>
+        <mat-expansion-panel [expanded]='true' id=diaConDisponibilidad.value [class]="{ 'sin-disponibilidad': !hasDisponibilidad(i) }">
             <mat-expansion-panel-header class="header-color-mat cabecera-interior">
                 <span class="mb-0">
                     {{ diaConDisponibilidad}}                  
