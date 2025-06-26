@@ -4,11 +4,10 @@ import { RutinaService } from '../../services/rutina.service';
 import { Irutina } from '../../interfaces/irutina.interface';
 import { DatePipe } from '@angular/common';
 import { ToastService } from '../../services/toast.service';
-import { IRutinaPaginada } from '../../interfaces/i-rutina-paginada';
+import { IRutinaPaginada } from '../../interfaces/i-rutina-paginada.interface';
 import { InputDialogComponent } from '../../shared/select-dialog/input-dialog.component';
 import { DialogService } from '../../services/dialog.service';
 import { UserService } from '../../services/user.service';
-//import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
@@ -51,6 +50,10 @@ export class DetalleRutinaComponent {
 
           this.descripcion = this.tablarutina[0].description;
           this.nombre = this.tablarutina[0].name;
+          if (this.pageTotales===this.page){
+            this.deshabilitarA = true;
+            this.deshabilitarD = true;
+          }
         },
         error: (err) => console.error('Error al obtener la rutina:', err),
       });
