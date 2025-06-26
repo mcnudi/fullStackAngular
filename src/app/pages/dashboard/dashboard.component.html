@@ -87,7 +87,13 @@
             <hr class="mb-3" />
             <div
               class="objetivos-list rounded p-3 flex-grow-1"
-              style="overflow-y: auto"
+                      style="
+          max-width: auto;
+          min-height: 100px;
+          max-height: 420px;
+          overflow-y: auto;
+          overflow-x: hidden;
+        "
             >
               <ul class="list-unstyled mb-0">
                 @if(actividades.length>0){ @for (actividad of actividades; track
@@ -166,6 +172,7 @@
   <div class="modal-content" (click)="$event.stopPropagation()">
     <app-form-activity
       [objetoRutinaDefecto]="objetoRutinaDefecto"
+      [rutinaSeleccionada]="rutinaSeleccionada"
       [disponibilidad]="availability"
       [actividades]="actividades"
       [categorias]="categorias"
