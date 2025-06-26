@@ -30,6 +30,7 @@ export class RutinaComponent {
   title:string = "";
   url:string = '';
   tablarutina: Irutina[] = [];
+  rutina1:number=0;
 
   constructor(){
     
@@ -45,9 +46,9 @@ export class RutinaComponent {
     this.url = this.router.url;
     if (this.url.startsWith('/app/anadirRutina/tarea')){
       const rutina = this.routerL.snapshot.paramMap.get('id');
-      const rutina1=Number(rutina);
+      this.rutina1=Number(rutina);
       this.title = "Modificar Rutina";
-      this.serviceRutina.obtenerRutinas(rutina1).subscribe({
+      this.serviceRutina.obtenerRutinas(this.rutina1).subscribe({
       next: (res) => {
         console.log("Respuesta del backend:", res);
         this.tablarutina = res;
@@ -130,10 +131,14 @@ checkControl(controlName: string, errorName: string): boolean | undefined {
     );
   }
 cancelar(){
+  if (this.url.startsWith('/app/anadirRutina/tarea')){
+    this.irdetalle();
+  }else{
   this.router.navigate(['/app/rutina/']);
+  }
 }
  irdetalle(){
-  this.router.navigate(['/app/detalleRutina']);
+  this.router.navigate(['/app/detalles/',this.rutina1]);
 } 
 initForm(){
   this.rutinaForm = new FormGroup({

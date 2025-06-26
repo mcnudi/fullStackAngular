@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Irutina } from '../interfaces/irutina.interface';
 import { Observable } from 'rxjs';
 import { RecommendedActivities } from '../interfaces/irecomendedActivity';
-import { IRutinaPaginada } from '../interfaces/i-rutina-paginada';
+import { IRutinaPaginada } from '../interfaces/i-rutina-paginada.interface';
 
 @Injectable({
   providedIn: 'root',
