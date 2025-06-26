@@ -18,14 +18,21 @@ ul {
 
 .panel-content {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 5px;
 }
 
 .elemento_texto_lista {
     flex-grow: 1;
-    display: inline;
+    display: block;
     padding: 7px;
     border: 1px solid lightgray;
     border-radius: 7px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+pre {
+    white-space: pre-wrap;
+    word-break: break-word;
 }
