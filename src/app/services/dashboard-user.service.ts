@@ -60,4 +60,12 @@ export class CalendarEventsService {
       return this.http.post('http://localhost:3000/api/activities/create', actividad);
     }
 
+      getIdVersionRoutine(routineId: number): Observable<any[]> {
+    return this.http
+      .get<any[]>(`http://localhost:3000/api/activities/max-version/${routineId}`)
+      .pipe(
+        catchError(() => of([]))
+      );
+  }
+
 }

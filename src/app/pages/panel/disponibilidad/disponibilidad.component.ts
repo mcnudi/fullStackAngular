@@ -35,8 +35,8 @@ export class DisponibilidadComponent implements OnInit {
 
   arrayDisponibilidad: Availability [] = [];
 
-  openModal (modo: 'añadir' | 'actualizar', elemento: Availability) {
-    const dialogRef = this.dialog.open<Availability>(FormularioDisponibilidadComponent, { data: { modo, elemento }, disableClose: true });
+  openModal (modo: 'añadir' | 'actualizar', elemento: Availability, arrayDisponibilidad: Availability []) {
+    const dialogRef = this.dialog.open<Availability>(FormularioDisponibilidadComponent, { data: { modo, elemento, arrayDisponibilidad }, disableClose: true });
   
     dialogRef.closed.subscribe((nuevaDisponibilidad: Availability | undefined) => {
       if (nuevaDisponibilidad) {
