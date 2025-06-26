@@ -1,4 +1,4 @@
-<button (click)="openModal('añadir', {})" class="btn-mas w-100 mt-4 d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">+</button>
+<button (click)="openModal('añadir', {}, arrayDisponibilidad)" class="btn-mas w-100 mt-4 d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">+</button>
 <mat-expansion-panel [expanded]='true'>
     <mat-expansion-panel-header class="header-color-mat">
         <h3 class="mb-0">
@@ -19,7 +19,7 @@
                     @if (item.weekday === i + 1 ) {
                         <div class="elemento-disponibilidad">
                             <!--
-                                <button (click)="openModal('actualizar', item)" [id]="item.id" class="btn-crud btn btn-outline-success mt-1">
+                                <button (click)="openModal('actualizar', item, arrayDisponibilidad)" [id]="item.id" class="btn-crud btn btn-outline-success mt-1">
                                     <mat-icon>edit</mat-icon>
                                 </button>
                             -->
@@ -27,7 +27,7 @@
                                 <mat-icon>delete</mat-icon>
                             </button>
                             <div class="elemento-texto-lista mt-1">
-                                <span>{{ item.start_time }} a {{ item.end_time }}</span>
+                                <span>{{ item.start_time }} - {{ item.end_time }}</span>
                             </div>
                         </div>
                     }

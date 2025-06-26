@@ -17,3 +17,35 @@ h2 {
   display: block;
   margin: 0;
 }
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin: 0.3rem 0;
+}
+
+.container {
+  padding: 5px;
+  font-family: sans-serif;
+  border: 1px solid lightgray;
+  border-radius: 7px;
+}
+
+.selectores {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+select option {
+  text-align: center;
+}
+
+.btn-crud {
+    height: 40px;
+    width: 46px;
+    opacity: 0.3;
+}

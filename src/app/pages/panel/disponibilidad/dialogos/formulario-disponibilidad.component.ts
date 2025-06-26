@@ -23,11 +23,13 @@ export class FormularioDisponibilidadComponent implements OnInit {
   
   modo: 'añadir' | 'actualizar';
   disponibilidadActual: Availability;
+  disponibilidadSemanal: Availability [];
 
-  // Recepción de datos de la Disonibilidad actual desde el componente Objetivos del Panel
-  constructor(@Inject(DIALOG_DATA) public data: { modo: 'añadir' | 'actualizar', elemento: Availability }) {
+  // Recepción de datos de la Disponibilidad actual desde el componente Objetivos del Panel
+  constructor(@Inject(DIALOG_DATA) public data: { modo: 'añadir' | 'actualizar', elemento: Availability, arrayDisponibilidad: Availability []}) {
     this.modo = data?.modo || 'añadir';
-    this.disponibilidadActual = data?.elemento
+    this.disponibilidadActual = data?.elemento;
+    this.disponibilidadSemanal = data?.arrayDisponibilidad;
   };
 
   availabilityForm = new FormGroup({
@@ -37,6 +39,12 @@ export class FormularioDisponibilidadComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.cargarRangosHorarios(Number(this.availabilityForm.controls.weekday.value)) // CAMBIAR
+
+    this.availabilityForm.controls.weekday.valueChanges.subscribe(value => {
+      this.cargarRangosHorarios(Number(value));
+    });
+
     if (this.modo === 'actualizar' && this.availabilityForm) {
       this.availabilityForm.patchValue({
         weekday: String(this.disponibilidadActual.weekday),
@@ -74,5 +82,86 @@ export class FormularioDisponibilidadComponent implements OnInit {
         console.log(error);
       }
     });
+  }
+
+//--------------------------------------------------
+// A PARTIR DE AQUÍ, EL CÓDIGO DEL SELECTOR DE HORAS
+
+
+  hours = Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
+  start_time: string | null = null;
+  end_time: string | null = null;
+
+  selectedRanges: { start: string; end: string }[] = [];
+
+
+  cargarRangosHorarios(numDia: number) {
+    // ENCONTRAR LOS RANGOS DEL DÍA RECIBIDO POR PARÁMETRO
+    this.selectedRanges = [];
+
+    let arrayDisponibilidadDia = this.disponibilidadSemanal.filter(item => item.weekday === numDia);
+    for (const dia of arrayDisponibilidadDia) {
+      this.selectedRanges.push({
+        start: String(dia.start_time),
+        end: String(dia.end_time)
+      });
+    }
+  }
+
+  toMinutes(time: string): number {
+    const [h, m] = time.split(':').map(Number);
+    return h * 60 + m;
+  }
+
+  isTimeDisabled(time: string, isStart: boolean): boolean {
+    const timeMin = this.toMinutes(time);
+    for (const { start, end } of this.selectedRanges) {
+      const startMin = this.toMinutes(start);
+      const endMin = this.toMinutes(end);
+
+      if (isStart && timeMin >= startMin && timeMin < endMin) return true;
+      if (!isStart && timeMin > startMin && timeMin <= endMin) return true;
+    }
+    return false;
+  }
+
+  addRange() {
+
+    this.start_time = this.availabilityForm.controls.start_time.value;
+    this.end_time = this.availabilityForm.controls.end_time.value;
+
+    console.log('Entra a guardar la franja horaria', this.start_time, this.end_time)
+    if (!this.start_time || !this.end_time) {
+      this.toastService.showError('Selecciona una hora de comienzo y otra de fin válidas.');
+      return;
+    } 
+
+    const startMin = this.toMinutes(this.start_time);
+    const endMin = this.toMinutes(this.end_time);
+
+    if (startMin >= endMin) {
+      this.toastService.showError('La hora de inicio debe ser menor que la de fin.');
+      return;
+    }
+
+    for (const { start, end } of this.selectedRanges) {
+      const existStart = this.toMinutes(start);
+      const existEnd = this.toMinutes(end);
+
+      if (startMin < existEnd && endMin > existStart) {
+        this.toastService.showError('Esta franja se solapa con una ya seleccionada.');
+        return;
+      }
+    }
+
+    this.selectedRanges.push({ start: this.start_time, end: this.end_time });
+    this.start_time = null;
+    this.end_time = null;
+    this.toastService.showSuccess('Rangos de disponibilidad actualizados.');
+    console.log('Rangos actualizados. Pulse Añadir para guardar cambios.:', this.selectedRanges)
+  }
+
+  removeRange(index: number) {
+    this.selectedRanges.splice(index, 1);
   }
 }
