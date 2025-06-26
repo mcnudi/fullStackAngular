@@ -29,19 +29,30 @@ ul {
     flex-grow: 1;
     background-color: rgba(55, 151, 52, 0.2);
     padding: 7px;
-    border: 1px solid lightgray;
+    border: 1px solid darkgray;
     border-radius: 7px;
     min-width: 0;
+
 }
 
 .elemento-disponibilidad {
     display: flex;
     align-items: flex-start;
-    gap: 5px;
+    padding: 0px;
     flex-grow: 1;
     width: 100%;
+    gap: 5px;
 }
 
 .cabecera-interior{
     height: 30px !important;
+}
+
+mat-expansion-panel[id] {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.sin-disponibilidad {
+  background-color: #ffcccc !important; /* rojo claro */
 }
