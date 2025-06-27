@@ -81,4 +81,9 @@ export class DisponibilidadComponent implements OnInit {
     return this.arrayDisponibilidad.some(item => item.weekday === diaIndex + 1);
   }
 
+  formatearHoras(hora: string | undefined): string {
+    if (!hora) return '--:--';
+    const date = new Date(`1970-01-01T${hora}`);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+  }
 }

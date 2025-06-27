@@ -26,8 +26,11 @@
                             <button (click)="deleteAvailability(item)" class="btn-crud btn btn-outline-danger mt-1">
                                 <mat-icon>delete</mat-icon>
                             </button>
-                            <div class="elemento-texto-lista mt-1">
-                                <span>{{ item.start_time }} - {{ item.end_time }}</span>
+                            <div class="elemento-texto-lista mt-1 text-center fw-bold">
+                                <span>{{ formatearHoras(item.start_time) }}</span>
+                            </div>
+                            <div class="elemento-texto-lista mt-1 text-center fw-bold">
+                                <span>{{ formatearHoras(item.end_time) }}</span>
                             </div>
                         </div>
                     }
