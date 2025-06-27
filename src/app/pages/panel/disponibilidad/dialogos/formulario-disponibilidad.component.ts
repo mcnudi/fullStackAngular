@@ -22,13 +22,13 @@ export class FormularioDisponibilidadComponent implements OnInit {
   dialogRef = inject(DialogRef, { optional: true});
   
   modo: 'añadir' | 'actualizar';
-  disponibilidadActual: Availability;
+  disponibilidadDiaActual: Availability;
   disponibilidadSemanal: Availability [];
 
   // Recepción de datos de la Disponibilidad actual desde el componente Objetivos del Panel
   constructor(@Inject(DIALOG_DATA) public data: { modo: 'añadir' | 'actualizar', elemento: Availability, arrayDisponibilidad: Availability []}) {
     this.modo = data?.modo || 'añadir';
-    this.disponibilidadActual = data?.elemento;
+    this.disponibilidadDiaActual = data?.elemento;
     this.disponibilidadSemanal = data?.arrayDisponibilidad;
   };
 
@@ -45,12 +45,17 @@ export class FormularioDisponibilidadComponent implements OnInit {
       this.cargarRangosHorarios(Number(value));
     });
 
-    if (this.modo === 'actualizar' && this.availabilityForm) {
-      this.availabilityForm.patchValue({
-        weekday: String(this.disponibilidadActual.weekday),
-        start_time: this.disponibilidadActual.start_time,
-        end_time: this.disponibilidadActual.start_time
-      });
+    if (this.modo === 'añadir') {
+      console.log('Se va a añadir nuevos rangos de disponibilidad...')
+    }
+    else { // 'actualizar'
+      if (this.modo === 'actualizar' && this.availabilityForm) {
+        this.availabilityForm.patchValue({
+          weekday: String(this.disponibilidadDiaActual.weekday),
+          start_time: this.disponibilidadDiaActual.start_time,
+          end_time: this.disponibilidadDiaActual.start_time
+        });
+      }
     }
   }
   
@@ -63,13 +68,23 @@ export class FormularioDisponibilidadComponent implements OnInit {
       this.toastService.showError('Por favor, completa todos los campos.');
       return;
     }
-    const { weekday, start_time, end_time } = this.availabilityForm.value;
 
-      // Si es añadir...
-    // !!! dia_semana tendrá que ser numérico !!!
+    // ---------- PRUEBAS
+    const nuevosRangos = this.selectedRanges.filter(rango => rango.esNuevo);
+    for (const rango of nuevosRangos) {
+      const disponibilidad: Availability = {
+        weekday: rango.weekday,
+        start_time: rango.start,
+        end_time: rango.end
+      };
+      console.log('Añadiendo a BD: ', disponibilidad)
+      this.addAvailability(disponibilidad);
+    // ----------- FIN PRUEBAS
+    }
+/*
+    const { weekday, start_time, end_time } = this.availabilityForm.value; // QUITARLO CUANDO ESTÉ LA INSERCIÓN MÚLTIPLE
     this.addAvailability({ weekday, start_time, end_time } as Availability);
-      // Si es actualizar...
-    
+*/
   }
 
   addAvailability(elemento: Availability) {
@@ -85,28 +100,26 @@ export class FormularioDisponibilidadComponent implements OnInit {
   }
 
 //--------------------------------------------------
-// A PARTIR DE AQUÍ, EL CÓDIGO DEL SELECTOR DE HORAS
-
+// CÓDIGO DEL SELECTOR DE HORAS
+//--------------------------------------------------
 
   hours = Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
   start_time: string | null = null;
   end_time: string | null = null;
-
-  selectedRanges: { start: string; end: string }[] = [];
-
+  selectedRanges: { start: string; end: string; esNuevo: boolean; weekday: number }[] = [];
 
   cargarRangosHorarios(numDia: number) {
-    // ENCONTRAR LOS RANGOS DEL DÍA RECIBIDO POR PARÁMETRO
-    this.selectedRanges = [];
-
-    let arrayDisponibilidadDia = this.disponibilidadSemanal.filter(item => item.weekday === numDia);
-    for (const dia of arrayDisponibilidadDia) {
-      this.selectedRanges.push({
-        start: String(dia.start_time),
-        end: String(dia.end_time)
-      });
-    }
+    const selectedRangesBackedn = this.disponibilidadSemanal
+      .filter(item => item.weekday === numDia)
+      .map(dia => ({
+        start: dia.start_time!,
+        end: dia.end_time!,
+        esNuevo: false,
+        weekday: dia.weekday!
+      }));
+    this.selectedRanges = [...selectedRangesBackedn];
   }
+
 
   toMinutes(time: string): number {
     const [h, m] = time.split(':').map(Number);
@@ -118,7 +131,6 @@ export class FormularioDisponibilidadComponent implements OnInit {
     for (const { start, end } of this.selectedRanges) {
       const startMin = this.toMinutes(start);
       const endMin = this.toMinutes(end);
-
       if (isStart && timeMin >= startMin && timeMin < endMin) return true;
       if (!isStart && timeMin > startMin && timeMin <= endMin) return true;
     }
@@ -126,42 +138,51 @@ export class FormularioDisponibilidadComponent implements OnInit {
   }
 
   addRange() {
-
     this.start_time = this.availabilityForm.controls.start_time.value;
     this.end_time = this.availabilityForm.controls.end_time.value;
-
-    console.log('Entra a guardar la franja horaria', this.start_time, this.end_time)
     if (!this.start_time || !this.end_time) {
       this.toastService.showError('Selecciona una hora de comienzo y otra de fin válidas.');
       return;
     } 
-
     const startMin = this.toMinutes(this.start_time);
     const endMin = this.toMinutes(this.end_time);
-
     if (startMin >= endMin) {
       this.toastService.showError('La hora de inicio debe ser menor que la de fin.');
       return;
     }
-
     for (const { start, end } of this.selectedRanges) {
       const existStart = this.toMinutes(start);
       const existEnd = this.toMinutes(end);
-
       if (startMin < existEnd && endMin > existStart) {
-        this.toastService.showError('Esta franja se solapa con una ya seleccionada.');
+        this.toastService.showError('Esta franja se solapa con una ya configurada.');
         return;
       }
     }
 
-    this.selectedRanges.push({ start: this.start_time, end: this.end_time });
+    this.selectedRanges.push({
+      start: this.start_time,
+      end: this.end_time,
+      esNuevo: true,
+      weekday: Number(this.availabilityForm.controls.weekday.value)
+    });
     this.start_time = null;
     this.end_time = null;
-    this.toastService.showSuccess('Rangos de disponibilidad actualizados.');
-    console.log('Rangos actualizados. Pulse Añadir para guardar cambios.:', this.selectedRanges)
+    this.toastService.showSuccess('Rangos de disponibilidad actualizados. Pulse Añadir para guardar cambios.');
+    console.log('selectedRanges tras añadir: ', this.selectedRanges)
+  }
+
+  get selectedRangesDelDia() {
+    const diaSeleccionado = Number(this.availabilityForm.controls.weekday.value);
+    return this.selectedRanges.filter(r => r.weekday === diaSeleccionado);
   }
 
   removeRange(index: number) {
     this.selectedRanges.splice(index, 1);
+  }
+
+  formatearHoras(hora: string | undefined): string {
+    if (!hora) return '--:--';
+    const date = new Date(`1970-01-01T${hora}`);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
   }
 }

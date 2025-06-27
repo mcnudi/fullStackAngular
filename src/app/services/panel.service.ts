@@ -27,6 +27,10 @@ export class PanelService {
   getInterests(idUsuario: number) : Observable<Interests[]> {
     return this.httpClient.get<Interests[]>(`${this.API_URL}/interests/${idUsuario}`)
   }
+
+  getInterest(idInteres: number) : Observable<Interests> {
+    return this.httpClient.get<Interests>(`${this.API_URL}/interests/get/${idInteres}`)
+  }
  
   removeInterests(idUsuario: number, interestName: string) : Observable<Interests> {
     return this.httpClient.delete<Interests>(

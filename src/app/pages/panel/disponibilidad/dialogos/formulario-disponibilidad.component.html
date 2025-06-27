@@ -17,22 +17,8 @@
             <option value="7">Domingo</option>
         </select>
     </div>
-<!--
-    <div class="row">
-        <div class="col-md-6">
-            <label for="start_time" class="form-label">Hora de inicio:</label>
-            <input type="time" step="3600" id="start_time" class="form-control" formControlName="start_time" value="00:00">
-        </div>
-        <div class="col-md-6">
-            <label for="end_time" class="form-label">Hora de fin:</label>
-            <input type="time" step="3600" id="end_time" class="form-control" formControlName="end_time">
-        </div>
-    </div>
-    
--->
 
-<!---------------------------------------------------------->
-
+    <!-- Grupo de horas -->
     <div class="selectores">
         <div class="col-md-6">
             <label for="start_time" class="form-label">Hora inicio:</label>
@@ -65,23 +51,23 @@
 
     <div class="list text-center">
         <h3>Disponible este día:</h3>
-        @if (selectedRanges.length > 0) {
+        @if (selectedRangesDelDia.length > 0) {
             <ul>
-                @for (range of selectedRanges; track range) {
-                <li>
-                    <button class="btn-crud btn btn-outline-danger mt-1" (click)="removeRange(selectedRanges.indexOf(range))">
-                        <mat-icon>delete</mat-icon>
-                    </button>
-                    {{ range.start }} - {{ range.end }}
-                </li>
+                @for (range of selectedRangesDelDia; track range.start) {
+                    <li>
+                        @if (range.esNuevo) {
+                            <button type="button" class="btn-crud btn btn-outline-danger mt-1" (click)="removeRange(selectedRanges.indexOf(range))">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        }
+                        {{ formatearHoras(range.start) }} - {{ formatearHoras(range.end) }}
+                    </li>
                 }
             </ul>
         } @else {
             <p>No hay franjas seleccionadas.</p>
         }
     </div>
-
-<!---------------------------------------------------------->
 
     <!-- Botones -->
     <div class="d-flex justify-content-center gap-2 mt-3">
