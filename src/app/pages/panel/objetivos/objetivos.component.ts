@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { PanelService } from '../../../services/panel.service';
-import { Goals } from '../../../interfaces/ipanel.interface';
+import { Goals, Interests } from '../../../interfaces/ipanel.interface';
 import { AuthService } from '../../../services/auth.service';
 
 import { Dialog } from '@angular/cdk/dialog'
@@ -37,15 +37,15 @@ export class ObjetivosComponent implements OnInit {
 
   arrayObjetivos: Goals [] = [];
 
-usuarioTieneIntereses(): Observable<boolean> {
-  const userId = this.authService.getDecodedToken().id;
-  return this.panelService.userHasInterests(userId).pipe(
-    map(response => response.hasInterests), catchError(err => {
-      console.error('⛔ Error al verificar intereses:', err);
-      return of(false); // Devuelve false si hay error
-    })
-  );
-}
+  usuarioTieneIntereses(): Observable<boolean> {
+    const userId = this.authService.getDecodedToken().id;
+    return this.panelService.userHasInterests(userId).pipe(
+      map(response => response.hasInterests), catchError(err => {
+        console.error('⛔ Error al verificar intereses:', err);
+        return of(false); // Devuelve false si hay error
+      })
+    );
+  }
 
   openModal (modo: 'añadir' | 'actualizar', elemento: Goals) {
     // Si no hay Intereses creados, no puede haber Objetivos
@@ -129,4 +129,16 @@ usuarioTieneIntereses(): Observable<boolean> {
         }
       }
     }
+
+  async obtenerDetallesInteres(idInteres: number): Promise<Interests> {
+    return new Promise((resolve, reject) => {
+      this.panelService.getInterest(idInteres).subscribe({
+        next: (data: Interests) => resolve(data),
+        error: (error) => {
+          console.error(error);
+          reject(null);
+        }
+      });
+    });
+  }
 }
