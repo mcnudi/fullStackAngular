@@ -23,13 +23,13 @@ export class FormularioDisponibilidadComponent implements OnInit {
   
   modo: 'añadir' | 'actualizar';
   disponibilidadDiaActual: Availability;
-  disponibilidadSemanal: Availability [];
+  arrayDisponibilidadSemanal: Availability [];
 
-  // Recepción de datos de la Disponibilidad actual desde el componente Objetivos del Panel
-  constructor(@Inject(DIALOG_DATA) public data: { modo: 'añadir' | 'actualizar', elemento: Availability, arrayDisponibilidad: Availability []}) {
-    this.modo = data?.modo || 'añadir';
-    this.disponibilidadDiaActual = data?.elemento;
-    this.disponibilidadSemanal = data?.arrayDisponibilidad;
+  // Recepción de datos de la Disponibilidad actual desde el componente Disponibilidad del Panel
+  constructor(@Inject(DIALOG_DATA) public dataInyectada: { modo: 'añadir' | 'actualizar', elemento: Availability, arrayDisponibilidad: Availability []}) {
+    this.modo = dataInyectada?.modo || 'añadir';
+    this.disponibilidadDiaActual = dataInyectada?.elemento;
+    this.arrayDisponibilidadSemanal = dataInyectada?.arrayDisponibilidad;
   };
 
   availabilityForm = new FormGroup({
@@ -39,21 +39,21 @@ export class FormularioDisponibilidadComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.cargarRangosHorarios(Number(this.availabilityForm.controls.weekday.value)) // CAMBIAR
-
+    // Suscripción
     this.availabilityForm.controls.weekday.valueChanges.subscribe(value => {
       this.cargarRangosHorarios(Number(value));
     });
 
     if (this.modo === 'añadir') {
-      console.log('Se va a añadir nuevos rangos de disponibilidad...')
+      // Carga inicial de las franjas horarias
+      this.cargarRangosHorarios(Number(this.availabilityForm.controls.weekday.value))
     }
     else { // 'actualizar'
       if (this.modo === 'actualizar' && this.availabilityForm) {
         this.availabilityForm.patchValue({
           weekday: String(this.disponibilidadDiaActual.weekday),
-          start_time: this.disponibilidadDiaActual.start_time,
-          end_time: this.disponibilidadDiaActual.start_time
+          start_time: this.disponibilidadDiaActual.start_time!.slice(0, 5),
+          end_time: this.disponibilidadDiaActual.end_time!.slice(0, 5)
         });
       }
     }
@@ -64,33 +64,31 @@ export class FormularioDisponibilidadComponent implements OnInit {
   }
 
   async saveAvailability() {
-    if (this.availabilityForm.invalid) {
-      this.toastService.showError('Por favor, completa todos los campos.');
-      return;
-    }
+    if (this.modo === 'añadir') {
+      if (this.availabilityForm.invalid) {
+        this.toastService.showError('Por favor, completa todos los campos.');
+        return;
+      }
 
-    // ---------- PRUEBAS
-    const nuevosRangos = this.selectedRanges.filter(rango => rango.esNuevo);
-    for (const rango of nuevosRangos) {
-      const disponibilidad: Availability = {
-        weekday: rango.weekday,
-        start_time: rango.start,
-        end_time: rango.end
-      };
-      console.log('Añadiendo a BD: ', disponibilidad)
-      this.addAvailability(disponibilidad);
-    // ----------- FIN PRUEBAS
+      // Solo añade los nuevos rangos (varios a la vez para un día). Los rangos antiguos no válidos se borran desde componente Disponibilidad
+      const nuevosRangosAñadidos = this.selectedRanges.filter(rango => rango.esNuevo);
+      for (const rango of nuevosRangosAñadidos) {
+        const franjaDisponibilidad: Availability = {
+          weekday: rango.weekday,
+          start_time: rango.start,
+          end_time: rango.end
+        };
+        this.addAvailability(franjaDisponibilidad);
+      }
+    } else { // 'actualizar'
+        // No se contemplan las actualizaciones.
     }
-/*
-    const { weekday, start_time, end_time } = this.availabilityForm.value; // QUITARLO CUANDO ESTÉ LA INSERCIÓN MÚLTIPLE
-    this.addAvailability({ weekday, start_time, end_time } as Availability);
-*/
   }
 
   addAvailability(elemento: Availability) {
-    this.panelService.addAvailability(this.authService.getDecodedToken().id, elemento.weekday!, elemento.start_time!, elemento.end_time!).subscribe( {
+    this.panelService.addAvailability(this.authService.getDecodedToken().id, elemento).subscribe( {
       next: (data: Availability) => {
-        this.toastService.showSuccess('Disponibilidad añadida correctamente.');
+        this.toastService.showSuccess(`Disponibilidad ${elemento.start_time} - ${elemento.end_time} añadida correctamente.`);
         this.dialogRef?.close(data);
       },
       error: (error) => {
@@ -103,13 +101,19 @@ export class FormularioDisponibilidadComponent implements OnInit {
 // CÓDIGO DEL SELECTOR DE HORAS
 //--------------------------------------------------
 
-  hours = Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
+  // hours = Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
+  hours = Array.from({ length: 48 }, (_, i) => {
+    const hour = Math.floor(i / 2); // 0..23
+    const minutes = i % 2 === 0 ? '00' : '30'; // alterna entre 00 y 30
+    return `${hour.toString().padStart(2, '0')}:${minutes}`;
+  });
+
   start_time: string | null = null;
   end_time: string | null = null;
   selectedRanges: { start: string; end: string; esNuevo: boolean; weekday: number }[] = [];
 
   cargarRangosHorarios(numDia: number) {
-    const selectedRangesBackedn = this.disponibilidadSemanal
+    const selectedRangesBackend = this.arrayDisponibilidadSemanal
       .filter(item => item.weekday === numDia)
       .map(dia => ({
         start: dia.start_time!,
@@ -117,9 +121,8 @@ export class FormularioDisponibilidadComponent implements OnInit {
         esNuevo: false,
         weekday: dia.weekday!
       }));
-    this.selectedRanges = [...selectedRangesBackedn];
+    this.selectedRanges = [...selectedRangesBackend];
   }
-
 
   toMinutes(time: string): number {
     const [h, m] = time.split(':').map(Number);
@@ -137,43 +140,56 @@ export class FormularioDisponibilidadComponent implements OnInit {
     return false;
   }
 
-  addRange() {
+  validateRange():boolean {
     this.start_time = this.availabilityForm.controls.start_time.value;
     this.end_time = this.availabilityForm.controls.end_time.value;
     if (!this.start_time || !this.end_time) {
-      this.toastService.showError('Selecciona una hora de comienzo y otra de fin válidas.');
-      return;
+      this.toastService.showError('Selecciona una hora de comienzo y de fin válidas.');
+      return false;
     } 
     const startMin = this.toMinutes(this.start_time);
     const endMin = this.toMinutes(this.end_time);
     if (startMin >= endMin) {
       this.toastService.showError('La hora de inicio debe ser menor que la de fin.');
-      return;
+      return false;
     }
     for (const { start, end } of this.selectedRanges) {
       const existStart = this.toMinutes(start);
       const existEnd = this.toMinutes(end);
       if (startMin < existEnd && endMin > existStart) {
         this.toastService.showError('Esta franja se solapa con una ya configurada.');
-        return;
+        return false;
       }
     }
-
-    this.selectedRanges.push({
-      start: this.start_time,
-      end: this.end_time,
-      esNuevo: true,
-      weekday: Number(this.availabilityForm.controls.weekday.value)
-    });
-    this.start_time = null;
-    this.end_time = null;
-    this.toastService.showSuccess('Rangos de disponibilidad actualizados. Pulse Añadir para guardar cambios.');
-    console.log('selectedRanges tras añadir: ', this.selectedRanges)
+    return true;
   }
 
-  get selectedRangesDelDia() {
-    const diaSeleccionado = Number(this.availabilityForm.controls.weekday.value);
-    return this.selectedRanges.filter(r => r.weekday === diaSeleccionado);
+  addRanges() {
+    if (this.validateRange()) {
+      this.selectedRanges.push({
+        start: this.start_time!,
+        end: this.end_time!,
+        esNuevo: true,
+        weekday: Number(this.availabilityForm.controls.weekday.value)
+      });
+      this.start_time = null;
+      this.end_time = null;
+      this.toastService.showSuccess('Rangos de disponibilidad actualizados. Pulse Añadir para guardar cambios.');
+    }
+  }
+
+  modifyRange() {
+    if (this.validateRange()) {
+      this.selectedRanges.push({
+        start: this.start_time!,
+        end: this.end_time!,
+        esNuevo: true,
+        weekday: Number(this.availabilityForm.controls.weekday.value)
+      });
+      this.start_time = null;
+      this.end_time = null;
+      this.toastService.showSuccess('Rangos de disponibilidad actualizados. Pulse Actualizar para guardar cambios.');
+    }
   }
 
   removeRange(index: number) {

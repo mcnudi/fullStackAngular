@@ -5,24 +5,18 @@
             Disponibilidad
         </h3>
     </mat-expansion-panel-header>
-    <!-- $index es 0-based y se ha acordado que sea 1-based (1-lunes, 7-domingo). Trataremos (i + 1) para cumplirlo-->
-    @for (diaConDisponibilidad of diasSemana; let i = $index; track diaConDisponibilidad) {
-        <mat-expansion-panel [expanded]='true' id=diaConDisponibilidad.value [class]="{ 'sin-disponibilidad': !hasDisponibilidad(i) }">
+    @for (diaConDisponibilidad of diasSemanaOrdenados; let i = $index; track diaConDisponibilidad.nombre) {
+        <mat-expansion-panel [expanded]="true" [id]="diaConDisponibilidad.valor" [class]="{ 'sin-disponibilidad': !hasDisponibilidad(diaConDisponibilidad.valor) }">
             <mat-expansion-panel-header class="header-color-mat cabecera-interior">
                 <span class="mb-0">
-                    {{ diaConDisponibilidad}}                  
+                    {{ diaConDisponibilidad.nombre }}
                 </span>
             </mat-expansion-panel-header>
-            <!-- Contenedor específico para cada día -->
+
             <div class="panel-content">
                 @for (item of arrayDisponibilidad; track item.id) {
-                    @if (item.weekday === i + 1 ) {
+                    @if (item.weekday === diaConDisponibilidad.valor) {
                         <div class="elemento-disponibilidad">
-                            <!--
-                                <button (click)="openModal('actualizar', item, arrayDisponibilidad)" [id]="item.id" class="btn-crud btn btn-outline-success mt-1">
-                                    <mat-icon>edit</mat-icon>
-                                </button>
-                            -->
                             <button (click)="deleteAvailability(item)" class="btn-crud btn btn-outline-danger mt-1">
                                 <mat-icon>delete</mat-icon>
                             </button>

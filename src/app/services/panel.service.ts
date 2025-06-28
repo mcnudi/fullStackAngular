@@ -14,14 +14,13 @@ export class PanelService {
   
   private API_URL: string = 'http://localhost:3000/api';
 
-  // Experimental
-  private actualizarObjetivosSubject = new Subject<void>();
+  // Elemento HUB para notificar nuevos Objetivos o cambios en los existentes desde el componente formulario-objetivos
+  actualizarObjetivosSubject = new Subject<void>();
   actualizarObjetivos$ = this.actualizarObjetivosSubject.asObservable();
 
   notificarActualizacionObjetivos() {
     this.actualizarObjetivosSubject.next();
   }
-  // FIN Experimental
   
   // Intereses
   getInterests(idUsuario: number) : Observable<Interests[]> {
@@ -109,13 +108,13 @@ export class PanelService {
     );
   }
 
-  addAvailability(idUsuario: number, dia_semana: number, hora_inicio: string, hora_fin: string) : Observable<Availability> {
+  addAvailability(idUsuario: number, availabilityData: Partial<Availability>) : Observable<Availability> {
     return this.httpClient.post<Availability>(
       `${this.API_URL}/availability/${idUsuario}/add`,
       {
-        weekday: Number(dia_semana),
-        start_time: hora_inicio + ":00",
-        end_time: hora_fin + ":00"
+        weekday: availabilityData.weekday,
+        start_time: availabilityData.start_time + ":00",
+        end_time: availabilityData.end_time + ":00"
       }
     );
   }

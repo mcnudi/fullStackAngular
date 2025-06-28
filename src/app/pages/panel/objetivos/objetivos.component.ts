@@ -26,7 +26,6 @@ export class ObjetivosComponent implements OnInit {
   toastService = inject(ToastService);
   dialogService = inject(DialogService);
   
-
   /*
     arrayObjetivos = [
       { id: 1, users_id: 10, users_interests_id: 1, goals_name: 'ARTE', description: '', hours_per_week: 3},
@@ -36,6 +35,9 @@ export class ObjetivosComponent implements OnInit {
   */
 
   arrayObjetivos: Goals [] = [];
+  arrayIntereses: Interests [] = [];
+  interesColorMap = new Map<number, string>();
+
 
   usuarioTieneIntereses(): Observable<boolean> {
     const userId = this.authService.getDecodedToken().id;
@@ -48,47 +50,62 @@ export class ObjetivosComponent implements OnInit {
   }
 
   openModal (modo: 'añadir' | 'actualizar', elemento: Goals) {
-    // Si no hay Intereses creados, no puede haber Objetivos
-  this.usuarioTieneIntereses().subscribe(async tiene => {
-    if (tiene) {
-      const dialogRef = this.dialog.open<Goals>(FormularioObjetivosComponent, { data: { modo, elemento }, disableClose: true });
+    // Si no hay Intereses creados, no puede crear Objetivos
+    this.usuarioTieneIntereses().subscribe(async tiene => {
+      if (tiene) {
+        const dialogRef = this.dialog.open<Goals>(FormularioObjetivosComponent, { data: { modo, elemento }, disableClose: true });
 
-      if (modo === 'añadir') {
-        dialogRef.closed.subscribe((nuevoObjetivo: Goals | undefined) => {
-          if (nuevoObjetivo) {
-            this.arrayObjetivos.push(nuevoObjetivo); // o llama a loadInterests()
-            this.changeDetectorRef.markForCheck();
-          }
-        });
-      }
-      else {
-        dialogRef.closed.subscribe((actualizadoObjetivo: Goals | undefined) => {
-          if (actualizadoObjetivo) {
-            const index = this.arrayObjetivos.findIndex(i => i.id === elemento.id);
-            if (index !== -1) {
-              this.arrayObjetivos[index].users_interests_id = actualizadoObjetivo.users_interests_id;
-              this.arrayObjetivos[index].goals_name = actualizadoObjetivo.goals_name;
-              this.arrayObjetivos[index].description = actualizadoObjetivo.description;
-              this.arrayObjetivos[index].hours_per_week = actualizadoObjetivo.hours_per_week;
+        if (modo === 'añadir') {
+          dialogRef.closed.subscribe((nuevoObjetivo: Goals | undefined) => {
+            if (nuevoObjetivo) {
+              this.arrayObjetivos.push(nuevoObjetivo); // o llama a loadInterests()
+              this.changeDetectorRef.markForCheck();
             }
-            this.changeDetectorRef.markForCheck();
-          }
-        });
+          });
+        }
+        else {
+          dialogRef.closed.subscribe((actualizadoObjetivo: Goals | undefined) => {
+            if (actualizadoObjetivo) {
+              const index = this.arrayObjetivos.findIndex(i => i.id === elemento.id);
+              if (index !== -1) {
+                this.arrayObjetivos[index].users_interests_id = actualizadoObjetivo.users_interests_id;
+                this.arrayObjetivos[index].goals_name = actualizadoObjetivo.goals_name;
+                this.arrayObjetivos[index].description = actualizadoObjetivo.description;
+                this.arrayObjetivos[index].hours_per_week = actualizadoObjetivo.hours_per_week;
+              }
+              this.changeDetectorRef.markForCheck();
+            }
+          });
+        }
+      } else {
+        const confirmed = await this.dialogService.confirm(
+          'Advertencia',
+          `Antes de crear Objetivos debes crear Intereses`
+        );
       }
-    } else {
-      const confirmed = await this.dialogService.confirm(
-        'Advertencia',
-        `Antes de crear Objetivos debes crear Intereses`
-      );
-    }
-  });
+    });
   }
 
   ngOnInit() {
-    this.panelService.actualizarObjetivos$.subscribe(() => {
-      this.cargarObjetivos(); // Método que recarga los objetivos
+    this.panelService.getInterests(this.authService.getDecodedToken().id).subscribe({
+      next: (data: Interests[]) => {
+        this.arrayIntereses = data;
+        this.interesColorMap.clear();
+        data.forEach(interes => {
+          if (interes.id != null && interes.color != null) {
+            this.interesColorMap.set(interes.id, interes.color);
+          }
+        });
+      },
+      error: (error) => {
+        console.log(error);
+      }
     });
 
+    this.panelService.actualizarObjetivos$.subscribe(() => {
+       // Método que recarga los objetivos cuando han sido insertados/actualizados desde el componente formulario-objetivos
+      this.cargarObjetivos();
+    });
     this.cargarObjetivos();
   }
 
@@ -104,41 +121,43 @@ export class ObjetivosComponent implements OnInit {
   }
 
   async deleteGoal(elemento: Goals) {
-      const confirmed = await this.dialogService.confirm(
-        'Confirmar borrado',
-        `¿Estás seguro de que quieres elimiarlo?
-        ¡¡Si confirmas se borrarán también las ACTIVIDADES asociadas a estos OBJETIVOS que se hayan incluido en RUTINAS!!`
-      );
-  
-      if (confirmed) {
-        try {
-          this.panelService.removeGoals(this.authService.getDecodedToken().id, elemento.id!).subscribe( {
-            next: (data: Goals) => {
-              const index = this.arrayObjetivos.findIndex(i => i.id === elemento.id);
-              if (index !== -1) {
-                this.arrayObjetivos.splice(index, 1);
-                this.changeDetectorRef.markForCheck();
-              }
-            },
-            error: (error) => {
-              console.log(error);
+    const confirmed = await this.dialogService.confirm(
+      'Confirmar borrado',
+      `¿Estás seguro de que quieres eliminarlo?
+      ¡¡Si confirmas, a continuación se borrarán también las ACTIVIDADES asociadas a estos OBJETIVOS que se hayan incluido en RUTINAS!!`
+    );
+
+    if (confirmed) {
+      try {
+        this.panelService.removeGoals(this.authService.getDecodedToken().id, elemento.id!).subscribe( {
+          next: (data: Goals) => {
+            const index = this.arrayObjetivos.findIndex(i => i.id === elemento.id);
+            if (index !== -1) {
+              this.arrayObjetivos.splice(index, 1);
+              this.changeDetectorRef.markForCheck();
             }
-          });
-        } catch (err) {
-          this.toastService.showError('Error al borrar el Interés.');
-        }
+          },
+          error: (error) => {
+            console.log(error);
+          }
+        });
+      } catch (err) {
+        this.toastService.showError('Error al borrar el Interés.');
       }
     }
+  }
 
-  async obtenerDetallesInteres(idInteres: number): Promise<Interests> {
-    return new Promise((resolve, reject) => {
-      this.panelService.getInterest(idInteres).subscribe({
-        next: (data: Interests) => resolve(data),
-        error: (error) => {
-          console.error(error);
-          reject(null);
-        }
-      });
-    });
+  getNombreInteres(id: number): string {
+    console.log('Buscando interés con id:', id, 'de tipo', typeof id);
+this.arrayIntereses.forEach(i => {
+  console.log('Elemento i.id:', i.id, 'de tipo', typeof i.id);
+});
+    const interes = this.arrayIntereses.find(i => Number(i.id) === Number(id));
+    console.log('El interés es: ', interes)
+    return interes ? interes.interest_name! : 'Interés no encontrado';
+  }
+
+  getColorInteres(id: number): string {
+    return this.interesColorMap.get(Number(id)) || 'lightgray';
   }
 }
