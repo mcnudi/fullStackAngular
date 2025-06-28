@@ -42,6 +42,7 @@ export class DashboardComponent {
     private panelService: PanelService,
     private ruinaService: RutinaService
   ) {}
+
 eventosFiltradosPorRutina: EventInput[] = [];
 
   username: string = '';
@@ -55,12 +56,6 @@ eventosFiltradosPorRutina: EventInput[] = [];
   mostrarFormularioActividad = false;
 
   objetoRutinaDefecto:any[]=[];
-
-
-
-  actividadesPorRutina: any[] = [];
-
-  rutinasConActividades: any[] = [];
 
   actividadSeleccionada: any = null;
   rutinaSeleccionada: any = null;
@@ -146,7 +141,6 @@ eventosFiltradosPorRutina: EventInput[] = [];
               if (this.rutinas[i].is_default == 1) {
                 this.rutinaSeleccionada = this.rutinas[i].id;
                 this.objetoRutinaDefecto = this.rutinas[i];
- // Inicializa también aquí
               }
             }
           },
@@ -228,9 +222,11 @@ eventosFiltradosPorRutina: EventInput[] = [];
         });
   }
 
-  cerrarFormularioActividad() {
-    this.mostrarFormularioActividad = false;
-  }
+cerrarFormularioActividad() {
+  this.mostrarFormularioActividad = false;
+  this.aplicarFiltros();
+}
+
 
   verActividad(actividad: any) {
     this.actividadSeleccionada = actividad;

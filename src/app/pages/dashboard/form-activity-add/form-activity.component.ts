@@ -180,7 +180,7 @@ export class FormActivityComponent implements OnInit, OnChanges {
     }
     const valoresForm = this.form.value;
 
-    const nuevaActividad2 = {
+    const nuevaActividad = {
       routines_versions_id: this.routines_versions_id,
       title: valoresForm.titulo ?? '',
       description: valoresForm.descripcion ?? '',
@@ -190,9 +190,9 @@ export class FormActivityComponent implements OnInit, OnChanges {
       end_time: (valoresForm.horaFinal ?? '') + ':00'
     };
 
-    this.calendarEventsService.addNewActivity(nuevaActividad2).subscribe({
+    this.calendarEventsService.addNewActivity(nuevaActividad).subscribe({
       next: () => {
-        console.log(nuevaActividad2);
+        console.log(nuevaActividad);
         alert('Actividad creada correctamente');
         this.cerrar.emit();
       },
