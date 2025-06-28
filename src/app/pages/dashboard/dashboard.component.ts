@@ -21,12 +21,14 @@ import { FormInfoActivityComponent } from './form-info-activity/form-info-activi
 import { RutinaService } from '../../services/rutina.service';
 import { Category } from '../../interfaces/icategory.interface';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
+    MatIconModule,
     MatTabsModule,
     FullCalendarModule,
     NgxChartsModule,
