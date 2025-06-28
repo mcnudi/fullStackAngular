@@ -94,12 +94,18 @@
   overflow-y: auto;
 }
 
-.custom-label {
-  background-color: white;
+::ng-deep .mat-tab-label {
+  padding: 6px 16px;
+  border-radius: 16px;
   font-weight: bold;
-  border-radius: 8px;
-  padding: 4px 10px;
-  display: inline-block;
+  background-color: #fff;
+  margin: 4px;
+  transition: 0.3s ease;
+  text-transform: none;
+}
+
+::ng-deep .mat-tab-label.mat-tab-label-active {
+  background-color: #e0e0e0;
 }
 
 
