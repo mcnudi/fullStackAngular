@@ -6,13 +6,20 @@
         </h3>
     </mat-expansion-panel-header>
     @for (item of arrayObjetivos; track item.id) {
-        <div class="panel-content">
+        @let colorAsociadoInteres = getColorInteres(item.users_interests_id!);
+        @let nombreAsociadoInteres = getNombreInteres(item.users_interests_id!);
+          <div class="panel-content">
             <button (click)="openModal('actualizar', item)" class="btn-crud btn btn-outline-success mt-1"><mat-icon>edit</mat-icon></button>
             <button (click)="deleteGoal(item)" class="btn-crud btn btn-outline-danger mt-1"><mat-icon>delete</mat-icon></button>
-            <div class="elemento_texto_lista mt-1">
+            <article class="elemento_texto_lista mt-1" [style]="{'border': '2px solid ' + colorAsociadoInteres}">
                 <span><strong>{{ item.goals_name }}</strong> - [{{ item.hours_per_week }} h./sem.]</span>
-                <pre>[{{ item.users_interests_id}}] - {{ item.description}}</pre>
-            </div>
+                <section>
+                    <strong [style.backgroundColor]="colorAsociadoInteres">
+                        {{ nombreAsociadoInteres }}
+                    </strong>
+                    <small><em> - {{ item.description }}</em></small>
+                </section>
+            </article>
         </div>
     }
 </mat-expansion-panel>
