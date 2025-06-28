@@ -20,11 +20,13 @@ import { FormActivityComponent } from './form-activity-add/form-activity.compone
 import { FormInfoActivityComponent } from './form-info-activity/form-info-activity.component'; // <-- Importar forkJoin
 import { RutinaService } from '../../services/rutina.service';
 import { Category } from '../../interfaces/icategory.interface';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
+    MatTabsModule,
     FullCalendarModule,
     NgxChartsModule,
     FormsModule,
@@ -50,6 +52,7 @@ eventosFiltradosPorRutina: EventInput[] = [];
   availability: Availability[] = [];
   actividades: Activity[] = [];
   categorias: Category[] = [];
+  objetivos: any[] = [];
   rutinas: any[] = [];
   profileImage: string =
     'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
@@ -158,6 +161,21 @@ eventosFiltradosPorRutina: EventInput[] = [];
             },
             error: (error) => {
               console.log('Error al cargar categorias:', error);
+            },
+          });
+          /*OBJETIVOS */
+                  this.panelService
+          .getGoals(userId)
+          .subscribe({
+            next: (data: any[]) => {
+              console.log(
+                'Objetivos:',
+                data
+              );
+              this.objetivos = data || [];
+            },
+            error: (error) => {
+              console.log('Error al cargar objetivos:', error);
             },
           });
 
