@@ -28,6 +28,7 @@
     <!-- Mostrar formulario completo si se cumple la triple condición -->
     @if (rutinas.length > 0 && rutinaSeleccionada !== null && availability.length > 0) {
       <!-- Select de Rutinas -->
+      <label for="event-type-select" class="form-label text-muted mb-1">Rutina</label>
       <select
         id="routine-select"
         [(ngModel)]="rutinaSeleccionada"
@@ -56,12 +57,13 @@
 
       <!-- Categoría -->
       <div class="mb-3">
-        <label class="form-label">Categoría</label>
+        <label class="form-label text-muted mb-1">Categoría</label>
         <select
-          class="form-select"
+          class="form-select form-select-lg"
           [(ngModel)]="filtroCategoria"
           name="categoria"
           (ngModelChange)="aplicarFiltros()"
+          [disabled]="filtroTipo === 'disponibilidad'"
         >
           <option value="">Todas</option>
           @for (categoria of categoriasUsuario; track $index) {

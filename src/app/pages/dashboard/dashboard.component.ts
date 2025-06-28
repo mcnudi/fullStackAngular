@@ -261,7 +261,7 @@ eventosFiltradosPorRutina: EventInput[] = [];
 
 cerrarFormularioActividad() {
   this.mostrarFormularioActividad = false;
-  this.aplicarFiltros();
+  this.aplicarFiltros();  
 }
 
 
@@ -310,6 +310,8 @@ cerrarFormularioActividad() {
               id: `actividad-${act.id}`,
             }));
 
+            this.categoriasUsuario = this.getCategoriesByActivities(); //Reinicio las categorías del usuario
+
             this.eventosFiltradosPorRutina = activityEvents;
 
             let disponibilidadEvents: EventInput[] = [];
@@ -329,7 +331,6 @@ cerrarFormularioActividad() {
                     this.getCategoryNameByActivityId(Number(ev.id.split('-')[1])) === categoriaFiltradaNombre) ||
                   (ev.id && ev.id.toString().startsWith('disponibilidad-') && this.filtroTipo !== 'actividad') // Incluir disponibilidad si no se filtra solo por actividad
               );
-              this.categoriasUsuario = this.getCategoriesByActivities(); //Reinicio las categorías del usuario
 
               this.actividades = this.actividades.filter(
                 (act) =>
