@@ -22,6 +22,7 @@ import { RutinaService } from '../../services/rutina.service';
 import { Category } from '../../interfaces/icategory.interface';
 import { MatTabsModule } from '@angular/material/tabs';
 
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,

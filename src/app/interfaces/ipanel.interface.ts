@@ -16,7 +16,7 @@ export interface Goals {
 export interface Availability {
   id?: number;
   users_id?: number;
-  weekday?: number;
+  weekday?: number | undefined;
   start_time?: string;
   end_time?: string;
 }
