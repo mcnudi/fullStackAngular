@@ -1,4 +1,4 @@
-import { Availability } from './../../interfaces/ipanel.interface';
+import { Availability, Goals } from './../../interfaces/ipanel.interface';
 import { PanelService } from './../../services/panel.service';
 import { Component } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
@@ -10,7 +10,6 @@ import { CalendarEventsService } from '../../services/dashboard-user.service';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import esLocale from '@fullcalendar/core/locales/es';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { User } from '../../interfaces/iuser.interface';
 import { Interests } from '../../interfaces/ipanel.interface';
 import { Activity } from '../../interfaces/iactivity.interface';
@@ -20,16 +19,22 @@ import { FormActivityComponent } from './form-activity-add/form-activity.compone
 import { FormInfoActivityComponent } from './form-info-activity/form-info-activity.component'; // <-- Importar forkJoin
 import { RutinaService } from '../../services/rutina.service';
 import { Category } from '../../interfaces/icategory.interface';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
+
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
+    MatIconModule,
+    MatTabsModule,
     FullCalendarModule,
-    NgxChartsModule,
     FormsModule,
     FormActivityComponent,
     FormInfoActivityComponent,
+    RouterLink,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
@@ -42,6 +47,7 @@ export class DashboardComponent {
     private panelService: PanelService,
     private ruinaService: RutinaService
   ) {}
+
 eventosFiltradosPorRutina: EventInput[] = [];
 
   username: string = '';
@@ -49,18 +55,14 @@ eventosFiltradosPorRutina: EventInput[] = [];
   availability: Availability[] = [];
   actividades: Activity[] = [];
   categorias: Category[] = [];
+  categoriasUsuario: Category[] = [];
+  objetivos: any[] = [];
   rutinas: any[] = [];
   profileImage: string =
     'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
   mostrarFormularioActividad = false;
 
   objetoRutinaDefecto:any[]=[];
-
-
-
-  actividadesPorRutina: any[] = [];
-
-  rutinasConActividades: any[] = [];
 
   actividadSeleccionada: any = null;
   rutinaSeleccionada: any = null;
@@ -71,6 +73,8 @@ eventosFiltradosPorRutina: EventInput[] = [];
   filtroTipo: string = ''; // Este array siempre debe contener TODOS los eventos cargados inicialmente
   filtroRutina: string = ''; // Este array siempre debe contener TODAS las rutinas cargadas inicialmente
   eventosOriginales: EventInput[] = [];
+
+  filtroCategoria: string = '';
 
   /*--------- TS de Calendario ----------*/
 
@@ -90,16 +94,23 @@ eventosFiltradosPorRutina: EventInput[] = [];
     eventDidMount: (info: EventMountArg) => {
       (info.el as HTMLElement).title = info.event.title;
     },
-    eventMouseEnter: function (info: EventMountArg) {
+    eventMouseEnter: (info: EventMountArg) => {
       // Elimina cualquier tooltip existente
       const oldTooltip = document.querySelector('.fc-tooltip');
       if (oldTooltip) {
         oldTooltip.remove();
       }
+      let categoria = "";
+      if(info.event._def.publicId.startsWith('actividad-')) {
+        const activityNum = Number(info.event._def.publicId.split('-')[1]?.trim());
+        console.log("Activity Number:", activityNum);
+        categoria = "Categoria: " + this.getCategoryNameByActivityId(activityNum);   
+      }
 
       const tooltip = document.createElement('div');
       tooltip.innerHTML = `
         <strong>${info.event.title}</strong><br>
+        <strong>${categoria}</strong><br>
         ${info.event.start?.toLocaleString()} - ${info.event.end?.toLocaleString()}
       `;
       tooltip.style.position = 'absolute';
@@ -146,7 +157,6 @@ eventosFiltradosPorRutina: EventInput[] = [];
               if (this.rutinas[i].is_default == 1) {
                 this.rutinaSeleccionada = this.rutinas[i].id;
                 this.objetoRutinaDefecto = this.rutinas[i];
- // Inicializa también aquí
               }
             }
           },
@@ -166,6 +176,21 @@ eventosFiltradosPorRutina: EventInput[] = [];
               console.log('Error al cargar categorias:', error);
             },
           });
+          /*OBJETIVOS */
+                  this.panelService
+          .getGoals(userId)
+          .subscribe({
+            next: (data: any[]) => {
+              console.log(
+                'Objetivos:',
+                data
+              );
+              this.objetivos = data || [];
+            },
+            error: (error) => {
+              console.log('Error al cargar objetivos:', error);
+            },
+          });
 
         /*Conseguimos Actividades de la Rutina por defecto (is_selected=1)*/
         this.calendarEventsService
@@ -177,6 +202,7 @@ eventosFiltradosPorRutina: EventInput[] = [];
                 data
               );
               this.actividades = data || [];
+              this.categoriasUsuario = this.getCategoriesByActivities();
             },
             error: (error) => {
               console.log('Error al cargar actividades:', error);
@@ -195,6 +221,8 @@ eventosFiltradosPorRutina: EventInput[] = [];
         });
 
 
+
+
         /*Conseguimos intereses*/
         this.panelService.getInterests(userId).subscribe({
           next: (data: Interests[]) => {
@@ -211,6 +239,7 @@ eventosFiltradosPorRutina: EventInput[] = [];
         console.log('Error al obtener usuario por nombre:', error);
       },
     });
+
   }
   /* Metodos para el formulario  */
 
@@ -228,9 +257,11 @@ eventosFiltradosPorRutina: EventInput[] = [];
         });
   }
 
-  cerrarFormularioActividad() {
-    this.mostrarFormularioActividad = false;
-  }
+cerrarFormularioActividad() {
+  this.mostrarFormularioActividad = false;
+  this.aplicarFiltros();
+}
+
 
   verActividad(actividad: any) {
     this.actividadSeleccionada = actividad;
@@ -250,86 +281,118 @@ eventosFiltradosPorRutina: EventInput[] = [];
     return `${hours}:${minutes}:${seconds}`; // Formato 'HH:mm:ss'
   }
 
- aplicarFiltros() {
-  if (this.filtroTipo === 'actividad' || this.filtroTipo === '') {
-    console.log('Filtro de Actividades aplicado o Todos seleccionado');
+  aplicarFiltros() {
+    console.log('Aplicando filtros...');
 
-    if (
-      this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior ||
-      this.filtroTipo === 'actividad' ||
-      this.filtroTipo === ''
-    ) {
-      this.rutinaSeleccionadaAnterior = this.rutinaSeleccionada;
+    let eventosFiltrados: EventInput[] = [];
 
+    // Lógica para filtrar por TIPO y RUTINA
+    if (this.filtroTipo === 'actividad' || this.filtroTipo === '') {
+      console.log('Filtro de Actividades aplicado o Todos seleccionado');
 
-      this.calendarEventsService
-        .getActivitiesByRoutineId(this.rutinaSeleccionada)
-        .subscribe({
+      if (this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior || this.filtroTipo === 'actividad' || this.filtroTipo === '') {
+        this.rutinaSeleccionadaAnterior = this.rutinaSeleccionada;
+
+        this.calendarEventsService.getActivitiesByRoutineId(this.rutinaSeleccionada).subscribe({
           next: (data: any[]) => {
-            console.log(
-              'Actividades recibidas de la rutina :' +
-                this.rutinaSeleccionada,
-              data
-            );
+            console.log('Actividades recibidas de la rutina ' + this.rutinaSeleccionada, data);
             this.actividades = data || [];
 
-            const activityEvents: EventInput[] = this.actividades.map(
-              (act) => ({
-                title: `${act.title}${
-                  act.description ? ' - ' + act.description : ''
-                }`,
-                daysOfWeek: [act.day_of_week],
-                startTime: act.start_time,
-                endTime: act.end_time,
-                display: 'auto',
-                color: '#64b5f6',
-                id: `activity-${act.id}`,
-              })
-            );
+            const activityEvents: EventInput[] = this.actividades.map((act) => ({
+              title: `${act.title}${act.description ? ' - ' + act.description : ''}`,
+              daysOfWeek: [act.day_of_week],
+              startTime: act.start_time,
+              endTime: act.end_time,
+              display: 'auto',
+              color: '#64b5f6',
+              id: `actividad-${act.id}`,
+            }));
 
-            // Actualizamos la nueva variable sin tocar eventosOriginales
             this.eventosFiltradosPorRutina = activityEvents;
 
             let disponibilidadEvents: EventInput[] = [];
             if (this.filtroTipo !== 'actividad') {
               disponibilidadEvents = this.eventosOriginales.filter(
+                (ev: EventInput) => ev.id && ev.id.toString().startsWith('disponibilidad-')
+              );
+            }
+            eventosFiltrados = [...disponibilidadEvents, ...activityEvents];
+
+            // Aplicar filtro de categoría a los eventos ya filtrados por tipo/rutina
+            if (this.filtroCategoria !== '') {
+              const categoriaFiltradaNombre = this.getCategoryById(parseInt(this.filtroCategoria));
+              eventosFiltrados = eventosFiltrados.filter(
                 (ev: EventInput) =>
-                  ev.id && ev.id.toString().startsWith('disponibilidad-')
+                  (ev.id && ev.id.toString().startsWith('actividad-') &&
+                    this.getCategoryNameByActivityId(Number(ev.id.split('-')[1])) === categoriaFiltradaNombre) ||
+                  (ev.id && ev.id.toString().startsWith('disponibilidad-') && this.filtroTipo !== 'actividad') // Incluir disponibilidad si no se filtra solo por actividad
+              );
+              this.categoriasUsuario = this.getCategoriesByActivities(); //Reinicio las categorías del usuario
+
+              this.actividades = this.actividades.filter(
+                (act) =>
+                  this.getCategoryNameByActivityId(act.id) === categoriaFiltradaNombre
               );
             }
 
-            this.calendarOptions.events = [
-              ...disponibilidadEvents,
-              ...activityEvents,
-            ];
+            this.calendarOptions.events = eventosFiltrados;
+            console.log('Eventos Calendario final (con rutina/tipo y categoría):', this.calendarOptions.events);
+
           },
           error: (error) => {
             console.log('Error al cargar actividades:', error);
           },
         });
+      }
+    } else if (this.filtroTipo === 'disponibilidad') {
+      console.log('Filtro de Disponibilidad aplicado');
+      eventosFiltrados = this.eventosOriginales.filter(
+        (ev: EventInput) => ev.id && ev.id.toString().startsWith('disponibilidad-')
+      );
+      this.calendarOptions.events = eventosFiltrados;
+      console.log('Eventos Calendario final (solo disponibilidad):', this.calendarOptions.events);
+    } else {
+      // Si no hay filtro de tipo, la base es eventosOriginales
+      eventosFiltrados = [...this.eventosOriginales];
+
+      // Aplicar filtro de categoría a los eventosOriginales si no hay filtro de tipo
+      if (this.filtroCategoria !== '') {
+        const categoriaFiltradaNombre = this.getCategoryById(parseInt(this.filtroCategoria));
+        eventosFiltrados = eventosFiltrados.filter(
+          (ev: EventInput) =>
+            (ev.id && ev.id.toString().startsWith('actividad-') &&
+              this.getCategoryNameByActivityId(Number(ev.id.split('-')[1])) === categoriaFiltradaNombre) ||
+            (ev.id && ev.id.toString().startsWith('disponibilidad-')) // Incluir siempre disponibilidad si no hay filtro de tipo
+        );
+      }
+      this.calendarOptions.events = eventosFiltrados;
+      console.log('Eventos Calendario final (sin filtro de tipo, con/sin categoría):', this.calendarOptions.events);
     }
-  } else if (this.filtroTipo === 'disponibilidad') {
-    console.log('Filtro de Disponibilidad aplicado');
-    this.calendarOptions.events = this.eventosOriginales.filter(
-      (ev: EventInput) =>
-        ev.id && ev.id.toString().startsWith('disponibilidad-')
-    );
+
+    // Si no hay filtro de tipo y tampoco filtro de categoría, se muestran todos los originales
+    if (this.filtroTipo === '' && this.filtroCategoria === '') {
+      console.log('No hay filtro de tipo ni categoría, se muestran todos los eventos originales.');
+      this.calendarOptions.events = this.eventosOriginales;
+    }
   }
-}
 
 
   limpiarFiltros() {
     this.filtroTipo = '';
-    // Restablecer la rutina seleccionada a la predeterminada (si es que la tienes guardada)
-    // o al primer elemento de la lista si no hay una predeterminada.
-    for (let i = 0; i < this.rutinas.length; i++) {
-      if (this.rutinas[i].is_default == 1) {
-        this.rutinaSeleccionada = this.rutinas[i].id;
-        break; // Una vez encontrada, salimos del bucle
-      }
-    }
+    this.filtroCategoria = ''; // <-- Limpiar también el filtro de categoría
 
-    this.aplicarFiltros(); // Llama a aplicarFiltros para que se restablezca el calendario con la rutina por defecto y todos los tipos.
+    // Restablecer la rutina seleccionada a la predeterminada (is_default=1)
+    const rutinaPorDefecto = this.rutinas.find((r) => r.is_default === 1);
+    if (rutinaPorDefecto) {
+      this.rutinaSeleccionada = rutinaPorDefecto.id;
+    } else if (this.rutinas.length > 0) {
+      // Si no hay una por defecto, seleccionar la primera de la lista
+      this.rutinaSeleccionada = this.rutinas[0].id;
+    }
+    // No es necesario actualizar rutinaSeleccionadaAnterior aquí,
+    // ya que applyFilters lo manejará.
+
+    this.aplicarFiltros(); // Llama a aplicarFiltros para que se restablezca el calendario con la rutina por defecto y todos los tipos y categorías.
   }
 
   initializeCalendar(userId: number) {
@@ -377,4 +440,38 @@ eventosFiltradosPorRutina: EventInput[] = [];
       },
     });
   }
+
+  getCategoryNameByActivityId(ativityId: number): string {
+        const activity = this.actividades.find(
+          (act) => act.id === ativityId
+        );
+        if (activity && activity.activity_categories_id) {
+          const category = this.categorias.find(
+                (cat) => cat.id === activity.activity_categories_id
+          );
+          return category ? category.category_name : 'Sin categoría';
+        }
+        return 'Sin categoría';    
+  }
+
+  getCategoryById(categoryId: number): string {
+        const category = this.categorias.find(
+          (cat) => cat.id === categoryId
+        );
+        return category ? category.category_name : 'Sin categoría';
+  } 
+
+  getCategoriesByActivities(): Category[] {
+        const categories: Category[] = [];
+        this.actividades.forEach((actividad) => {
+            const category = this.categorias.find(
+                    (cat) => cat.id === actividad.activity_categories_id
+            );
+            if (category && !categories.includes(category)) {
+                    categories.push(category);
+            }
+        });
+        return categories;
+  }
+
 }

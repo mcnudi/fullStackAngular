@@ -40,13 +40,13 @@
                   }
                 </select>
                 } @else {
-                <select
-                  id="routine-select"
-                  class="form-select form-select-lg"
-                  disabled
-                >
-                  <option>Cargando rutinas...</option>
-                </select>
+                  <p class="text-muted bg-light border rounded p-3 mt-2 text-center" style="font-size: 1.05rem;">
+                    <i class="bi bi-info-circle me-2" style="font-size: 1.3rem;"></i>
+                    Aun no tienes rutinas creadas.<br>
+                    <a class="btn btn-primary mt-3" style="font-size: 1rem;" [routerLink]="['/app/rutina']">
+                      <i class="bi bi-plus-circle me-1"></i> Crear Rutina
+                    </a>
+                  </p>
                 }
               </div>
 
@@ -67,6 +67,16 @@
                   <option value="actividad">Actividad</option>
                 </select>
               </div>
+              <div class="mb-3">
+                <label class="form-label">Categoría</label>
+                <select class="form-select" [(ngModel)]="filtroCategoria" name="categoria" 
+                  (ngModelChange)="aplicarFiltros()">
+                  <option value="">Todas</option>
+                  @for (categoria of categoriasUsuario; track $index) {
+                    <option [value]="categoria.id">{{ categoria.category_name }}</option>
+                  }
+                </select>
+              </div>
               <div class="d-grid">
                 <button
                   class="btn btn-outline-secondary btn-lg"
@@ -80,65 +90,100 @@
         </div>
 
         <div class="col-9">
-          <div
-            class="bg-white rounded shadow-sm p-4 actividades-wrapper h-100 d-flex flex-column"
-          >
-            <h2 class="fw-bold mb-2">ACTIVIDADES DE LA SEMANA</h2>
-            <hr class="mb-3" />
-            <div
-              class="objetivos-list rounded p-3 flex-grow-1"
-                      style="
-          max-width: auto;
-          min-height: 100px;
-          max-height: 420px;
-          overflow-y: auto;
-          overflow-x: hidden;
-        "
-            >
-              <ul class="list-unstyled mb-0">
-                @if(actividades.length>0){ @for (actividad of actividades; track
-                $index) {
-                <li
-                  class="actividad-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-white shadow-sm"
-                >
-                  <div class="actividad-info text-truncate">
-                    <strong class="actividad-titulo d-block">{{
-                      actividad.title
-                    }}</strong>
-                    <small class="actividad-horario text-muted"
-                      >{{ actividad.start_time }} -
-                      {{ actividad.end_time }}</small
-                    >
-                  </div>
-                  <button
-                    class="btn btn-sm btn-custom btn-actividad px-4"
-                    (click)="verActividad(actividad)"
-                  >
-                    Ver
-                  </button>
-                </li>
-                } } @else {
-                <div class="sin-actividades-container text-center">
-                  <img
-                    src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeXA5c25iMmlndWk2MHp5ZXZ2bjd0aXp4Yzdiemg1dnVocGh1MTN6ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jls5k3a7L1N0XRM9d0/giphy.gif"
-                    alt="Sin actividades"
-                    style="max-width: 100%; height: auto"
-                  />
-                  <h3 class="mt-3">Ups... no tienes actividades aún</h3>
-                  <p>¡Empieza creando tus primeras tareas y rutinas!</p>
+<mat-tab-group>
+  <!-- Pestaña 1: Actividades -->
+  <mat-tab label="Actividades">
+    <div class=" bg-white rounded shadow-sm p-4 actividades-wrapper h-100 d-flex flex-column">
+      <h2 class="fw-bold mb-2">ACTIVIDADES DE LA SEMANA</h2>
+      <hr class="mb-3" />
+
+      <div
+        class="objetivos-list rounded p-3 flex-grow-1"
+        style="max-height: 420px; overflow-y: auto; overflow-x: hidden;"
+      >
+        <ul class="list-unstyled mb-0">
+          @if (actividades.length > 0) {
+            @for (actividad of actividades; track $index) {
+              <li
+                class="actividad-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-white shadow-sm"
+              >
+                <div class="actividad-info text-truncate">
+                  <strong class="actividad-titulo d-block">{{ actividad.title }}</strong>
+                  <small class="actividad-horario text-muted">
+                    {{ actividad.start_time }} - {{ actividad.end_time }}
+                  </small>
                 </div>
-                }
-              </ul>
-            </div>
-            @if (!mostrarFormularioActividad) {
-            <button
-              (click)="abrirFormularioActividad()"
-              class="btn-info mt-2 btn-primary-color btn-custom mb-3 mx-auto centered-button"
-            >
-              Agrega Actividad
-            </button>
+                <button
+                  class="btn btn-sm btn-custom btn-actividad px-4"
+                  (click)="verActividad(actividad)"
+                >
+                  Ver
+                </button>
+              </li>
             }
-          </div>
+          } @else {
+            <div class="sin-actividades-container text-center bg-white">
+              <img
+                src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeXA5c25iMmlndWk2MHp5ZXZ2bjd0aXp4Yzdiemg1dnVocGh1MTN6ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jls5k3a7L1N0XRM9d0/giphy.gif"
+                alt="Sin actividades"
+                style="max-width: 100%; height: auto"
+              />
+              <h3 class="mt-3">Ups... no tienes actividades aún</h3>
+              <p>¡Empieza creando tus primeras tareas y rutinas!</p>
+            </div>
+          }
+        </ul>
+      </div>
+
+      @if (!mostrarFormularioActividad) {
+        <button
+          (click)="abrirFormularioActividad()"
+          class="btn-info mt-2 btn-primary-color btn-custom mb-3 mx-auto centered-button"
+        >
+          Agrega Actividad
+        </button>
+      }
+    </div>
+  </mat-tab>
+
+  <!-- Pestaña 2: Objetivos -->
+  <mat-tab label="Objetivos">
+    <div class="bg-white rounded shadow-sm p-4 objetivos-wrapper h-100 d-flex flex-column">
+      <h2 class="fw-bold mb-2">OBJETIVOS</h2>
+      <hr class="mb-3" />
+
+      <div
+        class="objetivos-list rounded p-3 flex-grow-1"
+        style="max-height: 420px; overflow-y: auto; overflow-x: hidden;"
+      >
+        <ul class="list-unstyled mb-0">
+          @if (objetivos.length > 0) {
+            @for (objetivo of objetivos; track $index) {
+              <li class="objetivo-item mb-2 p-2 border rounded bg-white shadow-sm">
+                <strong>{{ objetivo.goals_name }}</strong>
+              </li>
+            }
+          } @else {
+            <div class="text-center">
+              <h4>No hay objetivos todavía.</h4>
+              <p>¡Empieza creando tus metas!</p>
+              <a
+                href="http://localhost:4200/app/panel"
+                style="display: inline-flex; align-items: center; justify-content: center; margin-top: 16px; text-decoration: none; color: #1976d2; font-weight: 600; cursor: pointer;"
+                title="Crear objetivos"
+              >
+                <mat-icon style="margin-right: 6px;">add_circle</mat-icon>
+                Crear objetivos
+              </a>
+            </div>
+          }
+        </ul>
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+
+
         </div>
       </div>
     </div>
@@ -171,6 +216,7 @@
 <div class="modal-overlay" (click)="cerrarFormularioActividad()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <app-form-activity
+
       [objetoRutinaDefecto]="objetoRutinaDefecto"
       [rutinaSeleccionada]="rutinaSeleccionada"
       [disponibilidad]="availability"
