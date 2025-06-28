@@ -4,7 +4,6 @@
   transform-origin: 50% 50%;
   stroke-linecap: round;
 }
-/*Añadido para eliminar el margen que el propio bootstrap te incluye por señalar un div como row*/
 .row {
   margin-right: -0.75rem;
   margin-left: -0.75rem;
@@ -47,21 +46,15 @@
 }
 
 .sin-actividades-container img {
-  width: 200px;
+  width: 50%;
   max-width: 80%;
   margin-bottom: 1rem;
-  opacity: 0.8;
 }
 
 .sin-actividades-container h3 {
   margin: 0.5rem 0;
   font-size: 1.5rem;
   color: #333;
-}
-
-.sin-actividades-container p {
-  font-size: 1rem;
-  color: #777;
 }
 
 @keyframes fadeIn {

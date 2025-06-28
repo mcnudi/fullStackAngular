@@ -22,12 +22,14 @@ import { Category } from '../../interfaces/icategory.interface';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
+    CommonModule,
     MatIconModule,
     MatTabsModule,
     FullCalendarModule,
@@ -104,7 +106,7 @@ eventosFiltradosPorRutina: EventInput[] = [];
       if(info.event._def.publicId.startsWith('actividad-')) {
         const activityNum = Number(info.event._def.publicId.split('-')[1]?.trim());
         console.log("Activity Number:", activityNum);
-        categoria = "Categoria: " + this.getCategoryNameByActivityId(activityNum);   
+        categoria = "Categoria: " + this.getCategoryNameByActivityId(activityNum);
       }
 
       const tooltip = document.createElement('div');
@@ -259,7 +261,7 @@ eventosFiltradosPorRutina: EventInput[] = [];
 
 cerrarFormularioActividad() {
   this.mostrarFormularioActividad = false;
-  this.aplicarFiltros();
+  this.aplicarFiltros();  
 }
 
 
@@ -308,6 +310,8 @@ cerrarFormularioActividad() {
               id: `actividad-${act.id}`,
             }));
 
+            this.categoriasUsuario = this.getCategoriesByActivities(); //Reinicio las categorías del usuario
+
             this.eventosFiltradosPorRutina = activityEvents;
 
             let disponibilidadEvents: EventInput[] = [];
@@ -327,7 +331,6 @@ cerrarFormularioActividad() {
                     this.getCategoryNameByActivityId(Number(ev.id.split('-')[1])) === categoriaFiltradaNombre) ||
                   (ev.id && ev.id.toString().startsWith('disponibilidad-') && this.filtroTipo !== 'actividad') // Incluir disponibilidad si no se filtra solo por actividad
               );
-              this.categoriasUsuario = this.getCategoriesByActivities(); //Reinicio las categorías del usuario
 
               this.actividades = this.actividades.filter(
                 (act) =>
@@ -451,7 +454,7 @@ cerrarFormularioActividad() {
           );
           return category ? category.category_name : 'Sin categoría';
         }
-        return 'Sin categoría';    
+        return 'Sin categoría';
   }
 
   getCategoryById(categoryId: number): string {
@@ -459,7 +462,7 @@ cerrarFormularioActividad() {
           (cat) => cat.id === categoryId
         );
         return category ? category.category_name : 'Sin categoría';
-  } 
+  }
 
   getCategoriesByActivities(): Category[] {
         const categories: Category[] = [];
