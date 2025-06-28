@@ -40,13 +40,13 @@
                   }
                 </select>
                 } @else {
-                <select
-                  id="routine-select"
-                  class="form-select form-select-lg"
-                  disabled
-                >
-                  <option>Cargando rutinas...</option>
-                </select>
+                  <p class="text-muted bg-light border rounded p-3 mt-2 text-center" style="font-size: 1.05rem;">
+                    <i class="bi bi-info-circle me-2" style="font-size: 1.3rem;"></i>
+                    Aun no tienes rutinas creadas.<br>
+                    <a class="btn btn-primary mt-3" style="font-size: 1rem;" [routerLink]="['/app/rutina']">
+                      <i class="bi bi-plus-circle me-1"></i> Crear Rutina
+                    </a>
+                  </p>
                 }
               </div>
 

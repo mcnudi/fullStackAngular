@@ -10,7 +10,6 @@ import { CalendarEventsService } from '../../services/dashboard-user.service';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import esLocale from '@fullcalendar/core/locales/es';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { User } from '../../interfaces/iuser.interface';
 import { Interests } from '../../interfaces/ipanel.interface';
 import { Activity } from '../../interfaces/iactivity.interface';
@@ -22,6 +21,7 @@ import { RutinaService } from '../../services/rutina.service';
 import { Category } from '../../interfaces/icategory.interface';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 
 
 @Component({
@@ -31,10 +31,10 @@ import { MatIconModule } from '@angular/material/icon';
     MatIconModule,
     MatTabsModule,
     FullCalendarModule,
-    NgxChartsModule,
     FormsModule,
     FormActivityComponent,
     FormInfoActivityComponent,
+    RouterLink,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
