@@ -1,34 +1,17 @@
-<div class="container mt-5">
-  <div class="card shadow">
+<div class="container">
+  <div class="card shadow ">
     <form [formGroup]="rutinaForm" (ngSubmit)="salvar()">
-     
-      <div class="card-body text-center mt-3 mx-5">
-        <div class="d-flex justify-content-center gap-5 mt-3">
-        </div>
-
-        <div class="table-responsive mt-4">
-          <table class="table">
-            <thead class="table-info">
-              <tr>
-                <th colspan="2" class="text-start">{{title}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="td-label text-start">
-                  <label for="name" class="form-label fw-bold"
-                    >Nombre</label
-                  >
-                </td>
-                <td class="text-start">
-                  
-                  <input
+      <h2 class="text-center mt-3">{{title}}</h2>
+      <div class="card-body">
+          <div class="mb-3">
+            <label for="name" class="form-label fw-bold"
+                    >Nombre*</label>
+            <input
                     id="name"
                     class="form-control"
                     formControlName="name"
-                    
                   />
-                  @if(checkControl('name','required')){
+                   @if(checkControl('name','required')){
                     <p class="error text-danger f-6">El campo no puede estar vacio</p>
                   } 
                   @if(checkControl('name','message')){
@@ -36,17 +19,10 @@
                   {{rutinaForm.get('name')?.errors?.['message']}}
                     </p>
                 }
-
-                </td>
-              </tr>
-
-              <tr>
-                <td class="td-label text-start">
+          </div>
+          <div>
                   <label for="descripcion" class="form-label fw-bold"
-                    >Descripcion</label
-                  >
-                </td>
-                <td class="text-start">
+                    >Descripción*</label>
                   <textarea
                     id="descripcion"
                     class="form-control"
@@ -60,35 +36,14 @@
                   {{rutinaForm.get('descripcion')?.errors?.['message']}}
                     </p>
                 }
-                </td>
-              </tr>
-             <tr>
-              <td class="td-label text-start"></td>
-                <td class="text-start">
-                  <div class="d-flex align-items-center gap-2">
-                  <span class="pill-element d-flex align-items-center gap-1 p-2" (click)="esDefecto()">
-                    <mat-icon [ngClass]="{ 'invisible': defect }">remove_circle</mat-icon>
-                    <mat-icon [ngClass]="{ 'invisible': !defect }">check_circle</mat-icon>
-                  </span>
-                  <span>Añadir como rutina por defecto</span>
-                  </div>
-                  <!--<span class="pill-element"></span> --> 
-                 <!-- <button class="pill-element">Botón pastilla</button>-->
-                 <!----> 
-                 <!--<mat-slide-toggle class="custom-slide-toggle"
-                  formControlName="defecto"
-                  (change)="esDefecto($event)"
-                  [checked]="defect">
-                </mat-slide-toggle>
-                 <span class="me-3">Añadir como rutina por defecto</span>-->
-                </td>
-                
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-       
+          </div>
+          <div class="d-flex align-items-center gap-2">
+              <span class="pill-element d-flex mt-2" (click)="esDefecto()">
+                <mat-icon [ngClass]="{ 'invisible': defect }">remove_circle</mat-icon>
+                <mat-icon [ngClass]="{ 'invisible': !defect }">check_circle</mat-icon>
+              </span>
+              <span class="mt-2">Añadir como rutina por defecto</span>
+          </div>
         <div class="d-flex justify-content-center gap-5 mt-3">
           <button
             class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color"

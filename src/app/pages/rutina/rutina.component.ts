@@ -16,7 +16,7 @@ import { NgClass } from '@angular/common';
   styleUrl: './rutina.component.css'
 })
 export class RutinaComponent {
-  defect:boolean=false;
+  defect:boolean=true;
   serviceRutina = inject(RutinaService);
   router = inject(Router);
   routerL = inject(ActivatedRoute);
@@ -65,7 +65,7 @@ export class RutinaComponent {
     
     }
     else if (this.url.startsWith('/app/anadirRutina/usuario')){
-      this.title = "Alta Rutina";
+      this.title = "Crear Rutina";
       
     }
   }
