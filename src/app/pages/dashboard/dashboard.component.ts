@@ -1,4 +1,4 @@
-import { Availability } from './../../interfaces/ipanel.interface';
+import { Availability, Goals } from './../../interfaces/ipanel.interface';
 import { PanelService } from './../../services/panel.service';
 import { Component } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
@@ -53,7 +53,7 @@ eventosFiltradosPorRutina: EventInput[] = [];
   availability: Availability[] = [];
   actividades: Activity[] = [];
   categorias: Category[] = [];
-  objetivos: any[] = [];
+  objetivos: Goals[] = [];
   rutinas: any[] = [];
   profileImage: string =
     'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
