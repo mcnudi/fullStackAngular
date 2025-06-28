@@ -67,6 +67,16 @@
                   <option value="actividad">Actividad</option>
                 </select>
               </div>
+              <div class="mb-3">
+                <label class="form-label">Categoría</label>
+                <select class="form-select" [(ngModel)]="filtroCategoria" name="categoria" 
+                  (ngModelChange)="aplicarFiltros()">
+                  <option value="">Todas</option>
+                  @for (categoria of categoriasUsuario; track $index) {
+                    <option [value]="categoria.id">{{ categoria.category_name }}</option>
+                  }
+                </select>
+              </div>
               <div class="d-grid">
                 <button
                   class="btn btn-outline-secondary btn-lg"
