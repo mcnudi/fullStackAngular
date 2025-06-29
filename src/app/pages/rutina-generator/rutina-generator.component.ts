@@ -25,13 +25,13 @@ export class RutinaGeneratorComponent {
     'Casi terminado...',
   ];
   dias = [
+    'Domingo',
     'Lunes',
     'Martes',
     'Miércoles',
     'Jueves',
     'Viernes',
     'Sábado',
-    'Domingo',
   ];
   rutinaService = inject(RutinaService);
   authService = inject(AuthService);
@@ -46,7 +46,7 @@ export class RutinaGeneratorComponent {
   }
 
   getDiaSemana(numero: number): string {
-    return this.dias[numero - 1] || 'Desconocido';
+    return this.dias[numero] || 'Desconocido';
   }
 
   groupActivitiesByDay(actividades: RecommendedActivities[]): void {
