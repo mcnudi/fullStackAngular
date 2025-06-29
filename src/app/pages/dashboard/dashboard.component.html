@@ -259,6 +259,7 @@
 <div class="modal-overlay" (click)="cerrarVistaActividad()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <app-form-info-activity
+      [categorias]="categorias"
       [actividad]="actividadSeleccionada"
       (cerrar)="cerrarVistaActividad()"
     ></app-form-info-activity>
