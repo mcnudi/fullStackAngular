@@ -9,8 +9,8 @@ import { Category } from '../../../interfaces/icategory.interface';
   styleUrls: ['./form-info-activity.component.css']
 })
 export class FormInfoActivityComponent implements OnInit {
-  actividad: Activity | undefined;
-  categorias: Category[] | undefined;
+  actividad: Activity;
+  categorias: Category[];
   categoryName: string = '';
 
   constructor(
@@ -22,7 +22,8 @@ export class FormInfoActivityComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.actividad?.activity_categories_id && this.categorias) {
+    console.log(this.actividad);
+    if (this.actividad.activity_categories_id && this.categorias) {
       const categoria = this.categorias.find(
         (cat) => cat.id === this.actividad!.activity_categories_id
       );

@@ -1,12 +1,14 @@
 :host {
   display: block;
-  width: 10%;
-  max-width: 900px;
+  width: 100%;
+  max-width: 600px; /* Ajustado para un tamaño razonable en dialog */
   padding: 2rem 2.5rem;
   background-color: #ffffff;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
 }
 
 /* Título centrado y claro */
@@ -14,26 +16,46 @@ h4 {
   font-size: 1.75rem;
   margin-bottom: 2rem;
   text-align: center;
-  color: #333;
+  color: #222;
+  font-weight: 700;
 }
 
-/* Inputs amplios */
+/* Inputs amplios y agradables */
 input.form-control {
   width: 100%;
   font-size: 1rem;
   padding: 0.6rem 0.75rem;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+  background-color: #fafafa;
+  color: #212529;
 }
 
 /* Inputs deshabilitados para lectura clara */
 input[disabled] {
-  background-color: #f1f3f5;
-  color: #212529;
+  background-color: #e9ecef;
+  color: #495057;
+  border-color: #ced4da;
+  cursor: not-allowed;
+}
+
+/* Opcional: en hover no cambiar nada para disabled */
+input[disabled]:hover {
   border-color: #ced4da;
 }
 
 /* Espaciado entre elementos */
 .mb-3 {
   margin-bottom: 1.5rem;
+}
+
+/* Etiquetas (labels) para mejor lectura */
+label.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #444;
 }
 
 /* Botón */
@@ -46,4 +68,31 @@ button.btn {
   padding: 0.6rem 1.25rem;
   font-size: 1rem;
   border-radius: 12px;
+  border: none;
+  background-color: #1976d2;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+button.btn:hover {
+  background-color: #125ea9;
+}
+
+button.btn:active {
+  background-color: #0d467a;
+}
+
+/* Responsive: para pantallas pequeñas */
+@media (max-width: 480px) {
+  :host {
+    padding: 1rem 1.5rem;
+    max-width: 100%;
+  }
+  h4 {
+    font-size: 1.5rem;
+  }
+  button.btn {
+    width: 100%;
+  }
 }
