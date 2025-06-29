@@ -4,7 +4,6 @@ import {
   OnChanges,
   SimpleChanges,
   inject,
-  effect,
   signal,
   Inject
 } from '@angular/core';
@@ -68,59 +67,50 @@ export class FormActivityComponent implements OnInit, OnChanges {
     categoria: this.fb.control<number | null>(null, Validators.required)
   });
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-    // Asignar datos inyectados a las propiedades internas
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
     this.objetoRutinaDefecto = data.objetoRutinaDefecto || [];
     this.disponibilidad = data.disponibilidad || [];
     this.actividades = data.actividades || [];
     this.categorias = data.categorias || [];
     this.rutinaSeleccionada = data.rutinaSeleccionada ?? null;
 
-    // Actualizar horas filtradas cuando cambia el dia seleccionado en el form
-    effect(() => {
-      const dia = this.form.get('dia')?.value;
-      if (dia !== undefined && dia !== null) {
-        this.actualizarHoras(dia);
-      }
-    });
+    // Ya no se suscribe aquí para 'dia', se hace en ngOnInit()
+    this.inicializarFormulario();
   }
 
   ngOnInit() {
     this.cargarVersion();
 
-    // Si categoría llega como string, la transformamos a número
+    // Ajustar 'categoria' si viene como string
     this.form.get('categoria')?.valueChanges.subscribe(value => {
       if (typeof value === 'string') {
         this.form.get('categoria')?.setValue(Number(value), { emitEvent: false });
       }
     });
 
-    // Combinar días disponibles y días con actividades para setear diasDisponibles
-    const diasDisponibilidad = this.disponibilidad
-      .map(d => d.weekday)
-      .filter((d): d is number => typeof d === 'number');
+    // Suscripción robusta para 'dia'
+    this.form.get('dia')?.valueChanges.subscribe(valor => {
+      // Convertir a número si es string
+      const diaSeleccionado = typeof valor === 'string' ? parseInt(valor, 10) : valor;
+      if (diaSeleccionado !== null && !isNaN(diaSeleccionado)) {
+        this.inicializarFormulario(diaSeleccionado);
+      }
+    });
 
-    const diasActividades = this.actividades
-      .map(a => a?.day_of_week)
-      .filter((d): d is string => typeof d === 'string')
-      .map(d => parseInt(d, 10))
-      .filter(n => !isNaN(n));
-
-    const unicos = [...new Set([...diasDisponibilidad, ...diasActividades])].sort();
-    this.diasDisponibles.set(unicos);
-
-    // Si hay días disponibles, preseleccionar el primero
-    if (unicos.length > 0 && !this.form.get('dia')?.value) {
-      this.form.patchValue({ dia: unicos[0] });
-    }
+    this.inicializarFormulario(); // llamado inicial
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['rutinaSeleccionada']) {
       this.cargarVersion();
     }
+  }
+
+  /** Método que se vincula en el HTML al evento (change) del select de día */
+  convertirDia(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    const numero = parseInt(select.value, 10);
+    this.form.get('dia')?.setValue(numero);
   }
 
   private cargarVersion() {
@@ -141,36 +131,95 @@ export class FormActivityComponent implements OnInit, OnChanges {
     }
   }
 
+  private inicializarFormulario(diaForzado?: number | null) {
+    const diasDisponibilidad = this.disponibilidad
+      .map(d => d.weekday)
+      .filter((d): d is number => typeof d === 'number');
+
+    const diasActividades = this.actividades
+      .map(a => a?.day_of_week)
+      .filter((d): d is string => typeof d === 'string')
+      .map(d => parseInt(d, 10))
+      .filter(n => !isNaN(n));
+
+    const unicos = [...new Set([...diasDisponibilidad, ...diasActividades])].sort();
+    this.diasDisponibles.set(unicos);
+
+    const diaSeleccionado = diaForzado ?? this.form.get('dia')?.value ?? unicos[0] ?? null;
+    this.form.patchValue({ dia: diaSeleccionado }, { emitEvent: false });
+
+    if (diaSeleccionado !== null) {
+      this.actualizarHoras(diaSeleccionado);
+    }
+
+    // Reinicio explícito de horas
+    const horaInicioControl = this.form.get('horaInicio');
+    const horaFinalControl = this.form.get('horaFinal');
+
+    horaInicioControl?.setValue(null, { emitEvent: false });
+    horaInicioControl?.markAsPristine();
+    horaInicioControl?.markAsUntouched();
+    horaInicioControl?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+
+    horaFinalControl?.setValue(null, { emitEvent: false });
+    horaFinalControl?.markAsPristine();
+    horaFinalControl?.markAsUntouched();
+    horaFinalControl?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+  }
+
   actualizarHoras(diaSeleccionado: number | null) {
+    console.log('Actualizando horas para día:', diaSeleccionado);
+
     if (diaSeleccionado === null) {
       this.horasFiltradas.set([]);
       return;
     }
+
     const bloques = this.disponibilidad.filter(d => d.weekday === diaSeleccionado);
     const actividadesDia = this.actividades.filter(
       a => typeof a?.day_of_week === 'string' && parseInt(a.day_of_week, 10) === diaSeleccionado
     );
-    const disponibles = new Set<string>();
+
+    const horaAMinutos = (hora: string): number => {
+      const [h, m] = hora.split(':').map(Number);
+      return h * 60 + m;
+    };
+
+    let horasDisponibles: string[] = [];
 
     for (const bloque of bloques) {
       const inicio = typeof bloque.start_time === 'string' ? bloque.start_time.slice(0, 5) : '';
       const fin = typeof bloque.end_time === 'string' ? bloque.end_time.slice(0, 5) : '';
       if (!inicio || !fin) continue;
-      for (const h of this.horas) {
-        if (h >= inicio && h <= fin) disponibles.add(h);
-      }
+
+      const inicioMin = horaAMinutos(inicio);
+      const finMin = horaAMinutos(fin);
+
+      const horasBloque = this.horas.filter(h => {
+        const hMin = horaAMinutos(h);
+        return hMin >= inicioMin && hMin <= finMin;
+      });
+
+      horasDisponibles.push(...horasBloque);
     }
 
     for (const actividad of actividadesDia) {
-      const inicio = typeof actividad.start_time === 'string' ? actividad.start_time.slice(0, 5) : '';
-      const fin = typeof actividad.end_time === 'string' ? actividad.end_time.slice(0, 5) : '';
+      const inicio = actividad.start_time?.slice(0, 5);
+      const fin = actividad.end_time?.slice(0, 5);
       if (!inicio || !fin) continue;
-      for (const h of this.horas) {
-        if (h >= inicio && h <= fin) disponibles.delete(h);
-      }
+
+      const inicioMin = horaAMinutos(inicio);
+      const finMin = horaAMinutos(fin);
+
+      horasDisponibles = horasDisponibles.filter(h => {
+        const hMin = horaAMinutos(h);
+        return hMin < inicioMin || hMin >= finMin;
+      });
     }
 
-    this.horasFiltradas.set([...disponibles].sort());
+    const horasFinales = Array.from(new Set(horasDisponibles)).sort();
+    this.horasFiltradas.set([...horasFinales]);
+    console.log('Horas finales disponibles:', horasFinales);
   }
 
   rangoValido(): boolean {
@@ -182,14 +231,71 @@ export class FormActivityComponent implements OnInit, OnChanges {
     return (hfH * 60 + hfM) - (hiH * 60 + hiM) >= 30;
   }
 
+  estaDentroDeUnaSolaFranja(): boolean {
+    const dia = this.form.get('dia')?.value;
+    const inicio = this.form.get('horaInicio')?.value;
+    const fin = this.form.get('horaFinal')?.value;
+
+    if (!dia || !inicio || !fin) return true;
+
+    const bloques = this.disponibilidad.filter(d => d.weekday === dia);
+
+    for (const bloque of bloques) {
+      const inicioBloque = bloque.start_time?.slice(0, 5);
+      const finBloque = bloque.end_time?.slice(0, 5);
+      if (!inicioBloque || !finBloque) continue;
+
+      if (inicio >= inicioBloque && fin <= finBloque) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  hayConflictoConOtraActividad(dia: number, inicio: string, fin: string): boolean {
+    const inicioMin = this.convertirHoraAMinutos(inicio);
+    const finMin = this.convertirHoraAMinutos(fin);
+
+    return this.actividades.some(a => {
+      const diaActividad = parseInt(a.day_of_week, 10);
+      if (diaActividad !== dia) return false;
+
+      const inicioAct = this.convertirHoraAMinutos(a.start_time?.slice(0, 5));
+      const finAct = this.convertirHoraAMinutos(a.end_time?.slice(0, 5));
+
+      return !(finMin <= inicioAct || inicioMin >= finAct);
+    });
+  }
+
+  convertirHoraAMinutos(hora: string): number {
+    const [h, m] = hora.split(':').map(Number);
+    return h * 60 + m;
+  }
+
   enviar() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       alert('Por favor complete todos los campos requeridos');
       return;
     }
+
     if (!this.rangoValido()) {
       alert('La hora final debe ser al menos 30 minutos después de la hora de inicio');
+      return;
+    }
+
+    if (!this.estaDentroDeUnaSolaFranja()) {
+      alert('La hora de inicio y fin deben estar dentro de la misma franja horaria de disponibilidad');
+      return;
+    }
+
+    const dia = this.form.get('dia')?.value!;
+    const inicio = this.form.get('horaInicio')?.value!;
+    const fin = this.form.get('horaFinal')?.value!;
+
+    if (this.hayConflictoConOtraActividad(dia, inicio, fin)) {
+      alert('Ya existe una actividad que se solapa con este horario.');
       return;
     }
 
@@ -214,6 +320,12 @@ export class FormActivityComponent implements OnInit, OnChanges {
         alert('Error creando actividad');
       }
     });
+  }
+
+  getHorasFinalesFiltradas(): string[] {
+    const inicio = this.form.get('horaInicio')?.value;
+    if (!inicio) return this.horasFiltradas();
+    return this.horasFiltradas().filter(h => h > inicio);
   }
 
   cerrarDialogo() {

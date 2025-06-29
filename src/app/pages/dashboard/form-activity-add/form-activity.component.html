@@ -14,7 +14,7 @@
 
     <div class="mb-3">
       <label for="dia">Día*</label>
-      <select id="dia" formControlName="dia" class="form-select">
+      <select id="dia" formControlName="dia" class="form-select" (change)="convertirDia($event)" >
         @for (dia of diasDisponibles(); track dia) {
           <option [value]="dia">{{ diaLabels[dia] }}</option>
         }
@@ -33,12 +33,13 @@
 
     <div class="mb-3">
       <label for="horaFinal">Hora Final*</label>
-      <select id="horaFinal" formControlName="horaFinal" class="form-select">
-        <option value="">Seleccione hora</option>
-        @for (hora of horasFiltradas(); track hora) {
-          <option [value]="hora">{{ hora }}</option>
-        }
-      </select>
+<select id="horaFinal" formControlName="horaFinal" class="form-select">
+  <option value="">Seleccione hora</option>
+  @for (hora of getHorasFinalesFiltradas(); track hora) {
+    <option [value]="hora">{{ hora }}</option>
+  }
+</select>
+
     </div>
 
     @if (!rangoValido() && form.get('horaInicio')?.value && form.get('horaFinal')?.value) {
