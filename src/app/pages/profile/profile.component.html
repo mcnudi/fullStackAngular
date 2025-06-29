@@ -19,7 +19,7 @@
             [disabled]="editView"
             type="button"
           >
-            <mat-icon>edit</mat-icon> Editar datos
+            <mat-icon>edit</mat-icon> Editar Datos
           </button>
           <div class="d-flex flex-column align-items-center gap-3">
             <a
@@ -29,6 +29,14 @@
               <mat-icon>photo_camera</mat-icon> Editar Foto
             </a>
           </div>
+          <button
+            class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color"
+            (click)="deleteProfile()"
+            [disabled]="editView"
+            type="button"
+          >
+            <mat-icon>delete_forever</mat-icon> Eliminar Usuario
+          </button>
         </div>
 
         <div class="table-responsive mt-4">

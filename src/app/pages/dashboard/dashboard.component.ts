@@ -25,7 +25,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DialogService } from '../../services/dialog.service';
-
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dashboard',
@@ -36,8 +36,6 @@ import { DialogService } from '../../services/dialog.service';
     MatTabsModule,
     FullCalendarModule,
     FormsModule,
-    FormActivityComponent,
-    FormInfoActivityComponent,
     RouterLink,
   ],
   templateUrl: './dashboard.component.html',
@@ -51,7 +49,8 @@ export class DashboardComponent {
     private panelService: PanelService,
     private ruinaService: RutinaService,
     private dialogService: DialogService,
-    private toastService :ToastService
+    private toastService :ToastService,
+    private dialog: MatDialog
   ) {}
 
 eventosFiltradosPorRutina: EventInput[] = [];
@@ -249,35 +248,45 @@ eventosFiltradosPorRutina: EventInput[] = [];
   }
   /* Metodos para el formulario  */
 
-  abrirFormularioActividad() {
-    this.mostrarFormularioActividad = true;
+abrirFormularioActividad() {
+  this.ruinaService.obtenerRutinas(this.rutinaSeleccionada).subscribe({
+    next: (data: any[]) => {
+      this.objetoRutinaDefecto = data || [];
 
-            this.ruinaService.obtenerRutinas(this.rutinaSeleccionada).subscribe({
-          next: (data: any[]) => {
-            this.objetoRutinaDefecto = data || [];
-          },
-          error: (error) => {
-            console.log('Error al cargar rutinas :', error);
-          },
+      const dialogRef = this.dialog.open(FormActivityComponent, {
+        data: {
+          objetoRutinaDefecto: this.objetoRutinaDefecto,
+          rutinaSeleccionada: this.rutinaSeleccionada,
+          disponibilidad: this.availability,
+          actividades: this.actividades,
+          categorias: this.categorias,
+        },
+      });
 
-        });
-  }
-
-cerrarFormularioActividad() {
-  this.mostrarFormularioActividad = false;
-  this.aplicarFiltros();
+      dialogRef.afterClosed().subscribe(result => {
+        this.aplicarFiltros();
+      });
+    },
+    error: (error) => {
+      console.log('Error al cargar rutinas:', error);
+    },
+  });
 }
 
 
-  verActividad(actividad: any) {
-    this.actividadSeleccionada = actividad;
-    this.mostrarVistaActividad = true;
-  }
+verActividad(actividad: any) {
+  const dialogRef = this.dialog.open(FormInfoActivityComponent, {
+    data: {
+      actividad: actividad,
+      categorias: this.categorias,
+    },
+  });
 
-  cerrarVistaActividad() {
-    this.mostrarVistaActividad = false;
-    this.actividadSeleccionada = null;
-  }
+  dialogRef.afterClosed().subscribe(result => {
+
+  });
+}
+
 
 async eliminarActividad(actividad: { id: number }) {
   const confirmed = await this.dialogService.confirm(
@@ -292,7 +301,7 @@ async eliminarActividad(actividad: { id: number }) {
         next: (data: Activity[]) => {
           // Actualiza disponibilidad o el array de actividades si lo necesitas
           this.actividades = data || [];
-          this.aplicarFiltros();
+          this.limpiarFiltros();
           // Si tienes un array de actividades local y quieres actualizarlo:
           const index = this.actividades.findIndex(a => a.id === actividad.id);
           if (index !== -1) {
@@ -332,6 +341,10 @@ async eliminarActividad(actividad: { id: number }) {
       console.log('Filtro de Actividades aplicado o Todos seleccionado');
 
       if (this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior || this.filtroTipo === 'actividad' || this.filtroTipo === '') {
+
+        if(this.rutinaSeleccionadaAnterior && this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior) {
+            this.filtroCategoria = ''; // Reiniciar filtro de categoría al cambiar rutina
+        }
         this.rutinaSeleccionadaAnterior = this.rutinaSeleccionada;
 
         this.calendarEventsService.getActivitiesByRoutineId(this.rutinaSeleccionada).subscribe({
@@ -344,7 +357,7 @@ async eliminarActividad(actividad: { id: number }) {
               daysOfWeek: [act.day_of_week],
               startTime: act.start_time,
               endTime: act.end_time,
-              display: 'auto',
+              display: 'block',
               color: '#64b5f6',
               id: `actividad-${act.id}`,
             }));
@@ -463,7 +476,7 @@ async eliminarActividad(actividad: { id: number }) {
           daysOfWeek: [act.day_of_week],
           startTime: act.start_time,
           endTime: act.end_time,
-          display: 'auto',
+          display: 'block',
           color: '#64b5f6',
           id: `actividad-${act.id}`,
         })); // Combinar todos los eventos

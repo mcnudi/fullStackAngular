@@ -141,4 +141,34 @@ export class ProfileComponent {
       ? `data:image/png;base64,${this.profile.image}`
       : 'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
   }
+
+  async deleteProfile() {
+    const result = await this.dialogService.confirm(
+      'Eliminar Usuario',
+      `Para eliminar tu usuario, escribe tu nombre de usuario para confirmar.\n\nNombre de usuario: ${this.username}`,
+      { inputLabel: 'Nombre de usuario', inputPlaceholder: 'Introduce tu nombre de usuario' }
+    );
+
+    if (!result || !result.confirmed) return;
+    if (result.inputValue !== this.username) {
+      this.toastService.showError('El nombre de usuario no coincide. No se ha eliminado la cuenta.');
+      return;
+    }
+
+    const confirmFinal = await this.dialogService.confirm(
+      'Eliminar Usuario',
+      `¿Estás seguro de que quieres eliminar tu usuario?\nAVISO: Si aceptas no podrás recuperar tu usuario.`
+    );
+    if (!confirmFinal || (typeof confirmFinal === 'object' && !confirmFinal.confirmed) || confirmFinal === false) return;    
+    
+    try {
+      await this.userService.deleteProfile(this.username).toPromise();
+      this.authService.removeToken();
+      this.router.navigate(['/home']);
+      this.toastService.showSuccess('Usuario eliminado correctamente.');
+    } catch (err) {
+      this.toastService.showError('Error al eliminar el usuario.');
+    }
+  }
+
 }

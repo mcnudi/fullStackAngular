@@ -18,16 +18,19 @@ ul {
 
 .panel-content {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 5px;
 }
 
 .elemento_texto_lista {
     flex-grow: 1;
     display: flex;
-    align-items: center;
-    justify-content: center;
     padding: 7px;
     border: 1px solid lightgray;
     border-radius: 7px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }

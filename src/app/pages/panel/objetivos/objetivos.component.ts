@@ -148,12 +148,7 @@ export class ObjetivosComponent implements OnInit {
   }
 
   getNombreInteres(id: number): string {
-    console.log('Buscando interés con id:', id, 'de tipo', typeof id);
-this.arrayIntereses.forEach(i => {
-  console.log('Elemento i.id:', i.id, 'de tipo', typeof i.id);
-});
     const interes = this.arrayIntereses.find(i => Number(i.id) === Number(id));
-    console.log('El interés es: ', interes)
     return interes ? interes.interest_name! : 'Interés no encontrado';
   }
 

@@ -7,11 +7,12 @@ import { ToastService } from '../../../../services/toast.service';
 import { MatIcon } from '@angular/material/icon';
 import { PanelService } from '../../../../services/panel.service';
 import { AuthService } from '../../../../services/auth.service';
+import { MatError } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-formulario-intereses',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, MatIcon],
+  imports: [ReactiveFormsModule, FormsModule, MatIcon, MatError],
   templateUrl: './formulario-intereses.component.html',
   styleUrls: ['./formulario-intereses.component.css'],
 })
@@ -30,17 +31,22 @@ export class FormularioInteresesComponent implements OnInit {
     this.interesActual = data?.elemento
   };
   
-  interestsForm = new FormGroup({
+  userInterestsForm = new FormGroup({
     interest_name: new FormControl('', Validators.required),
-    color: new FormControl('', Validators.required)
+    color: new FormControl('#00FF00', Validators.required)
   });
+
+  originalFormValue: any; // Para controlar cambios en el contenido del formulario cuando 'actualizar'
 
   ngOnInit() {
     if (this.modo === 'actualizar' && this.interesActual) {
-      this.interestsForm.patchValue({
+      this.userInterestsForm.patchValue({
         interest_name: this.interesActual.interest_name,
-        color: this.interesActual.color // Formato hexadecimal.... cuando inserte en BD tal vez ya lleve el #
+        color: this.interesActual.color
       });
+      this.originalFormValue = this.userInterestsForm.getRawValue();
+      this.userInterestsForm.markAsUntouched();
+      this.userInterestsForm.markAsPristine();
     }
   }
   
@@ -49,11 +55,11 @@ export class FormularioInteresesComponent implements OnInit {
   }
 
   async saveInterests() {
-    if (this.interestsForm.invalid) {
+    if (this.userInterestsForm.invalid) {
       this.toastService.showError('Por favor, completa todos los campos.');
       return;
     }
-    const { interest_name, color } = this.interestsForm.value;
+    const { interest_name, color } = this.userInterestsForm.value;
 
     if (this.modo === 'añadir') {
       this.addInterest({ interest_name, color } as Interests);
@@ -66,7 +72,7 @@ export class FormularioInteresesComponent implements OnInit {
     this.panelService.addInterests(this.authService.getDecodedToken().id, elemento.interest_name!, elemento.color!).subscribe( {
       next: (data: Interests) => {
         this.toastService.showSuccess('Interés añadido correctamente.');
-        this.dialogRef?.close(this.interestsForm.value);
+        this.dialogRef?.close(this.userInterestsForm.value);
       },
       error: (error) => {
         console.log(error);
@@ -82,11 +88,23 @@ export class FormularioInteresesComponent implements OnInit {
                                       elementoActualizador.color!).subscribe( {
       next: (data: Interests) => {
         this.toastService.showSuccess('Interés Actualizado correctamente.');
-        this.dialogRef?.close(this.interestsForm.value);
+        this.dialogRef?.close(this.userInterestsForm.value);
       },
       error: (error) => {
         console.log(error);
       }
     });
+  }
+
+  checkControl(controlName: string, errorName: string) {
+    return (
+      this.userInterestsForm.get(controlName)?.hasError(errorName) &&
+      this.userInterestsForm.get(controlName)?.touched
+    );
+  }
+
+  formularioTieneCambios(): boolean {
+    const currentValue = this.userInterestsForm.getRawValue();
+    return JSON.stringify(currentValue) !== JSON.stringify(this.originalFormValue);
   }
 }

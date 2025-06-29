@@ -5,7 +5,7 @@
             Intereses
         </h3>
     </mat-expansion-panel-header>
-    @for (item of arrayIntereses; track item.id) {
+    @for (item of arrayInteresesUsuario; track item.id) {
         <div class="panel-content">
             <button (click)="openModal('actualizar', item)" class="btn-crud btn btn-outline-success mt-1"><mat-icon>edit</mat-icon></button>
             <button (click)="deleteInterest(item)" class="btn-crud btn btn-outline-danger mt-1"><mat-icon>delete</mat-icon></button>

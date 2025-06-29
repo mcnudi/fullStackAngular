@@ -48,7 +48,6 @@ export class PanelService {
   }
 
   userHasInterests(idUsuario: number) : Observable<{hasInterests: boolean}> {
-    console.log(`${this.API_URL}/interests/userHasInterests/${idUsuario}`)
     return this.httpClient.get<{ hasInterests: boolean }>(`${this.API_URL}/interests/userHasInterests/${idUsuario}`);
   }
 
