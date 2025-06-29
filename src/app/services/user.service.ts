@@ -32,4 +32,8 @@ export class UserService {
       formData
     );
   }
+
+  deleteProfile(username: string): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/delete/username/${username}`);
+  }
 }

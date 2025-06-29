@@ -332,6 +332,10 @@ async eliminarActividad(actividad: { id: number }) {
       console.log('Filtro de Actividades aplicado o Todos seleccionado');
 
       if (this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior || this.filtroTipo === 'actividad' || this.filtroTipo === '') {
+
+        if(this.rutinaSeleccionadaAnterior && this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior) {
+            this.filtroCategoria = ''; // Reiniciar filtro de categoría al cambiar rutina
+        }
         this.rutinaSeleccionadaAnterior = this.rutinaSeleccionada;
 
         this.calendarEventsService.getActivitiesByRoutineId(this.rutinaSeleccionada).subscribe({
@@ -344,7 +348,7 @@ async eliminarActividad(actividad: { id: number }) {
               daysOfWeek: [act.day_of_week],
               startTime: act.start_time,
               endTime: act.end_time,
-              display: 'auto',
+              display: 'block',
               color: '#64b5f6',
               id: `actividad-${act.id}`,
             }));
@@ -463,7 +467,7 @@ async eliminarActividad(actividad: { id: number }) {
           daysOfWeek: [act.day_of_week],
           startTime: act.start_time,
           endTime: act.end_time,
-          display: 'auto',
+          display: 'block',
           color: '#64b5f6',
           id: `actividad-${act.id}`,
         })); // Combinar todos los eventos
