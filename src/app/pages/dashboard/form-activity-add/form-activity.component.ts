@@ -12,6 +12,7 @@ import { Availability } from '../../../interfaces/ipanel.interface';
 import { Category } from '../../../interfaces/icategory.interface';
 import { CalendarEventsService } from '../../../services/dashboard-user.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-form-activity',
@@ -20,6 +21,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   templateUrl: './form-activity.component.html',
   styleUrls: ['./form-activity.component.css']
 })
+
+
 export class FormActivityComponent implements OnInit, OnChanges {
   objetoRutinaDefecto: any[] = [];
   disponibilidad: Availability[] = [];
@@ -47,6 +50,7 @@ export class FormActivityComponent implements OnInit, OnChanges {
   private calendarEventsService = inject(CalendarEventsService);
   private fb = inject(FormBuilder);
   private dialogRef = inject(MatDialogRef<FormActivityComponent>);
+  private toastService = inject(ToastService)
 
   diaLabels = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Otro'];
   horas = Array.from({ length: 48 }, (_, i) => {
@@ -276,17 +280,17 @@ export class FormActivityComponent implements OnInit, OnChanges {
   enviar() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      alert('Por favor complete todos los campos requeridos');
+      this.toastService.showError('Por favor complete todos los campos requeridos');
       return;
     }
 
     if (!this.rangoValido()) {
-      alert('La hora final debe ser al menos 30 minutos después de la hora de inicio');
+      this.toastService.showError('La hora final debe ser al menos 30 minutos después de la hora de inicio');
       return;
     }
 
     if (!this.estaDentroDeUnaSolaFranja()) {
-      alert('La hora de inicio y fin deben estar dentro de la misma franja horaria de disponibilidad');
+      this.toastService.showError('La hora de inicio y fin deben estar dentro de la misma franja horaria de disponibilidad');
       return;
     }
 
@@ -313,11 +317,11 @@ export class FormActivityComponent implements OnInit, OnChanges {
 
     this.calendarEventsService.addNewActivity(nuevaActividad).subscribe({
       next: () => {
-        alert('Actividad creada correctamente');
+        this.toastService.showError('Actividad creada correctamente');
         this.dialogRef.close(true);
       },
       error: () => {
-        alert('Error creando actividad');
+        this.toastService.showError('Error creando actividad');
       }
     });
   }
