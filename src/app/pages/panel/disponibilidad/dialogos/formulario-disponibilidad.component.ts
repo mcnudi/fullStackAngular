@@ -97,6 +97,10 @@ export class FormularioDisponibilidadComponent implements OnInit {
     });
   }
 
+  formularioTieneCambios(): boolean {
+    return this.selectedRanges?.some(rango => rango.esNuevo) ?? false;
+  }
+
 //--------------------------------------------------
 // CÓDIGO DEL SELECTOR DE HORAS
 //--------------------------------------------------
@@ -172,6 +176,7 @@ export class FormularioDisponibilidadComponent implements OnInit {
         esNuevo: true,
         weekday: Number(this.availabilityForm.controls.weekday.value)
       });
+      this.availabilityForm.markAsDirty();
       this.start_time = null;
       this.end_time = null;
       this.toastService.showSuccess('Rangos de disponibilidad actualizados. Pulse Añadir para guardar cambios.');
@@ -186,6 +191,7 @@ export class FormularioDisponibilidadComponent implements OnInit {
         esNuevo: true,
         weekday: Number(this.availabilityForm.controls.weekday.value)
       });
+      this.availabilityForm.markAsDirty();
       this.start_time = null;
       this.end_time = null;
       this.toastService.showSuccess('Rangos de disponibilidad actualizados. Pulse Actualizar para guardar cambios.');
