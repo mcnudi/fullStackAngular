@@ -1,7 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Irutina } from '../interfaces/irutina.interface';
-import { Observable } from 'rxjs';
+import {
+  GenerarRutinaResponse,
+  Irutina,
+} from '../interfaces/irutina.interface';
+import { lastValueFrom, Observable } from 'rxjs';
 import { RecommendedActivities } from '../interfaces/irecomendedActivity';
 import { IRutinaPaginada } from '../interfaces/i-rutina-paginada.interface';
 
@@ -14,6 +17,15 @@ export class RutinaService {
 
   insertRutina(rutina: Irutina): Observable<Irutina> {
     return this.http.post<Irutina>(`${this.baseURL}`, rutina);
+  }
+
+  insertarRutinaGenerada(rutina: Irutina): Promise<GenerarRutinaResponse> {
+    return lastValueFrom(
+      this.http.post<GenerarRutinaResponse>(
+        `${this.baseURL}/generate/add`,
+        rutina
+      )
+    );
   }
 
   modificarRutina(rutina: Irutina): Observable<Irutina> {
@@ -48,6 +60,22 @@ export class RutinaService {
   generarRutina(id: number): Observable<RecommendedActivities[]> {
     return this.http.get<RecommendedActivities[]>(
       `${this.baseURL}/generate/${id}`
+    );
+  }
+
+  guardarActividadesSugeridas(
+    actividades: RecommendedActivities[],
+    routineId: number
+  ): Promise<{
+    success: boolean;
+    inserts: number[];
+  }> {
+    const endpoint = `http://localhost:3000/api/activities/generated/add/${routineId}`;
+    return lastValueFrom(
+      this.http.post<{ success: boolean; inserts: number[] }>(
+        endpoint,
+        actividades
+      )
     );
   }
 

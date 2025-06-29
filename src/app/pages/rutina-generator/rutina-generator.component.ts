@@ -1,8 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { LoadingComponent } from '../../shared/loading/loading.component';
-import {
-  MatProgressSpinnerModule,
-} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RutinaService } from '../../services/rutina.service';
 import { AuthService } from '../../services/auth.service';
 import { RecommendedActivities } from '../../interfaces/irecomendedActivity';
@@ -27,13 +25,13 @@ export class RutinaGeneratorComponent {
     'Casi terminado...',
   ];
   dias = [
+    'Domingo',
     'Lunes',
     'Martes',
     'Miércoles',
     'Jueves',
     'Viernes',
     'Sábado',
-    'Domingo',
   ];
   rutinaService = inject(RutinaService);
   authService = inject(AuthService);
@@ -48,7 +46,7 @@ export class RutinaGeneratorComponent {
   }
 
   getDiaSemana(numero: number): string {
-    return this.dias[numero - 1] || 'Desconocido';
+    return this.dias[numero] || 'Desconocido';
   }
 
   groupActivitiesByDay(actividades: RecommendedActivities[]): void {
@@ -100,5 +98,50 @@ export class RutinaGeneratorComponent {
         this.loading = false;
       },
     });
+  }
+
+  async guardarRutinaRecomendada() {
+    const actividadesRecomendadas = this.actividades;
+    const userId = this.authService.getDecodedToken().id;
+    //crear una rutina
+    const automatedRoutine = {
+      name: this.generarNombreRutina(),
+      description: 'Rutina generada automaticamente en base a tu perfil',
+      defecto: true,
+      usuario: userId,
+      is_shared: false,
+      is_frequent: false,
+      is_default: true,
+      id: 0,
+      version_number: 1,
+      idVersion: 1,
+      created_at: new Date(),
+    };
+    const { idRutina } = await this.rutinaService.insertarRutinaGenerada(
+      automatedRoutine
+    );
+
+    const { success } = await this.rutinaService.guardarActividadesSugeridas(
+      actividadesRecomendadas,
+      idRutina
+    );
+
+    if (success) {
+      this.router.navigate(['app', 'rutina']);
+      return;
+    }
+    alert('Error cresting the recommended activity');
+  }
+
+  generarNombreRutina(): string {
+    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let fragmento = '';
+
+    for (let i = 0; i < 3; i++) {
+      const indiceAleatorio = Math.floor(Math.random() * caracteres.length);
+      fragmento += caracteres[indiceAleatorio];
+    }
+
+    return `Rutina [${fragmento}] personalizada`;
   }
 }
