@@ -36,8 +36,6 @@ import { MatDialog } from '@angular/material/dialog';
     MatTabsModule,
     FullCalendarModule,
     FormsModule,
-
-    FormInfoActivityComponent,
     RouterLink,
   ],
   templateUrl: './dashboard.component.html',
@@ -276,15 +274,19 @@ abrirFormularioActividad() {
 }
 
 
-  verActividad(actividad: any) {
-    this.actividadSeleccionada = actividad;
-    this.mostrarVistaActividad = true;
-  }
+verActividad(actividad: any) {
+  const dialogRef = this.dialog.open(FormInfoActivityComponent, {
+    data: {
+      actividad: actividad,
+      categorias: this.categorias,
+    },
+  });
 
-  cerrarVistaActividad() {
-    this.mostrarVistaActividad = false;
-    this.actividadSeleccionada = null;
-  }
+  dialogRef.afterClosed().subscribe(result => {
+
+  });
+}
+
 
 async eliminarActividad(actividad: { id: number }) {
   const confirmed = await this.dialogService.confirm(
