@@ -255,13 +255,6 @@ abrirFormularioActividad() {
     next: (data: any[]) => {
       this.objetoRutinaDefecto = data || [];
 
-      // Aquí haces los console.log
-      console.log('objetoRutinaDefecto:', this.objetoRutinaDefecto);
-      console.log('rutinaSeleccionada:', this.rutinaSeleccionada);
-      console.log('disponibilidad:', this.availability);
-      console.log('actividades:', this.actividades);
-      console.log('categorias:', this.categorias);
-
       const dialogRef = this.dialog.open(FormActivityComponent, {
         data: {
           objetoRutinaDefecto: this.objetoRutinaDefecto,
@@ -270,7 +263,6 @@ abrirFormularioActividad() {
           actividades: this.actividades,
           categorias: this.categorias,
         },
-        width: '600px' // o el tamaño que quieras
       });
 
       dialogRef.afterClosed().subscribe(result => {
