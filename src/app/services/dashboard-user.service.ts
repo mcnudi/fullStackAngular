@@ -67,5 +67,13 @@ export class CalendarEventsService {
         catchError(() => of([]))
       );
   }
+      deleteActivity(activity_id: number): Observable<Activity[]> {
+    return this.http
+      .delete<Activity[]>(`http://localhost:3000/api/activities/delete/${activity_id}`)
+      .pipe(
+        catchError(() => of([]))
+      );
+  }
+
 
 }

@@ -1,3 +1,4 @@
+import { ToastService } from './../../services/toast.service';
 import { Availability, Goals } from './../../interfaces/ipanel.interface';
 import { PanelService } from './../../services/panel.service';
 import { Component } from '@angular/core';
@@ -23,6 +24,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { DialogService } from '../../services/dialog.service';
 
 
 @Component({
@@ -47,7 +49,9 @@ export class DashboardComponent {
     private authService: AuthService,
     private userService: UserService,
     private panelService: PanelService,
-    private ruinaService: RutinaService
+    private ruinaService: RutinaService,
+    private dialogService: DialogService,
+    private toastService :ToastService
   ) {}
 
 eventosFiltradosPorRutina: EventInput[] = [];
@@ -261,7 +265,7 @@ eventosFiltradosPorRutina: EventInput[] = [];
 
 cerrarFormularioActividad() {
   this.mostrarFormularioActividad = false;
-  this.aplicarFiltros();  
+  this.aplicarFiltros();
 }
 
 
@@ -274,6 +278,41 @@ cerrarFormularioActividad() {
     this.mostrarVistaActividad = false;
     this.actividadSeleccionada = null;
   }
+
+async eliminarActividad(actividad: { id: number }) {
+  const confirmed = await this.dialogService.confirm(
+    'Confirmar borrado',
+    `¿Estás seguro de que quieres eliminar esta actividad?
+    ¡¡Esta acción no se puede deshacer!!`
+  );
+
+  if (confirmed) {
+    try {
+      this.calendarEventsService.deleteActivity(actividad.id).subscribe({
+        next: (data: Activity[]) => {
+          // Actualiza disponibilidad o el array de actividades si lo necesitas
+          this.actividades = data || [];
+          this.aplicarFiltros();
+          // Si tienes un array de actividades local y quieres actualizarlo:
+          const index = this.actividades.findIndex(a => a.id === actividad.id);
+          if (index !== -1) {
+            this.actividades.splice(index, 1);
+          }
+        },
+        error: (error) => {
+          console.error('Error al eliminar la actividad:', error);
+          this.toastService.showError('Error al eliminar la actividad.');
+        }
+      });
+    } catch (err) {
+      console.error('Error inesperado al eliminar la actividad:', err);
+      this.toastService.showError('Error inesperado al eliminar la actividad.');
+    }
+  }
+}
+
+
+
 
   getDateOnTime(date: Date | null): string {
     if (!date) return '';
