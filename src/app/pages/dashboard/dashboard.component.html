@@ -241,21 +241,7 @@
   </div>
 </div>
 
-@if (mostrarFormularioActividad) {
-<div class="modal-overlay" (click)="cerrarFormularioActividad()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <app-form-activity
-
-      [objetoRutinaDefecto]="objetoRutinaDefecto"
-      [rutinaSeleccionada]="rutinaSeleccionada"
-      [disponibilidad]="availability"
-      [actividades]="actividades"
-      [categorias]="categorias"
-      (cerrar)="cerrarFormularioActividad()"
-    ></app-form-activity>
-  </div>
-</div>
-} @if (mostrarVistaActividad) {
+ @if (mostrarVistaActividad) {
 <div class="modal-overlay" (click)="cerrarVistaActividad()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <app-form-info-activity

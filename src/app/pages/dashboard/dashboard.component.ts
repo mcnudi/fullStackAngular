@@ -25,7 +25,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DialogService } from '../../services/dialog.service';
-
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dashboard',
@@ -36,7 +36,7 @@ import { DialogService } from '../../services/dialog.service';
     MatTabsModule,
     FullCalendarModule,
     FormsModule,
-    FormActivityComponent,
+
     FormInfoActivityComponent,
     RouterLink,
   ],
@@ -51,7 +51,8 @@ export class DashboardComponent {
     private panelService: PanelService,
     private ruinaService: RutinaService,
     private dialogService: DialogService,
-    private toastService :ToastService
+    private toastService :ToastService,
+    private dialog: MatDialog
   ) {}
 
 eventosFiltradosPorRutina: EventInput[] = [];
@@ -249,23 +250,37 @@ eventosFiltradosPorRutina: EventInput[] = [];
   }
   /* Metodos para el formulario  */
 
-  abrirFormularioActividad() {
-    this.mostrarFormularioActividad = true;
+abrirFormularioActividad() {
+  this.ruinaService.obtenerRutinas(this.rutinaSeleccionada).subscribe({
+    next: (data: any[]) => {
+      this.objetoRutinaDefecto = data || [];
 
-            this.ruinaService.obtenerRutinas(this.rutinaSeleccionada).subscribe({
-          next: (data: any[]) => {
-            this.objetoRutinaDefecto = data || [];
-          },
-          error: (error) => {
-            console.log('Error al cargar rutinas :', error);
-          },
+      // Aquí haces los console.log
+      console.log('objetoRutinaDefecto:', this.objetoRutinaDefecto);
+      console.log('rutinaSeleccionada:', this.rutinaSeleccionada);
+      console.log('disponibilidad:', this.availability);
+      console.log('actividades:', this.actividades);
+      console.log('categorias:', this.categorias);
 
-        });
-  }
+      const dialogRef = this.dialog.open(FormActivityComponent, {
+        data: {
+          objetoRutinaDefecto: this.objetoRutinaDefecto,
+          rutinaSeleccionada: this.rutinaSeleccionada,
+          disponibilidad: this.availability,
+          actividades: this.actividades,
+          categorias: this.categorias,
+        },
+        width: '600px' // o el tamaño que quieras
+      });
 
-cerrarFormularioActividad() {
-  this.mostrarFormularioActividad = false;
-  this.aplicarFiltros();
+      dialogRef.afterClosed().subscribe(result => {
+        this.aplicarFiltros();
+      });
+    },
+    error: (error) => {
+      console.log('Error al cargar rutinas:', error);
+    },
+  });
 }
 
 
@@ -292,7 +307,7 @@ async eliminarActividad(actividad: { id: number }) {
         next: (data: Activity[]) => {
           // Actualiza disponibilidad o el array de actividades si lo necesitas
           this.actividades = data || [];
-          this.aplicarFiltros();
+          this.limpiarFiltros();
           // Si tienes un array de actividades local y quieres actualizarlo:
           const index = this.actividades.findIndex(a => a.id === actividad.id);
           if (index !== -1) {
