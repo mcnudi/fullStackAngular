@@ -79,6 +79,7 @@
     <!-- Botones -->
     <div class="d-flex justify-content-center gap-2 mt-3">
         <button type="submit"
+            [disabled]="!formularioTieneCambios()"
             class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">
             <mat-icon>save</mat-icon>
             {{ modo === 'actualizar' ? 'Actualizar' : 'Añadir' }}
