@@ -32,7 +32,8 @@ export class ApplayoutComponent {
     const username = this.authService.getUserName();
     if (username) {
       this.user = await lastValueFrom(this.userService.getByUsername(username));
-      this.profileImage = `data:image/png;base64,${this.user.image}`;
+      if (this.user.image)
+        this.profileImage = `data:image/png;base64,${this.user.image}`;
     }
   }
 }
