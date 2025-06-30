@@ -10,9 +10,13 @@ import { ComponentType } from '@angular/cdk/overlay';
 export class DialogService {
   constructor(private dialog: MatDialog) {}
 
-  async confirm(title: string, message: string): Promise<boolean> {
+  async confirm(
+    title: string,
+    message: string,
+    options?: { inputLabel?: string; inputPlaceholder?: string }
+  ): Promise<any> {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: { title, message },
+      data: { title, message, ...options },
       width: '500px',
       maxWidth: '90vw',
       disableClose: true,

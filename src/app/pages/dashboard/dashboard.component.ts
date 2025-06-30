@@ -1,3 +1,4 @@
+import { ToastService } from './../../services/toast.service';
 import { Availability, Goals } from './../../interfaces/ipanel.interface';
 import { PanelService } from './../../services/panel.service';
 import { Component } from '@angular/core';
@@ -23,7 +24,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
+import { DialogService } from '../../services/dialog.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dashboard',
@@ -34,8 +36,6 @@ import { CommonModule } from '@angular/common';
     MatTabsModule,
     FullCalendarModule,
     FormsModule,
-    FormActivityComponent,
-    FormInfoActivityComponent,
     RouterLink,
   ],
   templateUrl: './dashboard.component.html',
@@ -47,7 +47,10 @@ export class DashboardComponent {
     private authService: AuthService,
     private userService: UserService,
     private panelService: PanelService,
-    private ruinaService: RutinaService
+    private ruinaService: RutinaService,
+    private dialogService: DialogService,
+    private toastService :ToastService,
+    private dialog: MatDialog
   ) {}
 
 eventosFiltradosPorRutina: EventInput[] = [];
@@ -245,35 +248,80 @@ eventosFiltradosPorRutina: EventInput[] = [];
   }
   /* Metodos para el formulario  */
 
-  abrirFormularioActividad() {
-    this.mostrarFormularioActividad = true;
+abrirFormularioActividad() {
+  this.ruinaService.obtenerRutinas(this.rutinaSeleccionada).subscribe({
+    next: (data: any[]) => {
+      this.objetoRutinaDefecto = data || [];
 
-            this.ruinaService.obtenerRutinas(this.rutinaSeleccionada).subscribe({
-          next: (data: any[]) => {
-            this.objetoRutinaDefecto = data || [];
-          },
-          error: (error) => {
-            console.log('Error al cargar rutinas :', error);
-          },
+      const dialogRef = this.dialog.open(FormActivityComponent, {
+        data: {
+          objetoRutinaDefecto: this.objetoRutinaDefecto,
+          rutinaSeleccionada: this.rutinaSeleccionada,
+          disponibilidad: this.availability,
+          actividades: this.actividades,
+          categorias: this.categorias,
+        },
+      });
 
-        });
-  }
-
-cerrarFormularioActividad() {
-  this.mostrarFormularioActividad = false;
-  this.aplicarFiltros();  
+      dialogRef.afterClosed().subscribe(result => {
+        this.aplicarFiltros();
+      });
+    },
+    error: (error) => {
+      console.log('Error al cargar rutinas:', error);
+    },
+  });
 }
 
 
-  verActividad(actividad: any) {
-    this.actividadSeleccionada = actividad;
-    this.mostrarVistaActividad = true;
-  }
+verActividad(actividad: any) {
+  const dialogRef = this.dialog.open(FormInfoActivityComponent, {
+    data: {
+      actividad: actividad,
+      categorias: this.categorias,
+    },
+  });
 
-  cerrarVistaActividad() {
-    this.mostrarVistaActividad = false;
-    this.actividadSeleccionada = null;
+  dialogRef.afterClosed().subscribe(result => {
+
+  });
+}
+
+
+async eliminarActividad(actividad: { id: number }) {
+  const confirmed = await this.dialogService.confirm(
+    'Confirmar borrado',
+    `¿Estás seguro de que quieres eliminar esta actividad?
+    ¡¡Esta acción no se puede deshacer!!`
+  );
+
+  if (confirmed) {
+    try {
+      this.calendarEventsService.deleteActivity(actividad.id).subscribe({
+        next: (data: Activity[]) => {
+          // Actualiza disponibilidad o el array de actividades si lo necesitas
+          this.actividades = data || [];
+          this.limpiarFiltros();
+          // Si tienes un array de actividades local y quieres actualizarlo:
+          const index = this.actividades.findIndex(a => a.id === actividad.id);
+          if (index !== -1) {
+            this.actividades.splice(index, 1);
+          }
+        },
+        error: (error) => {
+          console.error('Error al eliminar la actividad:', error);
+          this.toastService.showError('Error al eliminar la actividad.');
+        }
+      });
+    } catch (err) {
+      console.error('Error inesperado al eliminar la actividad:', err);
+      this.toastService.showError('Error inesperado al eliminar la actividad.');
+    }
   }
+}
+
+
+
 
   getDateOnTime(date: Date | null): string {
     if (!date) return '';
@@ -293,6 +341,10 @@ cerrarFormularioActividad() {
       console.log('Filtro de Actividades aplicado o Todos seleccionado');
 
       if (this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior || this.filtroTipo === 'actividad' || this.filtroTipo === '') {
+
+        if(this.rutinaSeleccionadaAnterior && this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior) {
+            this.filtroCategoria = ''; // Reiniciar filtro de categoría al cambiar rutina
+        }
         this.rutinaSeleccionadaAnterior = this.rutinaSeleccionada;
 
         this.calendarEventsService.getActivitiesByRoutineId(this.rutinaSeleccionada).subscribe({
@@ -305,7 +357,7 @@ cerrarFormularioActividad() {
               daysOfWeek: [act.day_of_week],
               startTime: act.start_time,
               endTime: act.end_time,
-              display: 'auto',
+              display: 'block',
               color: '#64b5f6',
               id: `actividad-${act.id}`,
             }));
@@ -424,7 +476,7 @@ cerrarFormularioActividad() {
           daysOfWeek: [act.day_of_week],
           startTime: act.start_time,
           endTime: act.end_time,
-          display: 'auto',
+          display: 'block',
           color: '#64b5f6',
           id: `actividad-${act.id}`,
         })); // Combinar todos los eventos

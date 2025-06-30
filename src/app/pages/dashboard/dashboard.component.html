@@ -141,7 +141,7 @@
                   <button class="btn btn-sm btn-custom btn-actividad px-4" (click)="verActividad(actividad)">
                     Ver
                   </button>
-                  <button class="btn btn-sm btn-custom btn-actividad px-4" (click)="verActividad(actividad.id)">
+                  <button class="btn btn-sm btn-custom btn-actividad px-4" (click)="eliminarActividad(actividad)">
                     Eliminar
                   </button>
                 </div>
@@ -241,27 +241,4 @@
   </div>
 </div>
 
-@if (mostrarFormularioActividad) {
-<div class="modal-overlay" (click)="cerrarFormularioActividad()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <app-form-activity
 
-      [objetoRutinaDefecto]="objetoRutinaDefecto"
-      [rutinaSeleccionada]="rutinaSeleccionada"
-      [disponibilidad]="availability"
-      [actividades]="actividades"
-      [categorias]="categorias"
-      (cerrar)="cerrarFormularioActividad()"
-    ></app-form-activity>
-  </div>
-</div>
-} @if (mostrarVistaActividad) {
-<div class="modal-overlay" (click)="cerrarVistaActividad()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <app-form-info-activity
-      [actividad]="actividadSeleccionada"
-      (cerrar)="cerrarVistaActividad()"
-    ></app-form-info-activity>
-  </div>
-</div>
-}

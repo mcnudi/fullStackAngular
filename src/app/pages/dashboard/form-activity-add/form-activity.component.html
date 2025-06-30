@@ -1,8 +1,5 @@
-<form [formGroup]="form" (ngSubmit)="enviar()" class="container my-4">
-  <div
-    class="card p-4 shadow"
-    style="max-width: 480px; margin: 0 auto;"
-  >
+<div class="modal-overlay">
+  <form [formGroup]="form" (ngSubmit)="enviar()" class="form-container">
     <h2 class="mb-4 text-center">Crear Actividad</h2>
 
     <div class="mb-3">
@@ -17,7 +14,7 @@
 
     <div class="mb-3">
       <label for="dia">Día*</label>
-      <select id="dia" formControlName="dia" class="form-select">
+      <select id="dia" formControlName="dia" class="form-select" (change)="convertirDia($event)" >
         @for (dia of diasDisponibles(); track dia) {
           <option [value]="dia">{{ diaLabels[dia] }}</option>
         }
@@ -36,38 +33,37 @@
 
     <div class="mb-3">
       <label for="horaFinal">Hora Final*</label>
-      <select id="horaFinal" formControlName="horaFinal" class="form-select">
-        <option value="">Seleccione hora</option>
-        @for (hora of horasFiltradas(); track hora) {
-          <option [value]="hora">{{ hora }}</option>
-        }
-      </select>
+<select id="horaFinal" formControlName="horaFinal" class="form-select">
+  <option value="">Seleccione hora</option>
+  @for (hora of getHorasFinalesFiltradas(); track hora) {
+    <option [value]="hora">{{ hora }}</option>
+  }
+</select>
+
     </div>
 
     @if (!rangoValido() && form.get('horaInicio')?.value && form.get('horaFinal')?.value) {
       <div class="text-danger mb-3">La hora final debe tener al menos 30 minutos de diferencia con la de inicio.</div>
     }
 
-<div class="mb-3">
-  <label for="categoria">Categoría*</label>
-  <select id="categoria" formControlName="categoria" class="form-select">
-    <option value="" disabled selected>Seleccione una categoría</option>
-    @for (cat of categorias; track cat.id) {
-      <option [value]="cat.id">{{ cat.category_name }}</option>
-    }
-  </select>
-</div>
-
+    <div class="mb-3">
+      <label for="categoria">Categoría*</label>
+      <select id="categoria" formControlName="categoria" class="form-select">
+        <option value="" disabled selected>Seleccione una categoría</option>
+        @for (cat of categorias; track cat.id) {
+          <option [value]="cat.id">{{ cat.category_name }}</option>
+        }
+      </select>
+    </div>
 
     <div class="mb-3">
       <label>Rutina</label>
       <input class="form-control" [value]="objetoRutinaDefecto[0]?.name" disabled />
     </div>
 
-<div class="d-flex justify-content-center gap-3">
-  <button type="submit" class="btn btn-primary">Crear Actividad</button>
-  <button type="button" class="btn btn-secondary" (click)="cerrar.emit()">Cancelar</button>
+    <div class="d-flex justify-content-center gap-3">
+      <button type="submit" class="btn btn-primary">Crear Actividad</button>
+    <button type="button" class="btn btn-secondary" (click)="cerrarDialogo()">Cancelar</button>
+    </div>
+  </form>
 </div>
-
-  </div>
-</form>

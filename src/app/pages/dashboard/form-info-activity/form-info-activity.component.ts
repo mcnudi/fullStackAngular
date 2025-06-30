@@ -1,4 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Activity } from '../../../interfaces/iactivity.interface';
+import { Category } from '../../../interfaces/icategory.interface';
 
 @Component({
   selector: 'app-form-info-activity',
@@ -6,16 +9,30 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   styleUrls: ['./form-info-activity.component.css']
 })
 export class FormInfoActivityComponent implements OnInit {
-  @Input() actividad: any;
-  @Output() cerrar = new EventEmitter<void>();
+  actividad: Activity;
+  categorias: Category[];
+  categoryName: string = '';
 
-
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: { actividad: Activity; categorias: Category[] },
+    private dialogRef: MatDialogRef<FormInfoActivityComponent>
+  ) {
+    this.actividad = data.actividad;
+    this.categorias = data.categorias;
+  }
 
   ngOnInit(): void {
-
+    console.log(this.actividad);
+    if (this.actividad.activity_categories_id && this.categorias) {
+      const categoria = this.categorias.find(
+        (cat) => cat.id === this.actividad!.activity_categories_id
+      );
+      this.categoryName = categoria?.category_name || '';
+    }
   }
 
   cerrarModal() {
-    this.cerrar.emit();
+    this.dialogRef.close();
   }
 }
+

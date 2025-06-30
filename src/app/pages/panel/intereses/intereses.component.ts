@@ -27,14 +27,14 @@ export class InteresesComponent implements OnInit {
   dialogService = inject(DialogService);
   
   /*
-    arrayIntereses = [
-      { id: 1, interest_name: 'ARTE', color: '#FF00FF' },
-      { id: 2, interest_name: 'CIENCIA' },
-      { id: 3, interest_name: 'EDUCACIÓN' }
+    arrayInteresesUsuario = [
+      { id: 1, users_id: 10, interest_name: 'ARTE', color: '#FF00FF' },
+      { id: 2, users_id: 10, interest_name: 'CIENCIA' },
+      { id: 3, users_id: 10, interest_name: 'EDUCACIÓN' }
     ];
   */
  
-  arrayIntereses: Interests [] = [];
+  arrayInteresesUsuario: Interests [] = [];
 
   openModal (modo: 'añadir' | 'actualizar', elemento: Interests) {
     const dialogRef = this.dialog.open<Interests>(FormularioInteresesComponent, { data: { modo, elemento }, disableClose: true });
@@ -42,7 +42,7 @@ export class InteresesComponent implements OnInit {
     if (modo === 'añadir') {
       dialogRef.closed.subscribe((nuevoInteres: Interests | undefined) => {
         if (nuevoInteres) {
-          this.arrayIntereses.push(nuevoInteres); // o llama a loadInterests()
+          this.arrayInteresesUsuario.push(nuevoInteres); // o llama a loadInterests()
           this.changeDetectorRef.markForCheck();
         }
       });
@@ -50,10 +50,10 @@ export class InteresesComponent implements OnInit {
     else {
       dialogRef.closed.subscribe((actualizadoInteres: Interests | undefined) => {
         if (actualizadoInteres) {
-          const index = this.arrayIntereses.findIndex(i => i.id === elemento.id);
+          const index = this.arrayInteresesUsuario.findIndex(i => i.id === elemento.id);
           if (index !== -1) {
-            this.arrayIntereses[index].interest_name = actualizadoInteres.interest_name;
-            this.arrayIntereses[index].color = actualizadoInteres.color;
+            this.arrayInteresesUsuario[index].interest_name = actualizadoInteres.interest_name;
+            this.arrayInteresesUsuario[index].color = actualizadoInteres.color;
           }
           this.changeDetectorRef.markForCheck();
         }
@@ -64,7 +64,7 @@ export class InteresesComponent implements OnInit {
   ngOnInit() {
     this.panelService.getInterests(this.authService.getDecodedToken().id).subscribe( {
       next: (data: Interests[]) => {
-        this.arrayIntereses = data;
+        this.arrayInteresesUsuario = data;
       },
       error: (error) => {
         console.log(error);
@@ -83,9 +83,9 @@ export class InteresesComponent implements OnInit {
       try {
             this.panelService.removeInterests(this.authService.getDecodedToken().id, elemento.interest_name!).subscribe( {
               next: (data: Interests) => {
-                const index = this.arrayIntereses.findIndex(i => i.interest_name === elemento.interest_name);
+                const index = this.arrayInteresesUsuario.findIndex(i => i.interest_name === elemento.interest_name);
                 if (index !== -1) {
-                  this.arrayIntereses.splice(index, 1);
+                  this.arrayInteresesUsuario.splice(index, 1);
                   this.changeDetectorRef.markForCheck();
                   this.panelService.notificarActualizacionObjetivos(); // Experimental
                 }
