@@ -103,7 +103,7 @@ export class ObjetivosComponent implements OnInit {
     });
 
     this.panelService.actualizarObjetivos$.subscribe(() => {
-       // Método que recarga los objetivos cuando han sido insertados/actualizados desde el componente formulario-objetivos
+       // Método que recarga los objetivos cuando han sido insertados/actualizados
       this.cargarObjetivos();
     });
     this.cargarObjetivos();

@@ -19,6 +19,9 @@
         <div >
             <input type="color" value="#6600ff" oninput="colorhex.value=value" formControlName="color">
             <output id="colorhex">#6600ff</output>
+            @if (checkControl('color', 'required')) {
+                <mat-error class="text-danger text-sm mt-1">El campo es obligatorio</mat-error>
+            }
         </div>
     </div>
 

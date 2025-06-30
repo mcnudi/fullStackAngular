@@ -7,11 +7,12 @@ import { ToastService } from '../../../../services/toast.service';
 import { MatIcon } from '@angular/material/icon';
 import { AuthService } from '../../../../services/auth.service';
 import { PanelService } from '../../../../services/panel.service';
+import { MatError } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-formulario-objetivos',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, MatIcon],
+  imports: [ReactiveFormsModule, FormsModule, MatIcon, MatError],
   templateUrl: './formulario-objetivos.component.html',
   styleUrls: ['./formulario-objetivos.component.css'],
 })
@@ -36,8 +37,13 @@ export class FormularioObjetivosComponent implements OnInit {
     goals_name: new FormControl('', Validators.required),
     users_interests_id: new FormControl('', Validators.required),
     description: new FormControl('', ),
-    hours_per_week: new FormControl('1', Validators.required)
+    hours_per_week: new FormControl('1.0', [
+      Validators.required,
+      Validators.pattern(/^\d+(\.\d{1,2})?$/)
+    ])
   });
+
+  originalFormValue: any; // Para controlar cambios en el contenido del formulario cuando 'actualizar'
 
   ngOnInit() {
     // Carga previa de array de UsersInterests para pintarlos en el desplegable de Interés Asociado
@@ -49,6 +55,10 @@ export class FormularioObjetivosComponent implements OnInit {
             users_interests_id: String(this.arrayIntereses[0].id) // Muestra como selección por defecto el primer Interés
           });
         }
+        // SOLO marcar como touched si estamos añadiendo
+        if (this.modo === 'añadir') {
+          this.goalsForm.controls.hours_per_week.markAsTouched();
+        }
       },
       error: (error) => {
         console.log(error);
@@ -56,12 +66,16 @@ export class FormularioObjetivosComponent implements OnInit {
     })
 
     if (this.modo === 'actualizar' && this.objetivoActual) {
+      this.originalFormValue = this.goalsForm.getRawValue();
       this.goalsForm.patchValue({
         goals_name: this.objetivoActual.goals_name,
         users_interests_id: String(this.objetivoActual.users_interests_id),
         description: this.objetivoActual.description,
         hours_per_week: String(this.objetivoActual.hours_per_week)
       });
+      this.originalFormValue = this.goalsForm.getRawValue();
+      this.goalsForm.markAsUntouched();
+      this.goalsForm.markAsPristine();
     }
   }
   
@@ -119,5 +133,38 @@ export class FormularioObjetivosComponent implements OnInit {
         console.log(error);
       }
     });
+  }
+
+  checkControl(controlName: string, errorName: string) {
+    return (
+      this.goalsForm.get(controlName)?.hasError(errorName) &&
+      this.goalsForm.get(controlName)?.touched
+    );
+  }
+
+  formularioTieneCambios(): boolean {
+    const currentValue = this.goalsForm.getRawValue();
+    return JSON.stringify(currentValue) !== JSON.stringify(this.originalFormValue);
+  }
+
+  onlyDigits(event: KeyboardEvent): void {
+    const input = event.target as HTMLInputElement;
+    const char = event.key;
+
+    // Permitir teclas de navegación (opcional: backspace, delete, arrows, etc.)
+    if (['Backspace', 'ArrowLeft', 'ArrowRight', 'Delete', 'Tab'].includes(char)) {
+      return;
+    }
+    
+    // Permitir solo dígitos del 0 al 9
+    if (/^\d$/.test(char)) {
+      return;
+    }
+    // Permitir un solo punto (,) y solo si aún no está en el valor
+    if (char === '.' && !input.value.includes('.')) {
+      return;
+    }
+    // Bloquear cualquier otro carácter
+    event.preventDefault();
   }
 }
