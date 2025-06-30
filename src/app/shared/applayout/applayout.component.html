@@ -15,8 +15,8 @@
       </div>
     </div>
     <mat-divider class="divider"></mat-divider>
-    <div class="sidebar__section">
-      <div>
+    <div class="sidebar__section h-75">
+      <div class="h-100 d-flex flex-column justify-content-between">
         <mat-list>
           <a
             mat-list-item
@@ -82,6 +82,23 @@
             </div>
           </a>
         </mat-list>
+        <a
+        mat-list-item
+        class="sidebar__link__container"
+        routerLinkActive="sidebar__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="logout()"
+      >
+        <div class="sidebar__link">
+          <svg xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 -960 960 960" 
+          class="sidebar__link__icon"
+          >
+            <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/>
+          </svg>
+          <p>Cerrar Sesión</p>
+        </div>
+      </a>
       </div>
     </div>
   </mat-sidenav>
