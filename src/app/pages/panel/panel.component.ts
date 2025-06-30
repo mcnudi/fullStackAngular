@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { InteresesComponent } from './intereses/intereses.component';
 import { ObjetivosComponent } from './objetivos/objetivos.component';
@@ -14,12 +14,7 @@ import { DisponibilidadComponent } from './disponibilidad/disponibilidad.compone
   styleUrls: ['./panel.component.css'],
 })
 export class PanelComponent implements OnInit {
-
-  constructor(
-    private authService: AuthService
-  ) {}
-
-
+  authService = inject(AuthService);
 
   ngOnInit() {
     const userName = this.authService.getUserName();
@@ -27,5 +22,4 @@ export class PanelComponent implements OnInit {
       console.error('User ID not found. Please log in.');
     }
   }
-
 }

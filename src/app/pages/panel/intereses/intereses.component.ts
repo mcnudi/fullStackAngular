@@ -46,8 +46,7 @@ export class InteresesComponent implements OnInit {
           this.changeDetectorRef.markForCheck();
         }
       });
-    }
-    else {
+    } else { // actualizar
       dialogRef.closed.subscribe((actualizadoInteres: Interests | undefined) => {
         if (actualizadoInteres) {
           const index = this.arrayInteresesUsuario.findIndex(i => i.id === elemento.id);
@@ -59,6 +58,7 @@ export class InteresesComponent implements OnInit {
         }
       });
     }
+    this.panelService.notificarActualizacionObjetivos(); // Experimental
   }
 
   ngOnInit() {
