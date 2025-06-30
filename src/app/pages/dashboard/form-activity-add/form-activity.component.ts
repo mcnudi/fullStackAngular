@@ -187,59 +187,64 @@ private cargarVersion() {
   }
 
   actualizarHoras(diaSeleccionado: number | null) {
-    console.log('Actualizando horas para día:', diaSeleccionado);
+  console.log('Actualizando horas para día:', diaSeleccionado);
 
-    if (diaSeleccionado === null) {
-      this.horasFiltradas.set([]);
-      return;
-    }
-
-    const bloques = this.disponibilidad.filter(d => d.weekday === diaSeleccionado);
-    const actividadesDia = this.actividades.filter(
-      a => typeof a?.day_of_week === 'string' && parseInt(a.day_of_week, 10) === diaSeleccionado
-    );
-
-    const horaAMinutos = (hora: string): number => {
-      const [h, m] = hora.split(':').map(Number);
-      return h * 60 + m;
-    };
-
-    let horasDisponibles: string[] = [];
-
-    for (const bloque of bloques) {
-      const inicio = typeof bloque.start_time === 'string' ? bloque.start_time.slice(0, 5) : '';
-      const fin = typeof bloque.end_time === 'string' ? bloque.end_time.slice(0, 5) : '';
-      if (!inicio || !fin) continue;
-
-      const inicioMin = horaAMinutos(inicio);
-      const finMin = horaAMinutos(fin);
-
-      const horasBloque = this.horas.filter(h => {
-        const hMin = horaAMinutos(h);
-        return hMin >= inicioMin && hMin <= finMin;
-      });
-
-      horasDisponibles.push(...horasBloque);
-    }
-
-    for (const actividad of actividadesDia) {
-      const inicio = actividad.start_time?.slice(0, 5);
-      const fin = actividad.end_time?.slice(0, 5);
-      if (!inicio || !fin) continue;
-
-      const inicioMin = horaAMinutos(inicio);
-      const finMin = horaAMinutos(fin);
-
-      horasDisponibles = horasDisponibles.filter(h => {
-        const hMin = horaAMinutos(h);
-        return hMin < inicioMin || hMin > finMin;
-      });
-    }
-
-    const horasFinales = Array.from(new Set(horasDisponibles)).sort();
-    this.horasFiltradas.set([...horasFinales]);
-    console.log('Horas finales disponibles:', horasFinales);
+  if (diaSeleccionado === null) {
+    this.horasFiltradas.set([]);
+    return;
   }
+
+  const bloques = this.disponibilidad.filter(d => d.weekday === diaSeleccionado);
+  const actividadesDia = this.actividades.filter(
+    a => typeof a?.day_of_week === 'string' && parseInt(a.day_of_week, 10) === diaSeleccionado
+  );
+
+  const horaAMinutos = (hora: string): number => {
+    const [h, m] = hora.split(':').map(Number);
+    return h * 60 + m;
+  };
+
+  const minutosAHora = (min: number): string => {
+    const h = Math.floor(min / 60).toString().padStart(2, '0');
+    const m = (min % 60).toString().padStart(2, '0');
+    return `${h}:${m}`;
+  };
+
+  const ocupada = (inicio: number, fin: number): boolean => {
+    return actividadesDia.some(a => {
+      const actInicio = horaAMinutos(a.start_time?.slice(0, 5));
+      const actFin = horaAMinutos(a.end_time?.slice(0, 5));
+      return !(fin <= actInicio || inicio >= actFin); // hay solapamiento
+    });
+  };
+
+  const horasDisponibles: Set<string> = new Set();
+
+for (const bloque of bloques) {
+  const inicioStr = bloque.start_time?.slice(0, 5);
+  const finStr = bloque.end_time?.slice(0, 5);
+
+  if (!inicioStr || !finStr) continue; // Salta el bloque si falta alguno
+
+  const inicioMin = horaAMinutos(inicioStr);
+  const finMin = horaAMinutos(finStr);
+
+  for (let t = inicioMin; t + 30 <= finMin; t += 30) {
+    const inicioRango = t;
+    const finRango = t + 30;
+
+    if (!ocupada(inicioRango, finRango)) {
+      horasDisponibles.add(minutosAHora(inicioRango));
+    }
+  }
+}
+
+
+  const horasFinales = Array.from(horasDisponibles).sort();
+  this.horasFiltradas.set(horasFinales);
+  console.log('Horas de inicio posibles:', horasFinales);
+}
+
 
   rangoValido(): boolean {
     const inicio = this.form.get('horaInicio')?.value;
@@ -323,7 +328,7 @@ estaDentroDeUnaSolaFranja(): boolean {
     const fin = this.form.get('horaFinal')?.value!;
 
     if (this.hayConflictoConOtraActividad(dia, inicio, fin)) {
-      alert('Ya existe una actividad que se solapa con este horario.');
+      this.toastService.showError('Ya existe una actividad que se solapa con este horario.');
       return;
     }
 
@@ -350,11 +355,64 @@ estaDentroDeUnaSolaFranja(): boolean {
     });
   }
 
-  getHorasFinalesFiltradas(): string[] {
-    const inicio = this.form.get('horaInicio')?.value;
-    if (!inicio) return this.horasFiltradas();
-    return this.horasFiltradas().filter(h => h > inicio);
+getHorasFinalesFiltradas(): string[] {
+  const diaRaw = this.form.get('dia')?.value;
+  const horaInicio = this.form.get('horaInicio')?.value;
+
+  if (!horaInicio || diaRaw === null || diaRaw === undefined) return [];
+
+  const dia = typeof diaRaw === 'string' ? parseInt(diaRaw, 10) : diaRaw;
+  if (isNaN(dia)) return [];
+
+  const inicioMin = this.convertirHoraAMinutos(horaInicio);
+
+  // Encuentra la franja de disponibilidad que contiene la hora de inicio
+  const bloque = this.disponibilidad.find(b => {
+    if (b.weekday !== dia || !b.start_time || !b.end_time) return false;
+
+    const inicioBloque = this.convertirHoraAMinutos(b.start_time.slice(0, 5));
+    const finBloque = this.convertirHoraAMinutos(b.end_time.slice(0, 5));
+
+    return inicioMin >= inicioBloque && inicioMin < finBloque;
+  });
+
+  if (!bloque || !bloque.start_time || !bloque.end_time) return [];
+
+  const finBloqueMin = this.convertirHoraAMinutos(bloque.end_time.slice(0, 5));
+
+  // Obtén actividades del día
+  const actividadesDia = this.actividades.filter(
+    a => parseInt(a.day_of_week, 10) === dia
+  );
+
+  const horaEsValida = (minuto: number): boolean => {
+    // Verifica si la duración es de al menos 30 minutos
+    if (minuto - inicioMin < 30) return false;
+
+    // Verifica que no haya conflicto con otra actividad
+    return !actividadesDia.some(a => {
+      const inicioAct = this.convertirHoraAMinutos(a.start_time.slice(0, 5));
+      const finAct = this.convertirHoraAMinutos(a.end_time.slice(0, 5));
+      return !(minuto <= inicioAct || inicioMin >= finAct);
+    });
+  };
+
+  // Genera las posibles horas finales en bloques de 30 mins
+  const opciones: string[] = [];
+  for (let t = inicioMin + 30; t <= finBloqueMin; t += 30) {
+    if (horaEsValida(t)) {
+      opciones.push(this.minutosAHora(t));
+    }
   }
+
+  return opciones;
+}
+minutosAHora(minutos: number): string {
+  const h = Math.floor(minutos / 60).toString().padStart(2, '0');
+  const m = (minutos % 60).toString().padStart(2, '0');
+  return `${h}:${m}`;
+}
+
 
   cerrarDialogo() {
     this.dialogRef.close();
