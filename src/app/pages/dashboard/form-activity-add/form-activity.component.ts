@@ -326,7 +326,7 @@ estaDentroDeUnaSolaFranja(): boolean {
 
     this.calendarEventsService.addNewActivity(nuevaActividad).subscribe({
       next: () => {
-        this.toastService.showError('Actividad creada correctamente');
+        this.toastService.showSuccess('Actividad creada correctamente');
         this.dialogRef.close(true);
       },
       error: () => {
