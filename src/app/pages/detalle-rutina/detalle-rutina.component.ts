@@ -156,4 +156,13 @@ export class DetalleRutinaComponent {
       });
     }
   }
-}
+  async borrarRutina(){
+     this.serviceRutina.borrarRutina(this.rutinaN).subscribe({
+        next: (res) => {
+          this.toastService.showSuccess('Rutina borrada correctamente');
+          this.router.navigate(['/app/rutina/']);
+        },
+        error: (err) => this.toastService.showError('Error al borrar la rutina')
+      });
+    }
+  }
