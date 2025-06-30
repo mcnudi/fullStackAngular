@@ -87,9 +87,26 @@ export class ObjetivosComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.cargarObjetivos();
+    this.cargarIntereses();
+
+    // Si se recibe notificación de otro componente para que se actualice la vista de Objetivos
+    this.panelService.actualizarObjetivos$.subscribe({
+        next: (data: any) => {
+          this.cargarObjetivos();
+          this.cargarIntereses();
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      });
+  }
+
+  cargarIntereses() {
     this.panelService.getInterests(this.authService.getDecodedToken().id).subscribe({
       next: (data: Interests[]) => {
         this.arrayIntereses = data;
+        // Se almacenan los colores en un Map para acelerar el repintado del componente con los colores asociados
         this.interesColorMap.clear();
         data.forEach(interes => {
           if (interes.id != null && interes.color != null) {
@@ -101,18 +118,13 @@ export class ObjetivosComponent implements OnInit {
         console.log(error);
       }
     });
-
-    this.panelService.actualizarObjetivos$.subscribe(() => {
-       // Método que recarga los objetivos cuando han sido insertados/actualizados
-      this.cargarObjetivos();
-    });
-    this.cargarObjetivos();
   }
-
+  
   cargarObjetivos() {
     this.panelService.getGoals(this.authService.getDecodedToken().id).subscribe({
       next: (data: Goals[]) => {
         this.arrayObjetivos = data;
+        this.changeDetectorRef.markForCheck();
       },
       error: (error) => {
         console.log(error);

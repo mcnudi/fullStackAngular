@@ -14,7 +14,7 @@ export class PanelService {
   
   private API_URL: string = 'http://localhost:3000/api';
 
-  // Elemento HUB para notificar nuevos Objetivos o cambios en los existentes desde el componente formulario-objetivos
+  // Elemento Observable para comunicar/suscribirse a cambios que requieran repintado del componente de Objetivos
   actualizarObjetivosSubject = new Subject<void>();
   actualizarObjetivos$ = this.actualizarObjetivosSubject.asObservable();
 
