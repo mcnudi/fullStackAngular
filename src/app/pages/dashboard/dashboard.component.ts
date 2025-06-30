@@ -296,7 +296,7 @@ async eliminarActividad(actividad: { id: number }) {
     ¡¡Esta acción no se puede deshacer!!`
   );
 
-  if (confirmed) {
+  if (confirmed && confirmed.confirmed) {
     try {
       this.calendarEventsService.deleteActivity(actividad.id).subscribe({
         next: (data: Activity[]) => {
