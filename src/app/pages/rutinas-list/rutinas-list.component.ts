@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NgIf, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { AuthService } from '../../services/auth.service';
-import { MatIcon } from '@angular/material/icon';
+import { MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-rutinas-list',
@@ -13,7 +13,7 @@ import { MatIcon } from '@angular/material/icon';
     NgIf,
     DatePipe,
     FormsModule,
-    MatIcon,
+    MatIconModule,
     RouterLink
   ],
   templateUrl: './rutinas-list.component.html',
