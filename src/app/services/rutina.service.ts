@@ -71,4 +71,7 @@ export class RutinaService {
       email: correo,
     });
   }
+   borrarRutina(rutinaId: number): Observable<any> {
+    return this.http.delete<number>(`${this.baseURL}/${rutinaId}`);
+  }
 }
