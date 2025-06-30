@@ -538,4 +538,27 @@ async eliminarActividad(actividad: { id: number }) {
         return categories;
   }
 
+  convertDayOfWeekToString(day: number): string {
+    const intDay = parseInt(day.toString(), 10);
+    debugger
+    switch (intDay) {
+      case 0:
+        return 'Domingo';
+      case 1:
+        return 'Lunes';
+      case 2:
+        return 'Martes';
+      case 3:
+        return 'Miércoles';
+      case 4:
+        return 'Jueves';
+      case 5:
+        return 'Viernes';
+      case 6:
+        return 'Sábado';
+      default:
+        return '';
+    }
+  }
+
 }
