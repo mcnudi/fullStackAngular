@@ -46,10 +46,11 @@
 }
 
 .sin-actividades-container img {
-  width: 50%;
-  max-width: 80%;
-  margin-bottom: 1rem;
+  width: 30%;
+  max-height: 30%;
+  object-fit: contain;
 }
+
 
 .sin-actividades-container h3 {
   margin: 0.5rem 0;
