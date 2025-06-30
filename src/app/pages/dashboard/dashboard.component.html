@@ -187,12 +187,25 @@
       >
         <ul class="list-unstyled mb-0">
           @if (objetivos.length > 0) {
-            @for (objetivo of objetivos; track $index) {
-              <li class="objetivo-item mb-2 p-2 border rounded bg-white shadow-sm">
-                <strong>{{ objetivo.goals_name }}</strong>
-              </li>
-            }
-          } @else {
+            <ul class="list-unstyled">
+              @for (item of objetivos; track item.id) {
+                @let colorAsociadoInteres = getColorInteres(item.users_interests_id!);
+                @let nombreAsociadoInteres = getNombreInteres(item.users_interests_id!);
+
+                <li class="objetivo-item mb-2 p-3 border rounded shadow-sm bg-white"
+                    [style]="{'borderLeft': '6px solid ' + colorAsociadoInteres}">
+                  <div>
+                    <strong>{{ item.goals_name }}</strong> - [{{ item.hours_per_week }} h./sem.]
+                  </div>
+                  <div class="mt-1 d-flex align-items-center gap-2">
+                    <span class="color-circle" [style.backgroundColor]="colorAsociadoInteres"></span>
+                    <strong>{{ nombreAsociadoInteres }}</strong>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+            @else {
             <div class="text-center">
               <h4>No hay objetivos todavía.</h4>
               <p>¡Empieza creando tus metas!</p>

@@ -61,7 +61,10 @@ eventosFiltradosPorRutina: EventInput[] = [];
   actividades: Activity[] = [];
   categorias: Category[] = [];
   categoriasUsuario: Category[] = [];
-  objetivos: any[] = [];
+
+  objetivos: Goals [] = [];
+  interesColorMap = new Map<number, string>();
+
   rutinas: any[] = [];
   profileImage: string =
     'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
@@ -182,20 +185,12 @@ eventosFiltradosPorRutina: EventInput[] = [];
             },
           });
           /*OBJETIVOS */
-                  this.panelService
-          .getGoals(userId)
-          .subscribe({
-            next: (data: any[]) => {
-              console.log(
-                'Objetivos:',
-                data
-              );
-              this.objetivos = data || [];
-            },
-            error: (error) => {
-              console.log('Error al cargar objetivos:', error);
-            },
-          });
+        this.panelService.getGoals(userId).subscribe({
+              next: (data) => {
+                this.objetivos = data;
+              },
+              error: (err) => console.error(err),
+            });
 
         /*Conseguimos Actividades de la Rutina por defecto (is_selected=1)*/
         this.calendarEventsService
@@ -232,6 +227,12 @@ eventosFiltradosPorRutina: EventInput[] = [];
         this.panelService.getInterests(userId).subscribe({
           next: (data: Interests[]) => {
             this.intereses = data || [];
+            this.interesColorMap.clear();
+            data.forEach((interes) => {
+          if (interes.id && interes.color) {
+            this.interesColorMap.set(interes.id, interes.color);
+          }
+        });
           },
           error: (error) => {
             console.log('Error al cargar intereses para el calendario:', error);
@@ -320,9 +321,17 @@ async eliminarActividad(actividad: { id: number }) {
   }
 }
 
+/*Metodos para pintar los objetivos*/
+  getNombreInteres(id: number): string {
+    const interes = this.intereses.find(i => Number(i.id) === Number(id));
+    return interes ? interes.interest_name! : 'Interés no encontrado';
+  }
 
+  getColorInteres(id: number): string {
+    return this.interesColorMap.get(Number(id)) || 'lightgray';
+  }
 
-
+/*Metodos para pintar el calendario*/
   getDateOnTime(date: Date | null): string {
     if (!date) return '';
     const hours = date.getHours().toString().padStart(2, '0');
