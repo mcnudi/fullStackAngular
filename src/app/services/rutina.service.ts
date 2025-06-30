@@ -100,6 +100,6 @@ export class RutinaService {
     });
   }
    borrarRutina(rutinaId: number): Observable<any> {
-    return this.http.delete<number>(`${this.baseURL}/${rutinaId}`);
+    return this.http.delete(`${this.baseURL}/${rutinaId}`);
   }
 }
