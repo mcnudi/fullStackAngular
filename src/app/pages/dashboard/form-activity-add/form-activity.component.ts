@@ -217,7 +217,7 @@ export class FormActivityComponent implements OnInit, OnChanges {
 
       horasDisponibles = horasDisponibles.filter(h => {
         const hMin = horaAMinutos(h);
-        return hMin < inicioMin || hMin >= finMin;
+        return hMin < inicioMin || hMin > finMin;
       });
     }
 
@@ -235,27 +235,36 @@ export class FormActivityComponent implements OnInit, OnChanges {
     return (hfH * 60 + hfM) - (hiH * 60 + hiM) >= 30;
   }
 
-  estaDentroDeUnaSolaFranja(): boolean {
-    const dia = this.form.get('dia')?.value;
-    const inicio = this.form.get('horaInicio')?.value;
-    const fin = this.form.get('horaFinal')?.value;
+estaDentroDeUnaSolaFranja(): boolean {
+  const diaRaw = this.form.get('dia')?.value;
+  const inicio = this.form.get('horaInicio')?.value;
+  const fin = this.form.get('horaFinal')?.value;
 
-    if (!dia || !inicio || !fin) return true;
+  if (diaRaw === null || diaRaw === undefined || !inicio || !fin) return true;
 
-    const bloques = this.disponibilidad.filter(d => d.weekday === dia);
+  const dia = typeof diaRaw === 'string' ? parseInt(diaRaw, 10) : diaRaw;
+  if (isNaN(dia)) return true;
 
-    for (const bloque of bloques) {
-      const inicioBloque = bloque.start_time?.slice(0, 5);
-      const finBloque = bloque.end_time?.slice(0, 5);
-      if (!inicioBloque || !finBloque) continue;
+  const bloques = this.disponibilidad.filter(d => d.weekday === dia);
 
-      if (inicio >= inicioBloque && fin <= finBloque) {
-        return true;
-      }
-    }
-
+  if (bloques.length === 0) {
+    console.warn(`No se encontraron bloques de disponibilidad para el día ${dia}`);
     return false;
   }
+
+  for (const bloque of bloques) {
+    const inicioBloque = bloque.start_time?.slice(0, 5);
+    const finBloque = bloque.end_time?.slice(0, 5);
+    if (!inicioBloque || !finBloque) continue;
+
+    if (inicio >= inicioBloque && fin <= finBloque) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 
   hayConflictoConOtraActividad(dia: number, inicio: string, fin: string): boolean {
     const inicioMin = this.convertirHoraAMinutos(inicio);
@@ -317,7 +326,7 @@ export class FormActivityComponent implements OnInit, OnChanges {
 
     this.calendarEventsService.addNewActivity(nuevaActividad).subscribe({
       next: () => {
-        this.toastService.showError('Actividad creada correctamente');
+        this.toastService.showSuccess('Actividad creada correctamente');
         this.dialogRef.close(true);
       },
       error: () => {

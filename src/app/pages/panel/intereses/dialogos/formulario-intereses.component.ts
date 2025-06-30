@@ -88,6 +88,7 @@ export class FormularioInteresesComponent implements OnInit {
                                       elementoActualizador.color!).subscribe( {
       next: (data: Interests) => {
         this.toastService.showSuccess('Interés Actualizado correctamente.');
+        this.panelService.notificarActualizacionObjetivos();
         this.dialogRef?.close(this.userInterestsForm.value);
       },
       error: (error) => {
