@@ -217,7 +217,7 @@ export class FormActivityComponent implements OnInit, OnChanges {
 
       horasDisponibles = horasDisponibles.filter(h => {
         const hMin = horaAMinutos(h);
-        return hMin < inicioMin || hMin >= finMin;
+        return hMin < inicioMin || hMin > finMin;
       });
     }
 
