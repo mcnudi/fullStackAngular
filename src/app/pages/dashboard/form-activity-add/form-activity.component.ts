@@ -72,6 +72,7 @@ export class FormActivityComponent implements OnInit, OnChanges {
   });
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+    console.log('Constructor - data recibida:', data);
     this.objetoRutinaDefecto = data.objetoRutinaDefecto || [];
     this.disponibilidad = data.disponibilidad || [];
     this.actividades = data.actividades || [];
@@ -117,23 +118,37 @@ export class FormActivityComponent implements OnInit, OnChanges {
     this.form.get('dia')?.setValue(numero);
   }
 
-  private cargarVersion() {
-    const id = this._rutinaSeleccionada;
-    if (typeof id === 'number') {
-      this.calendarEventsService.getIdVersionRoutine(id).subscribe({
-        next: (data: any) => {
-          const version = typeof data === 'number' ? data : data?.maxVersion ?? 0;
-          this.routines_versions_id = version;
-        },
-        error: () => {
+private cargarVersion() {
+  const id = this._rutinaSeleccionada;
+  console.log('cargarVersion - ID rutinaSeleccionada:', id);
+
+  if (typeof id === 'number') {
+    this.calendarEventsService.getIdVersionRoutine(id).subscribe({
+      next: (data: any) => {
+        console.log('Versión recibida del servicio:', data);
+
+        // Suponemos que el backend devuelve { versionId: 123 }
+        const versionId = data?.versionId;
+
+        if (typeof versionId === 'number') {
+          this.routines_versions_id = versionId;
+        } else {
+          console.warn('Respuesta inválida, no se encontró ID de versión.');
           this.routines_versions_id = 0;
         }
-      });
-    } else {
-      console.warn('ID de rutina inválido:', id);
-      this.routines_versions_id = 0;
-    }
+      },
+      error: (err) => {
+        console.error('Error al obtener versión:', err);
+        this.routines_versions_id = 0;
+      }
+    });
+  } else {
+    console.warn('ID de rutina inválido:', id);
+    this.routines_versions_id = 0;
   }
+}
+
+
 
   private inicializarFormulario(diaForzado?: number | null) {
     const diasDisponibilidad = this.disponibilidad
