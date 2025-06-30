@@ -58,7 +58,7 @@ export class InteresesComponent implements OnInit {
         }
       });
     }
-    this.panelService.notificarActualizacionObjetivos(); // Experimental
+    this.panelService.notificarActualizacionObjetivos();
   }
 
   ngOnInit() {
@@ -87,7 +87,7 @@ export class InteresesComponent implements OnInit {
                 if (index !== -1) {
                   this.arrayInteresesUsuario.splice(index, 1);
                   this.changeDetectorRef.markForCheck();
-                  this.panelService.notificarActualizacionObjetivos(); // Experimental
+                  this.panelService.notificarActualizacionObjetivos();
                 }
               },
               error: (error) => {
