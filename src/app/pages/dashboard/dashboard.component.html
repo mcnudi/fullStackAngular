@@ -75,7 +75,7 @@
       <!-- Botón limpiar -->
       <div class="d-grid">
         <button
-          class="btn btn-outline-secondary btn-lg"
+          class="btn btn-secondary"
           (click)="limpiarFiltros()"
         >
           Limpiar Filtros
@@ -132,7 +132,8 @@
               <li class="actividad-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-white shadow-sm">
                 <div class="actividad-info text-truncate">
                   <strong class="actividad-titulo d-block">{{ actividad.title }}</strong>
-                  <small class="actividad-horario text-muted"> {{ convertDayOfWeekToString(actividad.day_of_week) }}
+                  <small class="actividad-horario text-muted"> 
+                    {{ convertDayOfWeekToString(actividad.day_of_week) }}
                     {{ ('1970-01-01T' + actividad.start_time) | date: 'HH:mm' }} -
                     {{ ('1970-01-01T' + actividad.end_time) | date: 'HH:mm' }}
                   </small>

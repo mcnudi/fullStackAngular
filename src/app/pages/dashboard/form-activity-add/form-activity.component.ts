@@ -129,7 +129,7 @@ private cargarVersion() {
 
         // Suponemos que el backend devuelve { versionId: 123 }
         const versionId = data?.versionId;
-
+        debugger
         if (typeof versionId === 'number') {
           this.routines_versions_id = versionId;
         } else {
@@ -344,6 +344,7 @@ estaDentroDeUnaSolaFranja(): boolean {
       end_time: (valoresForm.horaFinal ?? '') + ':00'
     };
 
+    debugger
     this.calendarEventsService.addNewActivity(nuevaActividad).subscribe({
       next: () => {
         this.toastService.showSuccess('Actividad creada correctamente');

@@ -540,7 +540,7 @@ async eliminarActividad(actividad: { id: number }) {
 
   convertDayOfWeekToString(day: number): string {
     const intDay = parseInt(day.toString(), 10);
-    debugger
+
     switch (intDay) {
       case 0:
         return 'Domingo';
