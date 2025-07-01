@@ -10,6 +10,7 @@ export interface Irutina {
   version_number: number;
   idVersion: number;
   created_at: Date;
+  numActividades?:number;
 }
 
 export interface GenerarRutinaResponse {
