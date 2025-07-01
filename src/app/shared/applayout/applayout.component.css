@@ -6,7 +6,7 @@
 
 .sidebar {
   background-color: white;
-  width: 300px;
+  width: 350px;
   transition: width 0.5s ease;
   overflow: hidden;
   display: flex;
