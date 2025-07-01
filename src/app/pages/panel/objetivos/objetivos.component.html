@@ -11,14 +11,22 @@
           <div class="panel-content">
             <button (click)="openModal('actualizar', item)" class="btn-crud btn btn-outline-success mt-1"><mat-icon>edit</mat-icon></button>
             <button (click)="deleteGoal(item)" class="btn-crud btn btn-outline-danger mt-1"><mat-icon>delete</mat-icon></button>
-            <article class="elemento_texto_lista mt-1" [style]="{'border': '2px solid ' + colorAsociadoInteres}">
-                <span><strong>{{ item.goals_name }}</strong> - [{{ item.hours_per_week }} h./sem.]</span>
+            <article class="elemento_texto_lista mt-1">
+                <span class="nombre-objetivo mb-3">
+                    <strong>{{ item.goals_name }}</strong>
+                </span>
                 <section>
-                    <strong [style.backgroundColor]="colorAsociadoInteres">
-                        {{ nombreAsociadoInteres }}
-                    </strong>
-                    <small><em> - {{ item.description }}</em></small>
+                    <small>
+                        <strong>
+                            <span class="color-circle" [style.backgroundColor]="colorAsociadoInteres"></span>
+                            {{ nombreAsociadoInteres }}
+                        </strong>
+                        <em> - {{ item.description }}</em>
+                    </small>
                 </section>
+                <p class="ms-auto text-end mb-0">
+                    [{{ item.hours_per_week }} h./sem.]
+                </p>
             </article>
         </div>
     }
