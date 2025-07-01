@@ -122,6 +122,7 @@ export class DetalleRutinaComponent {
       this.deshabilitarA = true;
     }
   }
+  
   descargarPdf(id: number) {
     console.log('Descargando PDF para la rutina con ID:', id);
     this.serviceRutina.descargarPdf(id).subscribe({

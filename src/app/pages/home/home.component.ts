@@ -4,7 +4,7 @@ import { NavegacionComponent } from '../../shared/navegacion/navegacion.componen
 
 @Component({
   selector: 'app-home',
-  imports: [LandingComponent, NavegacionComponent],
+  imports: [LandingComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
