@@ -162,7 +162,10 @@ export class DetalleRutinaComponent {
           this.toastService.showSuccess('Rutina borrada correctamente');
           this.router.navigate(['/app/rutina/']);
         },
-        error: (err) => this.toastService.showError('Error al borrar la rutina')
+        error: (err) => {
+          const msg = err.error?.message || err.message ||'Error borrando rutina';
+          this.toastService.showError(msg);
+        }
       });
     }
   }
