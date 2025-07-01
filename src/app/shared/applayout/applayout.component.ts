@@ -7,6 +7,8 @@ import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { lastValueFrom } from 'rxjs';
 import { User } from '../../interfaces/iuser.interface';
+import { MatIcon } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-applayout',
@@ -16,7 +18,9 @@ import { User } from '../../interfaces/iuser.interface';
     MatDividerModule,
     MatListModule,
     RouterLink,
-    RouterModule  
+    RouterModule,
+    MatIcon,
+    CommonModule
   ],
   templateUrl: './applayout.component.html',
   styleUrl: './applayout.component.css',
@@ -25,6 +29,8 @@ export class ApplayoutComponent {
   authService = inject(AuthService);
   userService = inject(UserService);
   router = inject(Router);
+  isSidebarCollapsed = false;
+
 
   user: User | null = null;
   profileImage: string =
@@ -42,5 +48,9 @@ export class ApplayoutComponent {
   logout() {
     this.authService.removeToken();
     this.router.navigate(['/home']);
+  }
+
+  toggleSidebar(): void {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
   }
 }

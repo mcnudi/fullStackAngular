@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { RecommendedActivities } from '../../interfaces/irecomendedActivity';
 import { DialogService } from '../../services/dialog.service';
 import { Router } from '@angular/router';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-rutina-generator',
@@ -36,6 +37,7 @@ export class RutinaGeneratorComponent {
   rutinaService = inject(RutinaService);
   authService = inject(AuthService);
   dialogService = inject(DialogService);
+  toastService = inject(ToastService);
   router = inject(Router);
 
   groupedActivities: { [dia: string]: RecommendedActivities[] } = {};
@@ -73,6 +75,7 @@ export class RutinaGeneratorComponent {
 
     this.rutinaService.generarRutina(userId).subscribe({
       next: (actividades) => {
+        console.log('Actividades generadas:', actividades);
         if (!actividades || actividades.length === 0) {
           this.dialogService
             .confirm(
@@ -94,8 +97,9 @@ export class RutinaGeneratorComponent {
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error generando rutina', err);
+        this.toastService.showError('Ha ocurrido un error al generar la rutina intentelo de nuevo mas tarde');
         this.loading = false;
+        this.router.navigate(['app', 'rutina']);
       },
     });
   }
@@ -128,6 +132,9 @@ export class RutinaGeneratorComponent {
 
     if (success) {
       this.router.navigate(['app', 'rutina']);
+      this.toastService.showSuccess(
+        'Rutina generada correctamente y guardada en tu perfil'
+      );
       return;
     }
     alert('Error cresting the recommended activity');
