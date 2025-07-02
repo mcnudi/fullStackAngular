@@ -76,6 +76,9 @@ export class FormularioInteresesComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
+        const mensaje = 'Error al añadir el Interés.' +
+          (error?.error?.message ? ' ' + error.error.message : '');
+        this.toastService.showError(mensaje);
       }
     });
   }
@@ -93,6 +96,9 @@ export class FormularioInteresesComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
+        const mensaje = 'Error al actualizar el Interés.' +
+          (error?.error?.message ? ' ' + error.error.message : '');
+        this.toastService.showError(mensaje);
       }
     });
   }

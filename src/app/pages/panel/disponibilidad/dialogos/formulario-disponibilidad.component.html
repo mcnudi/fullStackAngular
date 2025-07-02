@@ -1,7 +1,10 @@
 <form [formGroup]="availabilityForm" (ngSubmit)="saveAvailability()">
     <!-- Zona de título -->
     <div class="titulo_modal mb-3">
-        <h2>¿Cuál es tu disponibilidad?</h2>
+        <h2>
+            <mat-icon>calendar_month</mat-icon>
+            ¿Cuál es tu disponibilidad?
+        </h2>
     </div>
 
     <!-- Grupo de día -->
@@ -58,22 +61,24 @@
 
     <div class="list text-center">
         <h3>Disponible este día:</h3>
-        @if (selectedRanges.length > 0) {
-            <ul>
-                @for (range of selectedRanges; track range.start) {
-                    <li>
-                        @if (range.esNuevo) {
-                            <button type="button" class="btn-crud btn btn-outline-danger mt-1" (click)="removeRange(selectedRanges.indexOf(range))">
-                                <mat-icon>delete</mat-icon>
-                            </button>
-                        }
-                        {{ formatearHoras(range.start) }} - {{ formatearHoras(range.end) }}
-                    </li>
-                }
-            </ul>
-        } @else {
-            <p>No hay franjas seleccionadas.</p>
-        }
+        <div class="franjas-configuradas-para-dia">
+            @if (selectedRanges.length > 0) {
+                <ul>
+                    @for (range of selectedRanges; track range.start) {
+                        <li>
+                            {{ formatearHoras(range.start) }} - {{ formatearHoras(range.end) }}
+                            @if (range.esNuevo) {
+                                <button type="button" class="btn-crud btn btn-outline-danger mt-1" (click)="removeRange(selectedRanges.indexOf(range))">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            }
+                        </li>
+                    }
+                </ul>
+            } @else {
+                <p>No hay franjas seleccionadas.</p>
+            }
+        </div>
     </div>
 
     <!-- Botones -->

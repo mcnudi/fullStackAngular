@@ -43,7 +43,9 @@ export class ObjetivosComponent implements OnInit {
     const userId = this.authService.getDecodedToken().id;
     return this.panelService.userHasInterests(userId).pipe(
       map(response => response.hasInterests), catchError(err => {
-        console.error('⛔ Error al verificar intereses:', err);
+        const mensaje = '⛔ Error al verificar intereses:' + err;
+        console.error(mensaje);
+        this.toastService.showError(mensaje);        
         return of(false); // Devuelve false si hay error
       })
     );
@@ -58,12 +60,12 @@ export class ObjetivosComponent implements OnInit {
         if (modo === 'añadir') {
           dialogRef.closed.subscribe((nuevoObjetivo: Goals | undefined) => {
             if (nuevoObjetivo) {
-              this.arrayObjetivos.push(nuevoObjetivo); // o llama a loadInterests()
+              this.arrayObjetivos.push(nuevoObjetivo);
               this.changeDetectorRef.markForCheck();
             }
           });
         }
-        else {
+        else { // 'actualizar'
           dialogRef.closed.subscribe((actualizadoObjetivo: Goals | undefined) => {
             if (actualizadoObjetivo) {
               const index = this.arrayObjetivos.findIndex(i => i.id === elemento.id);
@@ -78,7 +80,7 @@ export class ObjetivosComponent implements OnInit {
           });
         }
       } else {
-        const confirmed = await this.dialogService.confirm(
+        const { confirmed } = await this.dialogService.confirm(
           'Advertencia',
           `Antes de crear Objetivos debes crear Intereses`
         );
@@ -92,14 +94,17 @@ export class ObjetivosComponent implements OnInit {
 
     // Si se recibe notificación de otro componente para que se actualice la vista de Objetivos
     this.panelService.actualizarObjetivos$.subscribe({
-        next: (data: any) => {
-          this.cargarObjetivos();
-          this.cargarIntereses();
-        },
-        error: (error) => {
-          console.log(error);
-        }
-      });
+      next: (data: any) => {
+        this.cargarObjetivos();
+        this.cargarIntereses();
+      },
+      error: (error) => {
+        console.log(error);
+        const mensaje = 'Error al inicializar el componente objetivos.' +
+          (error?.error?.message ? ' ' + error.error.message : '');
+        this.toastService.showError(mensaje);
+      }
+    });
   }
 
   cargarIntereses() {
@@ -116,6 +121,9 @@ export class ObjetivosComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
+        const mensaje = 'Error al cargar los Intereses.' +
+          (error?.error?.message ? ' ' + error.error.message : '');
+        this.toastService.showError(mensaje);
       }
     });
   }
@@ -128,17 +136,19 @@ export class ObjetivosComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
+        const mensaje = 'Error al cargar los Objetivos.' +
+          (error?.error?.message ? ' ' + error.error.message : '');
+        this.toastService.showError(mensaje);
       }
     })
   }
 
   async deleteGoal(elemento: Goals) {
-    const confirmed = await this.dialogService.confirm(
+    const { confirmed } = await this.dialogService.confirm(
       'Confirmar borrado',
       `¿Estás seguro de que quieres eliminarlo?
       ¡¡Si confirmas, a continuación se borrarán también las ACTIVIDADES asociadas a estos OBJETIVOS que se hayan incluido en RUTINAS!!`
     );
-
     if (confirmed) {
       try {
         this.panelService.removeGoals(this.authService.getDecodedToken().id, elemento.id!).subscribe( {
@@ -151,10 +161,13 @@ export class ObjetivosComponent implements OnInit {
           },
           error: (error) => {
             console.log(error);
+            const mensaje = 'Error al borrar el Objetivo.' +
+              (error?.error?.message ? ' ' + error.error.message : '');
+            this.toastService.showError(mensaje);
           }
         });
       } catch (err) {
-        this.toastService.showError('Error al borrar el Interés.');
+        this.toastService.showError('Error durante el borrado del Objetivo.');
       }
     }
   }

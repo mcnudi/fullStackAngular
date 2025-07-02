@@ -1,17 +1,20 @@
 <button (click)="openModal('añadir', {})" class="btn-mas w-100 mt-4 d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">+</button>
 <mat-expansion-panel [expanded]='true'>
     <mat-expansion-panel-header class="header-color-mat">
-        <h3 class="mb-0">
-            Intereses
+        <mat-icon>interests</mat-icon>
+        <h3 class="mb-0 m-0">
+            <strong>Intereses</strong>
         </h3>
     </mat-expansion-panel-header>
     @for (item of arrayInteresesUsuario; track item.id) {
-        <div class="panel-content">
-            <button (click)="openModal('actualizar', item)" class="btn-crud btn btn-outline-success mt-1"><mat-icon>edit</mat-icon></button>
-            <button (click)="deleteInterest(item)" class="btn-crud btn btn-outline-danger mt-1"><mat-icon>delete</mat-icon></button>
-            <div class="elemento_texto_lista mt-1" [style]="{'border': '2px solid ' + item.color}">
+        <div class="panel-content elemento-lista-card p-3 bg-light" (click)="openModal('actualizar', item)">
+            <!--
+                <button (click)="openModal('actualizar', item)" class="btn-crud btn btn-outline-success mt-1"><mat-icon>edit</mat-icon></button>
+            -->
+            <div class="elemento-texto-lista mt-1" [style]="{'border-left': '4px solid ' + item.color}">
                 <span><strong>{{ item.interest_name }}</strong></span>
             </div>
+            <button (click)="deleteInterest(item); $event.stopPropagation()" class="btn-crud btn btn-outline-danger mt-1"><mat-icon>delete</mat-icon></button>
         </div>   
     }
 </mat-expansion-panel>
