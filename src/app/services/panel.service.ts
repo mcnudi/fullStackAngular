@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, of, Subject } from 'rxjs';
-import { Availability, Goals, Interests } from '../interfaces/ipanel.interface';
+import { Availability, Goals, GoalsResponse, Interests } from '../interfaces/ipanel.interface';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -72,8 +72,8 @@ export class PanelService {
     );
   }
   
-  addGoals(idUsuario: number, interestId: number, goalName: string, goalDescription: string, hoursPerWeek: number ) : Observable<Goals> {
-    return this.httpClient.post<Goals>(
+  addGoals(idUsuario: number, interestId: number, goalName: string, goalDescription: string, hoursPerWeek: number ) : Observable<GoalsResponse> {
+    return this.httpClient.post<GoalsResponse>(
       `${this.API_URL}/goals/${idUsuario}/add`,
       {
         interests_id: interestId,

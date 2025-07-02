@@ -1,16 +1,18 @@
 <button (click)="openModal('añadir', {})" class="btn-mas w-100 mt-4 d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">+</button>
 <mat-expansion-panel [expanded]='true'>
     <mat-expansion-panel-header class="header-color-mat">
-        <h3 class="mb-0">
-            Objetivos
+        <mat-icon>add_task</mat-icon>
+        <h3 class="mb-0 m-0">
+            <strong>Objetivos</strong>
         </h3>
     </mat-expansion-panel-header>
     @for (item of arrayObjetivos; track item.id) {
         @let colorAsociadoInteres = getColorInteres(item.users_interests_id!);
         @let nombreAsociadoInteres = getNombreInteres(item.users_interests_id!);
-          <div class="panel-content">
-            <button (click)="openModal('actualizar', item)" class="btn-crud btn btn-outline-success mt-1"><mat-icon>edit</mat-icon></button>
-            <button (click)="deleteGoal(item)" class="btn-crud btn btn-outline-danger mt-1"><mat-icon>delete</mat-icon></button>
+          <div class="panel-content elemento-lista-card p-3 bg-light" (click)="openModal('actualizar', item)">
+            <!--
+                <button (click)="openModal('actualizar', item)" class="btn-crud btn btn-outline-success mt-1"><mat-icon>edit</mat-icon></button>
+            -->
             <article class="elemento_texto_lista mt-1">
                 <span class="nombre-objetivo mb-3">
                     <strong>{{ item.goals_name }}</strong>
@@ -28,6 +30,7 @@
                     [{{ item.hours_per_week }} h./sem.]
                 </p>
             </article>
+            <button (click)="deleteGoal(item); $event.stopPropagation()" class="btn-crud btn btn-outline-danger mt-1"><mat-icon>delete</mat-icon></button>
         </div>
     }
 </mat-expansion-panel>

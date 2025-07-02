@@ -42,7 +42,7 @@ export class InteresesComponent implements OnInit {
     if (modo === 'añadir') {
       dialogRef.closed.subscribe((nuevoInteres: Interests | undefined) => {
         if (nuevoInteres) {
-          this.arrayInteresesUsuario.push(nuevoInteres); // o llama a loadInterests()
+          this.arrayInteresesUsuario.push(nuevoInteres);
           this.changeDetectorRef.markForCheck();
         }
       });
@@ -68,17 +68,19 @@ export class InteresesComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
+        const mensaje = 'Error al inicializar el componente intereses.' +
+          (error?.error?.message ? ' ' + error.error.message : '');
+        this.toastService.showError(mensaje);
       }
     })
   }
 
   async deleteInterest(elemento: Interests) {
-    const confirmed = await this.dialogService.confirm(
+    const { confirmed } = await this.dialogService.confirm(
       'Confirmar borrado',
       `¿Estás seguro de que quieres elimiarlo?
       ¡¡Si confirmas se borrarán automáticamente los OBJETIVOS asociados y todas las ACTIVIDADES asociadas a estos en las RUTINAS!!`
     );
-
     if (confirmed) {
       try {
             this.panelService.removeInterests(this.authService.getDecodedToken().id, elemento.interest_name!).subscribe( {
@@ -92,10 +94,13 @@ export class InteresesComponent implements OnInit {
               },
               error: (error) => {
                 console.log(error);
+                const mensaje = 'Error al borrar el Interés.' +
+                  (error?.error?.message ? ' ' + error.error.message : '');
+                this.toastService.showError(mensaje);
               }
             });
       } catch (err) {
-        this.toastService.showError('Error al borrar el Interés.');
+        this.toastService.showError('Error durante el borrado del Interés.');
       }
     }
   }

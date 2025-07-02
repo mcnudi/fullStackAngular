@@ -1,7 +1,10 @@
 <form [formGroup]="goalsForm" (ngSubmit)="saveGoals()">
     <!-- Zona de título -->
     <div class="titulo_modal mb-3">
-        <h2>¿Cuál es tu objetivo?</h2>
+        <h2>
+            <mat-icon>add_task</mat-icon>
+            ¿Cuál es tu objetivo?
+        </h2>
     </div>
 
     <!-- Grupo de título -->
@@ -39,7 +42,7 @@
         <label for="hours_per_week" class="form-label required">Horas a la semana:</label>
         <input type="text"
             inputmode="decimal"
-pattern="\d+(\.\d{1,2})?"
+            pattern="\d+(\.\d{1,2})?"
             id="hours_per_week"
             class="form-control"
             maxlength="4"

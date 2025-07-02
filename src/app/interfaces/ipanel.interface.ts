@@ -13,6 +13,11 @@ export interface Goals {
   hours_per_week?: number;
 }
 
+export interface GoalsResponse {
+  success?: boolean;
+  goal?: Goals;
+}
+
 export interface Availability {
   id?: number;
   users_id?: number;

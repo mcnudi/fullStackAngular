@@ -3,32 +3,35 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { PanelService } from '../../../services/panel.service';
 import { AuthService } from '../../../services/auth.service';
 import { Availability } from '../../../interfaces/ipanel.interface';
+import { CommonModule } from '@angular/common';
 
 import { Dialog } from '@angular/cdk/dialog'
 import { FormularioDisponibilidadComponent } from './dialogos/formulario-disponibilidad.component';
 import { MatIcon } from '@angular/material/icon';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-disponibilidad',
   standalone: true,
-  imports: [MatExpansionModule, MatIcon],
+  imports: [CommonModule, MatExpansionModule, MatIcon],
   templateUrl: './disponibilidad.component.html',
   styleUrls: ['./disponibilidad.component.css'],
 })
 export class DisponibilidadComponent implements OnInit {
   panelService = inject(PanelService);
   authService = inject(AuthService);
+  toastService = inject(ToastService);
   dialog = inject(Dialog)
   changeDetectorRef = inject(ChangeDetectorRef)
 
   /*
     arrayDisponibilidad = [
-      { id: 1, dia: '0', hora_inicio: '10:00', hora_fin: '12:00'},  --> nombre_dia: 'DOMINGO'
-      { id: 2, dia: '1', hora_inicio: '10:00', hora_fin: '12:00'},  --> nombre_dia: 'LUNES'
-      { id: 3, dia: '1', hora_inicio: '17:00', hora_fin: '18:30'},  --> nombre_dia: 'LUNES'
-      { id: 4, dia: '3', hora_inicio: '10:00', hora_fin: '12:00'},  --> nombre_dia: 'MIÉRCOLES'
-      { id: 5, dia: '3', hora_inicio: '17:00', hora_fin: '18:30'},  --> nombre_dia: 'MIÉRCOLES'
-      { id: 6, dia: '5', hora_inicio: '10:00', hora_fin: '12:00'}   --> nombre_dia: 'VIERNES'
+      { id: 1, weekday: '0', hora_inicio: '10:00', hora_fin: '12:00'},  --> nombre_dia: 'DOMINGO'
+      { id: 2, weekday: '1', hora_inicio: '10:00', hora_fin: '12:00'},  --> nombre_dia: 'LUNES'
+      { id: 3, weekday: '1', hora_inicio: '17:00', hora_fin: '18:30'},  --> nombre_dia: 'LUNES'
+      { id: 4, weekday: '3', hora_inicio: '10:00', hora_fin: '12:00'},  --> nombre_dia: 'MIÉRCOLES'
+      { id: 5, weekday: '3', hora_inicio: '17:00', hora_fin: '18:30'},  --> nombre_dia: 'MIÉRCOLES'
+      { id: 6, weekday: '5', hora_inicio: '10:00', hora_fin: '12:00'}   --> nombre_dia: 'VIERNES'
     ];
   */
 
@@ -46,8 +49,8 @@ export class DisponibilidadComponent implements OnInit {
 
   arrayDisponibilidad: Availability [] = [];
 
-  openModal (modo: 'añadir' | 'actualizar', elemento: Availability, arrayDisponibilidad: Availability []) {
-    const dialogRef = this.dialog.open<Availability>(FormularioDisponibilidadComponent, { data: { modo, elemento, arrayDisponibilidad }, disableClose: true });
+  openModal (modo: 'añadir' | 'actualizar', elemento: Availability, arrayDisponibilidad: Availability [], numDia: number) {
+    const dialogRef = this.dialog.open<Availability>(FormularioDisponibilidadComponent, { data: { modo, elemento, arrayDisponibilidad, numDiaSemana: numDia }, disableClose: true});
   
     dialogRef.closed.subscribe((nuevaDisponibilidad: Availability | undefined) => {
       if (nuevaDisponibilidad) {
@@ -69,6 +72,9 @@ export class DisponibilidadComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
+        const mensaje = 'Error al inicializar el componente de disponibilidad.' +
+          (error?.error?.message ? ' ' + error.error.message : '');
+        this.toastService.showError(mensaje);
       }
     })
   }
@@ -84,6 +90,9 @@ export class DisponibilidadComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
+        const mensaje = 'Error al borrar la Disponibilidad.' +
+          (error?.error?.message ? ' ' + error.error.message : '');
+        this.toastService.showError(mensaje);
       }
     });
   }

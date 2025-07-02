@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, inject } from '@angular/core';
 
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog'
-import { Goals, Interests } from '../../../../interfaces/ipanel.interface';
+import { Goals, GoalsResponse, Interests } from '../../../../interfaces/ipanel.interface';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ToastService } from '../../../../services/toast.service';
 import { MatIcon } from '@angular/material/icon';
@@ -59,24 +59,26 @@ export class FormularioObjetivosComponent implements OnInit {
         if (this.modo === 'añadir') {
           this.goalsForm.controls.hours_per_week.markAsTouched();
         }
+        if (this.modo === 'actualizar' && this.objetivoActual) {
+          this.originalFormValue = this.goalsForm.getRawValue();
+          this.goalsForm.patchValue({
+            goals_name: this.objetivoActual.goals_name,
+            users_interests_id: String(this.objetivoActual.users_interests_id),
+            description: this.objetivoActual.description,
+            hours_per_week: String(this.objetivoActual.hours_per_week)
+          });
+          this.originalFormValue = this.goalsForm.getRawValue();
+          this.goalsForm.markAsUntouched();
+          this.goalsForm.markAsPristine();
+        }
       },
       error: (error) => {
         console.log(error);
+        const mensaje = 'Error al inicializar el componente formulario-objetivos.' +
+          (error?.error?.message ? ' ' + error.error.message : '');
+        this.toastService.showError(mensaje);
       }
     })
-
-    if (this.modo === 'actualizar' && this.objetivoActual) {
-      this.originalFormValue = this.goalsForm.getRawValue();
-      this.goalsForm.patchValue({
-        goals_name: this.objetivoActual.goals_name,
-        users_interests_id: String(this.objetivoActual.users_interests_id),
-        description: this.objetivoActual.description,
-        hours_per_week: String(this.objetivoActual.hours_per_week)
-      });
-      this.originalFormValue = this.goalsForm.getRawValue();
-      this.goalsForm.markAsUntouched();
-      this.goalsForm.markAsPristine();
-    }
   }
   
   protected closeModal() {
@@ -95,7 +97,7 @@ export class FormularioObjetivosComponent implements OnInit {
       goals_name: goals_name!,
       users_interests_id: Number(users_interests_id),
       description: description ?? '',
-      hours_per_week: Number(hours_per_week)
+      hours_per_week: hours_per_week != null ? Number(hours_per_week) : undefined
     };
 
     if (this.modo === 'añadir') {
@@ -105,17 +107,34 @@ export class FormularioObjetivosComponent implements OnInit {
     }  
   }
 
-  addGoal(elemento: Goals) {
-    this.panelService.addGoals(this.authService.getDecodedToken().id, elemento.users_interests_id!, elemento.goals_name!, elemento.description!, elemento.hours_per_week!).subscribe( {
-      next: (data: Goals) => {
-        this.toastService.showSuccess('Objetivo añadido correctamente.');
-        this.dialogRef?.close(this.goalsForm.value);
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
-  }
+addGoal(elemento: Goals) {
+  this.panelService.addGoals(
+    this.authService.getDecodedToken().id,
+    elemento.users_interests_id!,
+    elemento.goals_name!,
+    elemento.description!,
+    elemento.hours_per_week!
+  ).subscribe({
+    next: (data: GoalsResponse) => {
+      this.toastService.showSuccess('Objetivo añadido correctamente.');
+      
+      // Construir el objetivo completo con ID retornado por el backend
+      const objetivoConId: Goals = {
+        ...elemento,
+        id: data.goal?.id
+      };
+
+      // Cerrar el diálogo y devolver el nuevo objetivo completo (con ID)
+      this.dialogRef?.close(objetivoConId);
+    },
+    error: (error) => {
+      console.log(error);
+      const mensaje = 'Error al añadir el Objetivo.' +
+        (error?.error?.message ? ' ' + error.error.message : '');
+      this.toastService.showError(mensaje);
+    }
+  });
+}
 
   updateGoal(elementoActualizador: Goals) {
     this.panelService.updateGoals(
@@ -126,11 +145,14 @@ export class FormularioObjetivosComponent implements OnInit {
                                       elementoActualizador.description!,
                                       elementoActualizador.hours_per_week!).subscribe( {
       next: (data: Interests) => {
-        this.toastService.showSuccess('Interés Actualizado correctamente.');
+        this.toastService.showSuccess('Objetivo Actualizado correctamente.');
         this.dialogRef?.close(this.goalsForm.value);
       },
       error: (error) => {
         console.log(error);
+        const mensaje = 'Error al actualizar el Objetivo.' +
+          (error?.error?.message ? ' ' + error.error.message : '');
+        this.toastService.showError(mensaje);
       }
     });
   }
