@@ -11,6 +11,7 @@ export interface Irutina {
   idVersion: number;
   created_at: Date;
   numActividades?:number;
+  is_selected?:boolean;
 }
 
 export interface GenerarRutinaResponse {

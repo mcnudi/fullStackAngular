@@ -56,7 +56,11 @@
             <div class="col-md-4 w-75 mb-4">
               <strong>{{ rutina.name }}</strong>
             </div>
-            <div class="col-md-4 w-25 color">v{{ rutina.version_number }}</div>
+            <div class="col-md-4 w-25 color d-flex align-items-center gap-1">v{{ rutina.version_number }}
+              @if(rutina.is_selected){
+                <mat-icon>star</mat-icon>
+              }
+            </div>
           </div>
           <div class="row align-items-center">
             <div class="col-md-4 w-75">{{ rutina.description }}</div>

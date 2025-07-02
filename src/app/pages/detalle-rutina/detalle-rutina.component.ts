@@ -40,23 +40,8 @@ export class DetalleRutinaComponent {
     this.rutina = this.route.snapshot.paramMap.get('id');
     this.rutinaN = Number(this.rutina);
     console.log('ID recibido:', this.rutina);
-
-    this.serviceRutina
-      .obtenerRutinaVersiones(this.rutinaN, this.page)
-      .subscribe({
-        next: (res: IRutinaPaginada) => {
-          this.tablarutina = res.data;
-          this.pageTotales = res.totalPage;
-
-          this.descripcion = this.tablarutina[0].description;
-          this.nombre = this.tablarutina[0].name;
-          if (this.pageTotales===this.page){
-            this.deshabilitarA = true;
-            this.deshabilitarD = true;
-          }
-        },
-        error: (err) => console.error('Error al obtener la rutina:', err),
-      });
+    this.cargarRutina();
+    
   }
 
   volver() {
@@ -73,7 +58,9 @@ export class DetalleRutinaComponent {
     this.serviceRutina.ponerVersionPorDefecto(this.rutinaN, id).subscribe({
       next: (res) => {
         console.log('Respuesta del backend:', res);
+        this.cargarRutina();
         this.toastService.showSuccess('Se ha cambiado la version por defecto');
+        
       },
       error: (err) => console.error('Error al buscar la version:', err),
     });
@@ -167,6 +154,25 @@ export class DetalleRutinaComponent {
           const msg = err.error?.message || err.message ||'Error borrando rutina';
           this.toastService.showError(msg);
         }
+      });
+    }
+    cargarRutina(){
+      this.serviceRutina
+      .obtenerRutinaVersiones(this.rutinaN, this.page)
+      .subscribe({
+        next: (res: IRutinaPaginada) => {
+          this.tablarutina = res.data;
+          console.log(this.tablarutina);
+          this.pageTotales = res.totalPage;
+
+          this.descripcion = this.tablarutina[0].description;
+          this.nombre = this.tablarutina[0].name;
+          if (this.pageTotales===this.page){
+            this.deshabilitarA = true;
+            this.deshabilitarD = true;
+          }
+        },
+        error: (err) => console.error('Error al obtener la rutina:', err),
       });
     }
   }
