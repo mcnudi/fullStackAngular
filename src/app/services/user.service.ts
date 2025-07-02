@@ -34,6 +34,30 @@ export class UserService {
   }
 
   deleteProfile(username: string): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/delete/username/${username}`);
+    return this.http.delete<void>(
+      `${this.API_URL}/delete/username/${username}`
+    );
+  }
+
+  getEmailByUsername(username: string): Observable<{ email: string }> {
+    return this.http.get<{ email: string }>(
+      `${this.API_URL}/recoveryPassword/${username}`
+    );
+  }
+
+  sendVerificationCode(email: string, code: string) {
+    return this.http.post(`${this.API_URL}/recoveryPassword/sendCode`, {
+      email,
+      code,
+    });
+  }
+
+  updatePassword(username: string, newPassword: string) {
+    return this.http.put(
+      `${this.API_URL}/recoveryPassword/updatePassword/${username}`,
+      {
+        newPassword,
+      }
+    );
   }
 }

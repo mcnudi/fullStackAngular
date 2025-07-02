@@ -67,7 +67,10 @@ export class RutinaGeneratorComponent {
 
     this.groupedActivities = grupos;
 
-    this.diasGenerados = this.dias.filter((dia) => grupos[dia]);
+    const ordenNumerico = [1, 2, 3, 4, 5, 6, 0];
+    this.diasGenerados = ordenNumerico
+      .map((num) => this.getDiaSemana(num))
+      .filter((dia) => grupos[dia]);
   }
 
   generarRutina(): void {
@@ -97,7 +100,9 @@ export class RutinaGeneratorComponent {
         this.loading = false;
       },
       error: (err) => {
-        this.toastService.showError('Ha ocurrido un error al generar la rutina intentelo de nuevo mas tarde');
+        this.toastService.showError(
+          'Ha ocurrido un error al generar la rutina intentelo de nuevo mas tarde'
+        );
         this.loading = false;
         this.router.navigate(['app', 'rutina']);
       },
