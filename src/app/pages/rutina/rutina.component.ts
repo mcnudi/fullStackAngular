@@ -100,12 +100,13 @@ export class RutinaComponent {
       }
       else if (this.url.startsWith('/app/anadirRutina/tarea')){//Modificacion
         this.serviceRutina.modificarRutina(this.irutina).subscribe({
-        next: (res) => {console.log("Respuesta del backend:", res),
+        next: (res) => {console.log("Respuesta del backend:", res);
                     this.toastService.showSuccess('Se ha modificado la rutina');//pòner el id
                     this.router.navigate(['/app/detalles',rutina]);
         },
-        error: (err) => {console.error("Error al modificar la rutina:", err),
-                        this.toastService.showError('Error al modificar la rutina');
+        error: (err) => {console.error("Error al modificar la rutina:", err);
+                        const msg = err.error?.message || err.message || 'Error al modificar la rutina';
+                        this.toastService.showError(msg);
         }
       });
       }
