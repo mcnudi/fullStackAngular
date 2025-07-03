@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, inject } from '@angular/core';
 
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog'
-import { Availability, Interests } from '../../../../interfaces/ipanel.interface';
+import { Availability } from '../../../../interfaces/ipanel.interface';
 import { ReactiveFormsModule, FormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastService } from '../../../../services/toast.service';
 import { MatIcon } from '@angular/material/icon';
