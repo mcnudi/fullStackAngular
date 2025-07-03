@@ -1,13 +1,13 @@
 import { Component, Inject, OnInit, inject } from '@angular/core';
-
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog'
 import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatError } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+
 import { Interests, InterestsResponse } from '../../../../interfaces/ipanel.interface';
 import { ToastService } from '../../../../services/toast.service';
-import { MatIcon } from '@angular/material/icon';
 import { PanelService } from '../../../../services/panel.service';
 import { AuthService } from '../../../../services/auth.service';
-import { MatError } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-formulario-intereses',
@@ -16,6 +16,7 @@ import { MatError } from '@angular/material/form-field';
   templateUrl: './formulario-intereses.component.html',
   styleUrls: ['./formulario-intereses.component.css'],
 })
+
 export class FormularioInteresesComponent implements OnInit {
   panelService = inject(PanelService);
   authService = inject(AuthService);
@@ -25,18 +26,18 @@ export class FormularioInteresesComponent implements OnInit {
   modo: 'añadir' | 'actualizar';
   interesActual: Interests;
 
-  // Recepción de datos del Interés actual desde el componente Objetivos del Panel
-  constructor(@Inject(DIALOG_DATA) public data: { modo: 'añadir' | 'actualizar', elemento: Interests }) {
-    this.modo = data?.modo || 'añadir';
-    this.interesActual = data?.elemento
-  };
-  
   userInterestsForm = new FormGroup({
     interest_name: new FormControl('', Validators.required),
     color: new FormControl('#00FF00', Validators.required)
   });
 
   originalFormValue: any; // Para controlar cambios en el contenido del formulario cuando 'actualizar'
+
+  // Recepción de datos del Interés actual desde el componente Objetivos del Panel
+  constructor(@Inject(DIALOG_DATA) public data: { modo: 'añadir' | 'actualizar', elemento: Interests }) {
+    this.modo = data?.modo || 'añadir';
+    this.interesActual = data?.elemento
+  };
 
   ngOnInit() {
     if (this.modo === 'actualizar' && this.interesActual) {
@@ -59,6 +60,7 @@ export class FormularioInteresesComponent implements OnInit {
       this.toastService.showError('Por favor, completa todos los campos.');
       return;
     }
+
     const { interest_name, color } = this.userInterestsForm.value;
 
     if (this.modo === 'añadir') {
@@ -82,7 +84,6 @@ export class FormularioInteresesComponent implements OnInit {
           ...elemento,
           id: data.interest?.id
         };
-//{"success":true,"interest":{"id":83,"users_id":10,"interest_name":"Ocio","color":"#00FF00"}}
 
         this.panelService.notificarRepintadoObjetivos();
         // Cerrar el diálogo y devolver el nuevo objetivo completo (con ID)
@@ -90,20 +91,18 @@ export class FormularioInteresesComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
-        const mensaje = 'Error al añadir el Interés.' +
-          (error?.error?.message ? ' ' + error.error.message : '');
-        this.toastService.showError(mensaje);
+        this.toastService.showError('Error al añadir el Interés.');
       }
     });
   }
 
   updateInterest(elementoActualizador: Interests) {
-
     this.panelService.updateInterests(
-                                      this.authService.getDecodedToken().id,
-                                      elementoActualizador.id!, 
-                                      elementoActualizador.interest_name!,
-                                      elementoActualizador.color!).subscribe( {
+      this.authService.getDecodedToken().id,
+      elementoActualizador.id!, 
+      elementoActualizador.interest_name!,
+      elementoActualizador.color!
+    ).subscribe( {
       next: (data: Interests) => {
         this.toastService.showSuccess('Interés Actualizado correctamente.');
         this.panelService.notificarRepintadoObjetivos();
@@ -111,9 +110,7 @@ export class FormularioInteresesComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
-        const mensaje = 'Error al actualizar el Interés.' +
-          (error?.error?.message ? ' ' + error.error.message : '');
-        this.toastService.showError(mensaje);
+        this.toastService.showError('Error al actualizar el Interés.');
       }
     });
   }

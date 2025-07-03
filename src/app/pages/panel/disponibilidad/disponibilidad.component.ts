@@ -1,14 +1,15 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Dialog } from '@angular/cdk/dialog'
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIcon } from '@angular/material/icon';
+
 import { PanelService } from '../../../services/panel.service';
 import { AuthService } from '../../../services/auth.service';
 import { Availability } from '../../../interfaces/ipanel.interface';
-import { CommonModule } from '@angular/common';
-
-import { Dialog } from '@angular/cdk/dialog'
 import { FormularioDisponibilidadComponent } from './dialogos/formulario-disponibilidad.component';
-import { MatIcon } from '@angular/material/icon';
 import { ToastService } from '../../../services/toast.service';
+import { DialogService } from '../../../services/dialog.service';
 
 @Component({
   selector: 'app-disponibilidad',
@@ -17,12 +18,14 @@ import { ToastService } from '../../../services/toast.service';
   templateUrl: './disponibilidad.component.html',
   styleUrls: ['./disponibilidad.component.css'],
 })
+
 export class DisponibilidadComponent implements OnInit {
   panelService = inject(PanelService);
   authService = inject(AuthService);
   toastService = inject(ToastService);
-  dialog = inject(Dialog)
-  changeDetectorRef = inject(ChangeDetectorRef)
+  dialog = inject(Dialog);
+  changeDetectorRef = inject(ChangeDetectorRef);
+  dialogService = inject(DialogService);
 
   /*
     arrayDisponibilidad = [
@@ -36,6 +39,7 @@ export class DisponibilidadComponent implements OnInit {
   */
 
   diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+
   // Se acuerda que los días empiecen por 0 y el Domingo sea el primer día de la semana (FullCalendar así lo requiere).
   diasSemanaOrdenados = [
     { nombre: 'Lunes', valor: 1 },
@@ -49,9 +53,20 @@ export class DisponibilidadComponent implements OnInit {
 
   arrayDisponibilidad: Availability [] = [];
 
+  ngOnInit() {
+    this.panelService.getAvailability(this.authService.getDecodedToken().id).subscribe({
+      next: (data: Availability[]) => {
+        this.arrayDisponibilidad = data;
+      },
+      error: (error) => {
+        console.log(error);
+        this.toastService.showError('Error al inicializar el componente de disponibilidad.');
+      }
+    })
+  }
+
   openModal (modo: 'añadir' | 'actualizar', elemento: Availability, arrayDisponibilidad: Availability [], numDia: number) {
     const dialogRef = this.dialog.open<Availability>(FormularioDisponibilidadComponent, { data: { modo, elemento, arrayDisponibilidad, numDiaSemana: numDia }, disableClose: true});
-  
     dialogRef.closed.subscribe((nuevaDisponibilidad: Availability | undefined) => {
       if (nuevaDisponibilidad) {
         // Recargo por completo la lista de disponibilidades porque backend solo devuelve el id del elemento creado, no el objeto Availability completo
@@ -65,36 +80,31 @@ export class DisponibilidadComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.panelService.getAvailability(this.authService.getDecodedToken().id).subscribe({
-      next: (data: Availability[]) => {
-        this.arrayDisponibilidad = data;
-      },
-      error: (error) => {
-        console.log(error);
-        const mensaje = 'Error al inicializar el componente de disponibilidad.' +
-          (error?.error?.message ? ' ' + error.error.message : '');
-        this.toastService.showError(mensaje);
+  async deleteAvailability(elemento: Availability) {
+    const { confirmed } = await this.dialogService.confirm(
+      'Confirmar borrado de Disponibilidad',
+      `¿Estás seguro de elimiarlo?
+      ¡¡Si confirmas se borrarán franjas de DISPONIBILIDAD posiblemente ocupadas por ACTIVIDADES de las RUTINAS creadas!!`
+    );
+    if (confirmed) {
+      try {
+        this.panelService.removeAvailability(this.authService.getDecodedToken().id, elemento.id!).subscribe( {
+          next: (data: Availability) => {
+            const index = this.arrayDisponibilidad.findIndex(i => i.id === elemento.id);
+            if (index !== -1) {
+              this.arrayDisponibilidad.splice(index, 1);
+              this.changeDetectorRef.markForCheck();
+            }
+          },
+          error: (error) => {
+            console.log(error);
+            this.toastService.showError('Error al borrar la Disponibilidad.');
+          }
+        });
+      } catch (err) {
+        this.toastService.showError('Error durante el borrado del intervalo de Disponibilidad.');
       }
-    })
-  }
-
-  deleteAvailability(elemento: Availability) {
-    this.panelService.removeAvailability(this.authService.getDecodedToken().id, elemento.id!).subscribe( {
-      next: (data: Availability) => {
-        const index = this.arrayDisponibilidad.findIndex(i => i.id === elemento.id);
-        if (index !== -1) {
-          this.arrayDisponibilidad.splice(index, 1);
-          this.changeDetectorRef.markForCheck();
-        }
-      },
-      error: (error) => {
-        console.log(error);
-        const mensaje = 'Error al borrar la Disponibilidad.' +
-          (error?.error?.message ? ' ' + error.error.message : '');
-        this.toastService.showError(mensaje);
-      }
-    });
+    }
   }
 
   hasDisponibilidad(diaIndex: number): boolean {
