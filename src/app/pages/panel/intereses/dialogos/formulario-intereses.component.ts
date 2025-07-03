@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, inject } from '@angular/core';
 
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog'
 import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Interests } from '../../../../interfaces/ipanel.interface';
+import { Interests, InterestsResponse } from '../../../../interfaces/ipanel.interface';
 import { ToastService } from '../../../../services/toast.service';
 import { MatIcon } from '@angular/material/icon';
 import { PanelService } from '../../../../services/panel.service';
@@ -69,10 +69,24 @@ export class FormularioInteresesComponent implements OnInit {
   }
 
   addInterest(elemento: Interests) {
-    this.panelService.addInterests(this.authService.getDecodedToken().id, elemento.interest_name!, elemento.color!).subscribe( {
-      next: (data: Interests) => {
+    this.panelService.addInterests(
+      this.authService.getDecodedToken().id,
+      elemento.interest_name!,
+      elemento.color!
+    ).subscribe({
+      next: (data: InterestsResponse) => {
         this.toastService.showSuccess('Interés añadido correctamente.');
-        this.dialogRef?.close(this.userInterestsForm.value);
+
+        // Construir el objetivo completo con ID retornado por el backend
+        const interestConId: Interests = {
+          ...elemento,
+          id: data.interest?.id
+        };
+//{"success":true,"interest":{"id":83,"users_id":10,"interest_name":"Ocio","color":"#00FF00"}}
+
+        this.panelService.notificarRepintadoObjetivos();
+        // Cerrar el diálogo y devolver el nuevo objetivo completo (con ID)
+        this.dialogRef?.close(interestConId);
       },
       error: (error) => {
         console.log(error);
@@ -84,6 +98,7 @@ export class FormularioInteresesComponent implements OnInit {
   }
 
   updateInterest(elementoActualizador: Interests) {
+
     this.panelService.updateInterests(
                                       this.authService.getDecodedToken().id,
                                       elementoActualizador.id!, 
@@ -91,7 +106,7 @@ export class FormularioInteresesComponent implements OnInit {
                                       elementoActualizador.color!).subscribe( {
       next: (data: Interests) => {
         this.toastService.showSuccess('Interés Actualizado correctamente.');
-        this.panelService.notificarActualizacionObjetivos();
+        this.panelService.notificarRepintadoObjetivos();
         this.dialogRef?.close(this.userInterestsForm.value);
       },
       error: (error) => {

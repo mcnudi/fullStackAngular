@@ -21,6 +21,10 @@ export class FormInfoActivityComponent implements OnInit {
     this.categorias = data.categorias;
   }
 
+  formatTime(time: string | null): string {
+  return time ? time.substring(0, 5) : '';
+}
+
   ngOnInit(): void {
     console.log(this.actividad);
     if (this.actividad.activity_categories_id && this.categorias) {

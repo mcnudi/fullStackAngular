@@ -38,7 +38,6 @@ export class InteresesComponent implements OnInit {
 
   openModal (modo: 'añadir' | 'actualizar', elemento: Interests) {
     const dialogRef = this.dialog.open<Interests>(FormularioInteresesComponent, { data: { modo, elemento }, disableClose: true });
-
     if (modo === 'añadir') {
       dialogRef.closed.subscribe((nuevoInteres: Interests | undefined) => {
         if (nuevoInteres) {
@@ -58,7 +57,7 @@ export class InteresesComponent implements OnInit {
         }
       });
     }
-    this.panelService.notificarActualizacionObjetivos();
+    this.panelService.notificarRepintadoObjetivos();
   }
 
   ngOnInit() {
@@ -89,7 +88,7 @@ export class InteresesComponent implements OnInit {
                 if (index !== -1) {
                   this.arrayInteresesUsuario.splice(index, 1);
                   this.changeDetectorRef.markForCheck();
-                  this.panelService.notificarActualizacionObjetivos();
+                  this.panelService.notificarRepintadoObjetivos();
                 }
               },
               error: (error) => {

@@ -1,6 +1,6 @@
 <form [formGroup]="availabilityForm" (ngSubmit)="saveAvailability()">
     <!-- Zona de título -->
-    <div class="titulo_modal mb-3">
+    <div class="titulo_modal mb-3 text-shadow-depth">
         <h2>
             <mat-icon>calendar_month</mat-icon>
             ¿Cuál es tu disponibilidad?
@@ -10,7 +10,7 @@
     <!-- Grupo de día -->
     <div class="mb-3">
         <label for="weekday" class="form-label">Día de la semana:</label>
-        <select class="form-control" id="weekday" name="weekday" class="form-select text-center"  formControlName="weekday">
+        <select class="form-control" id="weekday" name="weekday" class="form-select text-center" formControlName="weekday" placeholder="Elige día de la semana">
             <option value="1">Lunes</option>
             <option value="2">Martes</option>
             <option value="3">Miércoles</option>
@@ -25,7 +25,7 @@
     <div class="selectores">
         <div class="col-md-6">
             <label for="start_time" class="form-label">Hora inicio:</label>
-            <select id="start_time" class="form-select text-center" formControlName="start_time" >
+            <select id="start_time" class="form-select text-center" formControlName="start_time" placeholder="Elige hora">
                 @for (hour of hours; track hour) {
                     <option [value]="hour" [disabled]="isTimeDisabled(hour, true)">
                     {{ hour }}
@@ -35,7 +35,7 @@
         </div>
         <div class="col-md-6">
             <label for="end_time" class="form-label">Hora fin:</label>
-            <select id="end_time" class="form-select text-center" formControlName="end_time">
+            <select id="end_time" class="form-select text-center" formControlName="end_time" placeholder="Elige hora">
                 @for (hour of hours; track hour) {
                 <option [value]="hour" [disabled]="isTimeDisabled(hour, false)">
                     {{ hour }}

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, of, Subject } from 'rxjs';
-import { Availability, Goals, GoalsResponse, Interests } from '../interfaces/ipanel.interface';
+import { Observable, Subject } from 'rxjs';
+import { Availability, Goals, GoalsResponse, Interests, InterestsResponse } from '../interfaces/ipanel.interface';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -15,11 +15,11 @@ export class PanelService {
   private API_URL: string = 'http://localhost:3000/api';
 
   // Elemento Observable para comunicar/suscribirse a cambios que requieran repintado del componente de Objetivos
-  actualizarObjetivosSubject = new Subject<void>();
-  actualizarObjetivos$ = this.actualizarObjetivosSubject.asObservable();
+  repintarObjetivosSubject = new Subject<void>();
+  repintarObjetivos$ = this.repintarObjetivosSubject.asObservable();
 
-  notificarActualizacionObjetivos() {
-    this.actualizarObjetivosSubject.next();
+  notificarRepintadoObjetivos() {
+    this.repintarObjetivosSubject.next();
   }
   
   // Intereses
@@ -37,8 +37,8 @@ export class PanelService {
     );
   }
 
-  addInterests(idUsuario: number, interestName: string, color: string) : Observable<Interests> {
-    return this.httpClient.post<Interests>(
+  addInterests(idUsuario: number, interestName: string, color: string) : Observable<InterestsResponse> {
+    return this.httpClient.post<InterestsResponse>(
       `${this.API_URL}/interests/${idUsuario}/add`,
       {
         interestName: interestName,

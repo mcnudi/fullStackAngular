@@ -2,7 +2,7 @@
 <mat-expansion-panel [expanded]='true'>
     <mat-expansion-panel-header class="header-color-mat">
         <mat-icon>interests</mat-icon>
-        <h3 class="mb-0 m-0">
+        <h3 class="mb-0 m-0 text-shadow-depth">
             <strong>Intereses</strong>
         </h3>
     </mat-expansion-panel-header>
@@ -12,7 +12,7 @@
                 <button (click)="openModal('actualizar', item)" class="btn-crud btn btn-outline-success mt-1"><mat-icon>edit</mat-icon></button>
             -->
             <div class="elemento-texto-lista mt-1" [style]="{'border-left': '4px solid ' + item.color}">
-                <span><strong>{{ item.interest_name }}</strong></span>
+                <h5><strong>{{ item.interest_name }}</strong></h5>
             </div>
             <button (click)="deleteInterest(item); $event.stopPropagation()" class="btn-crud btn btn-outline-danger mt-1"><mat-icon>delete</mat-icon></button>
         </div>   
