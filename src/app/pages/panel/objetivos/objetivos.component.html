@@ -1,18 +1,35 @@
-<button (click)="openModal('añadir', {})" class="btn-mas w-100 mt-4 d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">+</button>
-<mat-expansion-panel [expanded]='true'>
+<mat-expansion-panel [expanded]="true">
     <mat-expansion-panel-header class="header-color-mat">
-        <mat-icon>add_task</mat-icon>
-        <h3 class="mb-0 m-0 text-shadow-depth">
-            <strong>Objetivos</strong>
-        </h3>
+        <div class="d-flex align-items-center justify-content-between w-100">
+            <!-- Div 1: Icono a la izquierda -->
+            <div class="me-2">
+                <mat-icon>add_task</mat-icon>
+            </div>
+        
+            <!-- Div 2: Título centrado -->
+            <div class="flex-grow-1 text-center">
+                <h3 class="mb-0 text-shadow-depth">
+                    <strong>Objetivos</strong>
+                </h3>
+            </div>
+        
+            <!-- Div 3: Botón a la derecha -->
+            <div>
+                <mat-panel-description>
+                <button 
+                    (click)="openModal('añadir', {}); $event.stopPropagation()"
+                    class="btn-mas d-flex align-items-center justify-content-center btn-custom btn-primary-color py-2 px-3 fs-4">
+                    +
+                </button>
+                </mat-panel-description>
+            </div>
+        </div>
     </mat-expansion-panel-header>
+
     @for (item of arrayObjetivos; track item.id) {
         @let colorAsociadoInteres = getColorInteres(item.users_interests_id!);
         @let nombreAsociadoInteres = getNombreInteres(item.users_interests_id!);
           <div class="panel-content elemento-lista-card p-3 bg-light" (click)="openModal('actualizar', item)">
-            <!--
-                <button (click)="openModal('actualizar', item)" class="btn-crud btn btn-outline-success mt-1"><mat-icon>edit</mat-icon></button>
-            -->
             <article class="elemento_texto_lista mt-1">
                 <span class="nombre-objetivo mb-3">
                     <h5><strong>{{ item.goals_name }}</strong></h5>

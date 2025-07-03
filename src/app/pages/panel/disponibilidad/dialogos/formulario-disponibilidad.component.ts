@@ -1,10 +1,10 @@
 import { Component, Inject, OnInit, inject } from '@angular/core';
-
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog'
-import { Availability } from '../../../../interfaces/ipanel.interface';
 import { ReactiveFormsModule, FormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ToastService } from '../../../../services/toast.service';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog'
 import { MatIcon } from '@angular/material/icon';
+
+import { Availability } from '../../../../interfaces/ipanel.interface';
+import { ToastService } from '../../../../services/toast.service';
 import { AuthService } from '../../../../services/auth.service';
 import { PanelService } from '../../../../services/panel.service';
 
@@ -15,6 +15,7 @@ import { PanelService } from '../../../../services/panel.service';
   templateUrl: './formulario-disponibilidad.component.html',
   styleUrls: ['./formulario-disponibilidad.component.css'],
 })
+
 export class FormularioDisponibilidadComponent implements OnInit {
   panelService = inject(PanelService);
   authService = inject(AuthService);
@@ -26,6 +27,12 @@ export class FormularioDisponibilidadComponent implements OnInit {
   arrayDisponibilidadSemanal: Availability [];
   numDiaSemana: number;
 
+  availabilityForm = new FormGroup({
+    weekday: new FormControl('1', Validators.required),
+    start_time: new FormControl('00:00', Validators.required),
+    end_time: new FormControl('00:00', Validators.required)
+  });
+
   // Recepción de datos de la Disponibilidad actual desde el componente Disponibilidad del Panel
   constructor(@Inject(DIALOG_DATA) public dataInyectada: { modo: 'añadir' | 'actualizar', elemento: Availability, arrayDisponibilidad: Availability [], numDiaSemana: number}) {
     this.modo = dataInyectada?.modo || 'añadir';
@@ -33,12 +40,6 @@ export class FormularioDisponibilidadComponent implements OnInit {
     this.disponibilidadDiaActual = dataInyectada?.elemento;
     this.arrayDisponibilidadSemanal = dataInyectada?.arrayDisponibilidad;
   };
-
-  availabilityForm = new FormGroup({
-    weekday: new FormControl('1', Validators.required),
-    start_time: new FormControl('00:00', Validators.required),
-    end_time: new FormControl('00:00', Validators.required)
-  });
 
   ngOnInit() {
     // Suscripción
@@ -96,9 +97,7 @@ export class FormularioDisponibilidadComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
-        const mensaje = 'Error al añadir la Disponibilidad.' +
-          (error?.error?.message ? ' ' + error.error.message : '');
-        this.toastService.showError(mensaje);
+        this.toastService.showError('Error al añadir la Disponibilidad.');
       }
     });
   }
@@ -107,11 +106,10 @@ export class FormularioDisponibilidadComponent implements OnInit {
     return this.selectedRanges?.some(rango => rango.esNuevo) ?? false;
   }
 
-//--------------------------------------------------
-// CÓDIGO DEL SELECTOR DE HORAS
-//--------------------------------------------------
+  //--------------------------------------------------
+  // CÓDIGO DEL SELECTOR DE HORAS
+  //--------------------------------------------------
 
-  // hours = Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
   hours = Array.from({ length: 48 }, (_, i) => {
     const hour = Math.floor(i / 2); // 0..23
     const minutes = i % 2 === 0 ? '00' : '30'; // alterna entre 00 y 30

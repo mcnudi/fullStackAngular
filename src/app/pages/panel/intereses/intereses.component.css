@@ -33,6 +33,7 @@ ul {
     align-items: center;
     justify-content: center;
     text-align: center;
+    min-height: 40px
 }
 
 .elemento-lista-card {
@@ -63,6 +64,10 @@ ul {
 
 .header-color-mat h3 {
   width: 100%;
+  margin: 0;
+}
+
+h5 {
   margin: 0;
 }
 
