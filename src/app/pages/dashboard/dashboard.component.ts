@@ -560,5 +560,14 @@ async eliminarActividad(actividad: { id: number }) {
         return '';
     }
   }
+mostrarActividadesOrdenadas(): Activity[] {
+  return this.actividades.slice().sort((a, b) => {
+    if (a.day_of_week !== b.day_of_week) {
+      return a.day_of_week - b.day_of_week; // Ordenar por día de la semana
+    }
+    // Si es el mismo día, ordenar por hora de inicio (start_time)
+    return a.start_time.localeCompare(b.start_time);
+  });
+}
 
 }

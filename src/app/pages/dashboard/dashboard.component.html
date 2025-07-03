@@ -139,26 +139,27 @@
 
 
   @if (actividades.length > 0) {
-    @for (actividad of actividades; track $index) {
-      <li class="actividad-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-white shadow-sm">
-        <div class="actividad-info text-truncate">
-          <strong class="actividad-titulo d-block">{{ actividad.title }}</strong>
-          <small class="actividad-horario text-muted">
-            {{ convertDayOfWeekToString(actividad.day_of_week) }}
-            {{ ('1970-01-01T' + actividad.start_time) | date: 'HH:mm' }} -
-            {{ ('1970-01-01T' + actividad.end_time) | date: 'HH:mm' }}
-          </small>
-        </div>
-        <div class="ms-auto d-flex gap-2">
-          <button class="btn btn-sm btn-custom btn-actividad px-4" (click)="verActividad(actividad)">
-            Ver
-          </button>
-          <button class="btn btn-sm btn-custom btn-actividad px-4" (click)="eliminarActividad(actividad)">
-            Eliminar
-          </button>
-        </div>
-      </li>
-    }
+@for (actividad of mostrarActividadesOrdenadas(); track $index) {
+  <li class="actividad-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-white shadow-sm">
+    <div class="actividad-info text-truncate">
+      <strong class="actividad-titulo d-block">{{ actividad.title }}</strong>
+      <small class="actividad-horario text-muted">
+        {{ convertDayOfWeekToString(actividad.day_of_week) }}
+        {{ ('1970-01-01T' + actividad.start_time) | date: 'HH:mm' }} -
+        {{ ('1970-01-01T' + actividad.end_time) | date: 'HH:mm' }}
+      </small>
+    </div>
+    <div class="ms-auto d-flex gap-2">
+      <button class="btn btn-sm btn-custom btn-actividad px-4" (click)="verActividad(actividad)">
+        Ver
+      </button>
+      <button class="btn btn-sm btn-custom btn-actividad px-4" (click)="eliminarActividad(actividad)">
+        Eliminar
+      </button>
+    </div>
+  </li>
+}
+
   }
 
 }
