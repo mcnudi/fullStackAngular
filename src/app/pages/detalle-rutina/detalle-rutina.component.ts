@@ -144,7 +144,13 @@ export class DetalleRutinaComponent {
       });
     }
   }
-  async borrarRutina(){
+  async borrarRutina():Promise<void>{
+      const borrar = await this.dialogService.confirm(
+    'Confirmar borrado',
+    `¿Estás seguro de que quieres eliminar esta rutina?
+    ¡¡Esta acción no se puede deshacer!!`
+  );
+    if (borrar){
      this.serviceRutina.borrarRutina(this.rutinaN).subscribe({
         next: (res) => {
           this.toastService.showSuccess('Rutina borrada correctamente');
@@ -155,6 +161,7 @@ export class DetalleRutinaComponent {
           this.toastService.showError(msg);
         }
       });
+      }
     }
     cargarRutina(){
       this.serviceRutina
