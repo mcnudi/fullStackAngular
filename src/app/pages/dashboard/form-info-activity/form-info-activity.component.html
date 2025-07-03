@@ -20,24 +20,25 @@
       disabled
     />
   </div>
-  <div class="mb-3">
-    <label class="form-label">Hora de comienzo</label>
-    <input
-      type="time"
-      class="form-control"
-      [value]="actividad.start_time || ''"
-      disabled
-    />
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Hora de finalización</label>
-    <input
-      type="time"
-      class="form-control"
-      [value]="actividad.end_time || ''"
-      disabled
-    />
-  </div>
+ <div class="mb-3">
+  <label class="form-label">Hora de comienzo</label>
+  <input
+    type="time"
+    class="form-control"
+    [value]="formatTime(actividad.start_time)"
+    disabled
+  />
+</div>
+<div class="mb-3">
+  <label class="form-label">Hora de finalización</label>
+  <input
+    type="time"
+    class="form-control"
+    [value]="formatTime(actividad.end_time)"
+    disabled
+  />
+</div>
+
 <div class="mb-3">
   <label class="form-label">Categoría</label>
   <input

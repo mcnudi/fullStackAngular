@@ -125,42 +125,44 @@
       style="max-height: 420px; overflow-y: auto; overflow-x: hidden;"
     >
       <ul class="list-unstyled mb-0">
-        @if (availability.length > 0 && rutinas.length > 0) {
+ @if (availability.length > 0 && rutinas.length > 0) {
 
-          @if (actividades.length > 0) {
-            @for (actividad of actividades; track $index) {
-              <li class="actividad-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-white shadow-sm">
-                <div class="actividad-info text-truncate">
-                  <strong class="actividad-titulo d-block">{{ actividad.title }}</strong>
-                  <small class="actividad-horario text-muted"> 
-                    {{ convertDayOfWeekToString(actividad.day_of_week) }}
-                    {{ ('1970-01-01T' + actividad.start_time) | date: 'HH:mm' }} -
-                    {{ ('1970-01-01T' + actividad.end_time) | date: 'HH:mm' }}
-                  </small>
-                </div>
-                <div class="ms-auto d-flex gap-2">
-                  <button class="btn btn-sm btn-custom btn-actividad px-4" (click)="verActividad(actividad)">
-                    Ver
-                  </button>
-                  <button class="btn btn-sm btn-custom btn-actividad px-4" (click)="eliminarActividad(actividad)">
-                    Eliminar
-                  </button>
-                </div>
-              </li>
-            }
-          }
+  <!-- Mostrar botón para agregar actividad si hay rutina y disponibilidad -->
+<div class="text-center mb-4">
+  <button
+    (click)="abrirFormularioActividad()"
+    class="btn-custom btn-primary-color"
+  >
+    Agrega Actividad
+  </button>
+</div>
 
-          <!-- Mostrar botón para agregar actividad si hay rutina y disponibilidad -->
-          <div class="text-center mt-4">
-            <button
-              (click)="abrirFormularioActividad()"
-              class="btn-custom btn-primary-color"
-            >
-              Agrega Actividad
-            </button>
-          </div>
 
-        } @else {
+  @if (actividades.length > 0) {
+    @for (actividad of actividades; track $index) {
+      <li class="actividad-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded bg-white shadow-sm">
+        <div class="actividad-info text-truncate">
+          <strong class="actividad-titulo d-block">{{ actividad.title }}</strong>
+          <small class="actividad-horario text-muted">
+            {{ convertDayOfWeekToString(actividad.day_of_week) }}
+            {{ ('1970-01-01T' + actividad.start_time) | date: 'HH:mm' }} -
+            {{ ('1970-01-01T' + actividad.end_time) | date: 'HH:mm' }}
+          </small>
+        </div>
+        <div class="ms-auto d-flex gap-2">
+          <button class="btn btn-sm btn-custom btn-actividad px-4" (click)="verActividad(actividad)">
+            Ver
+          </button>
+          <button class="btn btn-sm btn-custom btn-actividad px-4" (click)="eliminarActividad(actividad)">
+            Eliminar
+          </button>
+        </div>
+      </li>
+    }
+  }
+
+}
+ @else {
           <div class="sin-actividades-container bg-white d-flex flex-column justify-content-center align-items-center text-center p-4">
             <img
               src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeXA5c25iMmlndWk2MHp5ZXZ2bjd0aXp4Yzdiemg1dnVocGh1MTN6ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jls5k3a7L1N0XRM9d0/giphy.gif"
