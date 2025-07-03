@@ -1,31 +1,33 @@
-<button (click)="openModal('añadir', {}, arrayDisponibilidad)" class="btn-mas w-100 mt-4 d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">+</button>
+<button (click)="openModal('añadir', {}, arrayDisponibilidad, 1)" class="btn-mas w-100 mt-4 d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">+</button>
 <mat-expansion-panel [expanded]='true'>
     <mat-expansion-panel-header class="header-color-mat">
-        <h3 class="mb-0">
-            Disponibilidad
+        <mat-icon>calendar_month</mat-icon>
+        <h3 class="mb-0 m-0">
+            <strong>Disponibilidad</strong>
         </h3>
     </mat-expansion-panel-header>
     @for (diaConDisponibilidad of diasSemanaOrdenados; let i = $index; track diaConDisponibilidad.nombre) {
-        <mat-expansion-panel [expanded]="true" [id]="diaConDisponibilidad.valor" [class]="{ 'sin-disponibilidad': !hasDisponibilidad(diaConDisponibilidad.valor) }">
+        <mat-expansion-panel [expanded]="true" [id]="diaConDisponibilidad.valor"
+                             [class]="{ 'sin-disponibilidad': !hasDisponibilidad(diaConDisponibilidad.valor) }">
             <mat-expansion-panel-header class="header-color-mat cabecera-interior">
                 <span class="mb-0">
                     {{ diaConDisponibilidad.nombre }}
                 </span>
             </mat-expansion-panel-header>
 
-            <div class="panel-content">
+            <div class="panel-content elemento-lista-card p-3 bg-light" (click)="openModal('añadir', {}, arrayDisponibilidad, diaConDisponibilidad.valor)">
                 @for (item of arrayDisponibilidad; track item.id) {
                     @if (item.weekday === diaConDisponibilidad.valor) {
                         <div class="elemento-disponibilidad">
-                            <button (click)="deleteAvailability(item)" class="btn-crud btn btn-outline-danger mt-1">
-                                <mat-icon>delete</mat-icon>
-                            </button>
                             <div class="elemento-texto-lista mt-1 text-center fw-bold">
                                 <span>{{ formatearHoras(item.start_time) }}</span>
                             </div>
                             <div class="elemento-texto-lista mt-1 text-center fw-bold">
                                 <span>{{ formatearHoras(item.end_time) }}</span>
                             </div>
+                            <button (click)="deleteAvailability(item); $event.stopPropagation()" class="btn-crud btn btn-outline-danger mt-1">
+                                <mat-icon>delete</mat-icon>
+                            </button>
                         </div>
                     }
                 }

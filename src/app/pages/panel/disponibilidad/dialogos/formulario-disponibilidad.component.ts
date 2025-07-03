@@ -24,10 +24,12 @@ export class FormularioDisponibilidadComponent implements OnInit {
   modo: 'añadir' | 'actualizar';
   disponibilidadDiaActual: Availability;
   arrayDisponibilidadSemanal: Availability [];
+  numDiaSemana: number;
 
   // Recepción de datos de la Disponibilidad actual desde el componente Disponibilidad del Panel
-  constructor(@Inject(DIALOG_DATA) public dataInyectada: { modo: 'añadir' | 'actualizar', elemento: Availability, arrayDisponibilidad: Availability []}) {
+  constructor(@Inject(DIALOG_DATA) public dataInyectada: { modo: 'añadir' | 'actualizar', elemento: Availability, arrayDisponibilidad: Availability [], numDiaSemana: number}) {
     this.modo = dataInyectada?.modo || 'añadir';
+    this.numDiaSemana = dataInyectada?.numDiaSemana;
     this.disponibilidadDiaActual = dataInyectada?.elemento;
     this.arrayDisponibilidadSemanal = dataInyectada?.arrayDisponibilidad;
   };
@@ -45,6 +47,7 @@ export class FormularioDisponibilidadComponent implements OnInit {
     });
 
     if (this.modo === 'añadir') {
+      this.availabilityForm.controls.weekday.setValue(String(this.numDiaSemana));
       // Carga inicial de las franjas horarias
       this.cargarRangosHorarios(Number(this.availabilityForm.controls.weekday.value))
     }
@@ -93,6 +96,9 @@ export class FormularioDisponibilidadComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
+        const mensaje = 'Error al añadir la Disponibilidad.' +
+          (error?.error?.message ? ' ' + error.error.message : '');
+        this.toastService.showError(mensaje);
       }
     });
   }

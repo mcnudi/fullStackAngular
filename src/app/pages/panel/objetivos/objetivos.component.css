@@ -45,6 +45,36 @@ pre {
   margin-right: 2px;
 }
 
-  .nombre-objetivo {
+.nombre-objetivo {
     display: block;
-  }
+}
+
+.elemento-lista-card {
+  background: #fff;
+  padding: 18px 24px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.elemento-lista-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.15);
+  background-color: #f9fdfc;
+  border-left: 4px solid #009ecf;
+}
+
+.header-color-mat {
+  background-color: lightgray;
+  text-align: center;
+  width: 100%;
+}
+
+.header-color-mat h3 {
+  width: 100%;
+  margin: 0;
+}
