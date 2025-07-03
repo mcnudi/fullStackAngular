@@ -38,8 +38,6 @@ export class RutinaComponent {
     this.rutinaForm = new FormGroup({
     name: new FormControl(this.valor?.name||"", [Validators.required,this.textoValidator]),
     descripcion: new FormControl(this.valor?.description||"", [Validators.required,this.textoValidator]),
-    //defecto: new FormControl('false', )
-    
   });
   }
 
@@ -79,17 +77,12 @@ export class RutinaComponent {
       const rutina = this.routerL.snapshot.paramMap.get('id');
       this.irutina.id = Number(rutina);
       this.irutina.defecto = this.defect;
-      /*if (this.irutina.defecto){
-        this.irutina.defecto=true;
-      }
-      else{
-      this.irutina.defecto=false;
-      }*/
+      
       if (this.url.startsWith('/app/anadirRutina/usuario')){//Alta
       this.serviceRutina.insertRutina(this.irutina).subscribe({//ver el id que devuelve
         next: (res) => {console.log("Respuesta del backend:", res),
                       this.toastService.showSuccess('Se ha dado de alta la rutina');//pòner el id
-                      this.router.navigate(['/app/rutina/']);
+                      this.router.navigate(['/app/dashboard/']);
                       
         },
         error: (err) => {console.error("Error al guardar rutina:", err),
