@@ -4,6 +4,11 @@ export interface Interests {
   color?: string;
 }
 
+export interface InterestsResponse {
+  success?: boolean;
+  interest?: Interests;
+}
+
 export interface Goals {
   id?: number;
   users_id?: number;

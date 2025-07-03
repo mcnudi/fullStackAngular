@@ -93,7 +93,7 @@ export class ObjetivosComponent implements OnInit {
     this.cargarIntereses();
 
     // Si se recibe notificación de otro componente para que se actualice la vista de Objetivos
-    this.panelService.actualizarObjetivos$.subscribe({
+    this.panelService.repintarObjetivos$.subscribe({
       next: (data: any) => {
         this.cargarObjetivos();
         this.cargarIntereses();
