@@ -129,7 +129,6 @@ private cargarVersion() {
 
         // Suponemos que el backend devuelve { versionId: 123 }
         const versionId = data?.versionId;
-        debugger
         if (typeof versionId === 'number') {
           this.routines_versions_id = versionId;
         } else {
@@ -160,7 +159,6 @@ private cargarVersion() {
       .filter((d): d is string => typeof d === 'string')
       .map(d => parseInt(d, 10))
       .filter(n => !isNaN(n));
-
     const unicos = [...new Set([...diasDisponibilidad, ...diasActividades])].sort();
     this.diasDisponibles.set(unicos);
 
@@ -344,7 +342,6 @@ estaDentroDeUnaSolaFranja(): boolean {
       end_time: (valoresForm.horaFinal ?? '') + ':00'
     };
 
-    debugger
     this.calendarEventsService.addNewActivity(nuevaActividad).subscribe({
       next: () => {
         this.toastService.showSuccess('Actividad creada correctamente');

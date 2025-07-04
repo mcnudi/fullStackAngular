@@ -60,7 +60,6 @@ h1, h2, h3, h4 {
   max-width: 500px; /* Tamaño máximo del mockup */
   z-index: 1;
   border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .hero-content {
@@ -73,10 +72,12 @@ h1, h2, h3, h4 {
 }
 
 .hero-title {
-  font-size: 4rem;
+  font-family: 'Montserrat', 'Segoe UI', 'Arial', sans-serif;
+  font-weight: 700;
+  font-size: 3.2rem;
+  color: #23292c;
+  letter-spacing: -1px;
   line-height: 1.1;
-  margin-bottom: 1.5rem;
-  color: var(--white);
 }
 
 .hero-subtitle {
@@ -184,8 +185,12 @@ h1, h2, h3, h4 {
   margin: 0 auto;
 }
 
-.ai-mockup {
-  border: 1px solid rgba(0, 0, 0, 0.1);
+.responsive-img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .ai-description ul {
@@ -248,6 +253,7 @@ h1, h2, h3, h4 {
   cursor: pointer;
   text-align: center;
   max-width: 250px;
+  max-height: 250px; /* Altura máxima para tarjetas */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -446,6 +452,18 @@ h1, h2, h3, h4 {
   color: var(--accent-cyan);
 }
 
+.hero-logo-group {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.hero-logo {
+  height: 3.2rem;
+  width: auto;
+  max-width: 100%;
+  display: block;
+}
 
 /* --- Media Queries para Responsividad --- */
 @media (max-width: 992px) {
@@ -483,9 +501,7 @@ h1, h2, h3, h4 {
 
   .ai-feature-content {
     flex-direction: column;
-  }
-  .ai-visual {
-    order: -1; /* Mueve el visual de la IA arriba */
+    gap: 5rem;
   }
   .ai-description {
     text-align: center;
