@@ -1,12 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { NavegacionComponent } from './shared/navegacion/navegacion.component';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavegacionComponent],
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
