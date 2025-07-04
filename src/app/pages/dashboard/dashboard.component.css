@@ -11,6 +11,10 @@
   border-radius: 50%;
 }
 
+select {
+  font-size: 15px;
+}
+
 .row {
   margin-right: -0.75rem;
   margin-left: -0.75rem;
