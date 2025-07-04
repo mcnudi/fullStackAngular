@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, HostListener, ElementRef, ViewChild, inject } from '@angular/core';
 import { LandingBotonesComponent } from '../landing-botones/landing-botones.component';
-import { CommonModule } from '@angular/common'; // Para ngIf, ngFor si se usan
+import { CommonModule } from '@angular/common'; 
 import { MatButtonModule } from '@angular/material/button'; // Para los botones de Material Design
 import { Router } from '@angular/router';
 
