@@ -31,9 +31,16 @@
         @let nombreAsociadoInteres = getNombreInteres(item.users_interests_id!);
           <div class="panel-content elemento-lista-card p-3 bg-light" (click)="openModal('actualizar', item)">
             <article class="elemento_texto_lista mt-1">
-                <span class="nombre-objetivo mb-3">
-                    <h5><strong>{{ item.goals_name }}</strong></h5>
-                </span>
+                <div class="d-flex align-items-center justify-content-between w-100 nombre-objetivo mb-3">
+                    <!-- Div 1: Nombre Objetivo -->
+                    <div class="me-2">
+                            <h5><strong>{{ item.goals_name }}</strong></h5>
+                    </div>
+                    <!-- Div 2: Icono a la derecha -->
+                    <div>
+                        <mat-icon>military_tech</mat-icon>
+                    </div>
+                </div>
                 <section>
                     <small>
                         <strong>
