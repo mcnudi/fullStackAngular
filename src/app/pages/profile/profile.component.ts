@@ -94,7 +94,7 @@ export class ProfileComponent {
     const usernameChanged =
       this.profileForm.value.username !== this.profile.username;
 
-    const confirmed = await this.dialogService.confirm(
+    const {confirmed} = await this.dialogService.confirm(
       'Confirmar Cambios',
       `¿Estás seguro de que quieres guardar los cambios?${
         !passworChanged && !usernameChanged

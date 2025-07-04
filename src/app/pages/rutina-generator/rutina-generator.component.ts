@@ -85,13 +85,14 @@ export class RutinaGeneratorComponent {
               'Error generando rutina',
               `Vaya... no hemos podido generar una rutina para ti. Asegúrate de haber registrado tus intereses, objetivos y disponibilidad horaria. ¿Quieres revisar tu perfil?`
             )
-            .then((confirmed) => {
+            .then(({confirmed}) => {
               if (confirmed) {
                 this.router.navigate(['app/panel']);
               } else {
                 this.router.navigate(['app/rutina']);
               }
             });
+          this.loading = false;
           return;
         }
 
