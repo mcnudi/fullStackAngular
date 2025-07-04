@@ -8,7 +8,7 @@
         
             <!-- Div 2: Título centrado -->
             <div class="flex-grow-1 text-center">
-                <h3 class="mb-0 text-shadow-depth">
+                <h3 class="mb-0">
                     <strong>Disponibilidad</strong>
                 </h3>
             </div>
@@ -30,8 +30,8 @@
         <mat-expansion-panel [expanded]="true" [id]="diaConDisponibilidad.valor"
                              [class]="{ 'sin-disponibilidad': !hasDisponibilidad(diaConDisponibilidad.valor) }">
             <mat-expansion-panel-header class="header-color-mat cabecera-interior">
-                <h6 class="mb-0 m-0 text-shadow-depth">
-                    {{ diaConDisponibilidad.nombre }}
+                <h6 class="mb-0 m-0">
+                    <strong>{{ diaConDisponibilidad.nombre }}</strong>
                 </h6>
             </mat-expansion-panel-header>
             
