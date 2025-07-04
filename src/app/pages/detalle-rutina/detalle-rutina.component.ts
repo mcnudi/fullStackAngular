@@ -145,12 +145,12 @@ export class DetalleRutinaComponent {
     }
   }
   async borrarRutina():Promise<void>{
-      const borrar = await this.dialogService.confirm(
+      const {confirmed} = await this.dialogService.confirm(
     'Confirmar borrado',
     `¿Estás seguro de que quieres eliminar esta rutina?
     ¡¡Esta acción no se puede deshacer!!`
   );
-    if (borrar){
+    if (confirmed){
      this.serviceRutina.borrarRutina(this.rutinaN).subscribe({
         next: (res) => {
           this.toastService.showSuccess('Rutina borrada correctamente');
