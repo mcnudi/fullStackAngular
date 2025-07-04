@@ -1,23 +1,24 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { PanelService } from '../../../services/panel.service';
-import { Goals, Interests } from '../../../interfaces/ipanel.interface';
-import { AuthService } from '../../../services/auth.service';
-
-import { Dialog } from '@angular/cdk/dialog'
-import { FormularioObjetivosComponent } from './dialogos/formulario-objetivos.component';
 import { MatIcon } from '@angular/material/icon';
+import { catchError, map, Observable, of } from 'rxjs';
+import { Dialog } from '@angular/cdk/dialog'
+
+import { PanelService } from '../../../services/panel.service';
 import { DialogService } from '../../../services/dialog.service';
 import { ToastService } from '../../../services/toast.service';
-import { catchError, map, Observable, of } from 'rxjs';
+import { Goals, Interests } from '../../../interfaces/ipanel.interface';
+import { FormularioObjetivosComponent } from './dialogos/formulario-objetivos.component';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-objetivos',
   standalone: true,
-  imports: [MatExpansionModule,MatIcon],
+  imports: [MatExpansionModule, MatIcon],
   templateUrl: './objetivos.component.html',
   styleUrls: ['./objetivos.component.css'],
 })
+
 export class ObjetivosComponent implements OnInit {
   panelService = inject(PanelService);
   authService = inject(AuthService);
@@ -38,17 +39,21 @@ export class ObjetivosComponent implements OnInit {
   arrayIntereses: Interests [] = [];
   interesColorMap = new Map<number, string>();
 
+  ngOnInit() {
+    this.cargarObjetivos();
+    this.cargarIntereses();
 
-  usuarioTieneIntereses(): Observable<boolean> {
-    const userId = this.authService.getDecodedToken().id;
-    return this.panelService.userHasInterests(userId).pipe(
-      map(response => response.hasInterests), catchError(err => {
-        const mensaje = '⛔ Error al verificar intereses:' + err;
-        console.error(mensaje);
-        this.toastService.showError(mensaje);        
-        return of(false); // Devuelve false si hay error
-      })
-    );
+    // Si se recibe notificación de otro componente para que se actualice la vista de Objetivos
+    this.panelService.repintarObjetivos$.subscribe({
+      next: (data: any) => {
+        this.cargarObjetivos();
+        this.cargarIntereses();
+      },
+      error: (error) => {
+        console.log(error);
+        this.toastService.showError('Error al inicializar el componente objetivos.');
+      }
+    });
   }
 
   openModal (modo: 'añadir' | 'actualizar', elemento: Goals) {
@@ -88,23 +93,16 @@ export class ObjetivosComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.cargarObjetivos();
-    this.cargarIntereses();
-
-    // Si se recibe notificación de otro componente para que se actualice la vista de Objetivos
-    this.panelService.repintarObjetivos$.subscribe({
-      next: (data: any) => {
-        this.cargarObjetivos();
-        this.cargarIntereses();
-      },
-      error: (error) => {
-        console.log(error);
-        const mensaje = 'Error al inicializar el componente objetivos.' +
-          (error?.error?.message ? ' ' + error.error.message : '');
-        this.toastService.showError(mensaje);
-      }
-    });
+  usuarioTieneIntereses(): Observable<boolean> {
+    const userId = this.authService.getDecodedToken().id;
+    return this.panelService.userHasInterests(userId).pipe(
+      map(response => response.hasInterests), catchError(err => {
+        const mensaje = '⛔ Error al verificar intereses:' + err;
+        console.error(mensaje);
+        this.toastService.showError(mensaje);        
+        return of(false); // Devuelve false si hay error
+      })
+    );
   }
 
   cargarIntereses() {
@@ -121,9 +119,7 @@ export class ObjetivosComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
-        const mensaje = 'Error al cargar los Intereses.' +
-          (error?.error?.message ? ' ' + error.error.message : '');
-        this.toastService.showError(mensaje);
+        this.toastService.showError('Error al cargar los Intereses.');
       }
     });
   }
@@ -136,9 +132,7 @@ export class ObjetivosComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
-        const mensaje = 'Error al cargar los Objetivos.' +
-          (error?.error?.message ? ' ' + error.error.message : '');
-        this.toastService.showError(mensaje);
+        this.toastService.showError('Error al cargar los Objetivos.');
       }
     })
   }
@@ -161,9 +155,7 @@ export class ObjetivosComponent implements OnInit {
           },
           error: (error) => {
             console.log(error);
-            const mensaje = 'Error al borrar el Objetivo.' +
-              (error?.error?.message ? ' ' + error.error.message : '');
-            this.toastService.showError(mensaje);
+            this.toastService.showError('Error al borrar el Objetivo.');
           }
         });
       } catch (err) {

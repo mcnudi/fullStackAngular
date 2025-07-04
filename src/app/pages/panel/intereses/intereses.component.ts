@@ -1,12 +1,12 @@
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIcon } from '@angular/material/icon';
+import { Dialog } from '@angular/cdk/dialog'
+
 import { PanelService } from '../../../services/panel.service';
 import { AuthService } from '../../../services/auth.service';
 import { Interests } from '../../../interfaces/ipanel.interface';
-
-import { Dialog } from '@angular/cdk/dialog'
 import { FormularioInteresesComponent } from './dialogos/formulario-intereses.component';
-import { MatIcon } from '@angular/material/icon';
 import { DialogService } from '../../../services/dialog.service';
 import { ToastService } from '../../../services/toast.service';
 
@@ -67,9 +67,7 @@ export class InteresesComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
-        const mensaje = 'Error al inicializar el componente intereses.' +
-          (error?.error?.message ? ' ' + error.error.message : '');
-        this.toastService.showError(mensaje);
+        this.toastService.showError('Error al inicializar el componente intereses.');
       }
     })
   }
@@ -93,9 +91,7 @@ export class InteresesComponent implements OnInit {
               },
               error: (error) => {
                 console.log(error);
-                const mensaje = 'Error al borrar el Interés.' +
-                  (error?.error?.message ? ' ' + error.error.message : '');
-                this.toastService.showError(mensaje);
+                this.toastService.showError('Error al borrar el Interés.');
               }
             });
       } catch (err) {

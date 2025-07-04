@@ -1,13 +1,13 @@
 import { Component, Inject, OnInit, inject } from '@angular/core';
-
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog'
-import { Goals, GoalsResponse, Interests } from '../../../../interfaces/ipanel.interface';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { ToastService } from '../../../../services/toast.service';
 import { MatIcon } from '@angular/material/icon';
+import { MatError } from '@angular/material/form-field';
+
+import { Goals, GoalsResponse, Interests } from '../../../../interfaces/ipanel.interface';
+import { ToastService } from '../../../../services/toast.service';
 import { AuthService } from '../../../../services/auth.service';
 import { PanelService } from '../../../../services/panel.service';
-import { MatError } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-formulario-objetivos',
@@ -16,6 +16,7 @@ import { MatError } from '@angular/material/form-field';
   templateUrl: './formulario-objetivos.component.html',
   styleUrls: ['./formulario-objetivos.component.css'],
 })
+
 export class FormularioObjetivosComponent implements OnInit {
   panelService = inject(PanelService);
   authService = inject(AuthService);
@@ -24,14 +25,8 @@ export class FormularioObjetivosComponent implements OnInit {
 
   modo: 'añadir' | 'actualizar';
   objetivoActual: Goals;
-
-  // Recepción de datos del Objetivo actual desde el componente Objetivos del Panel
-  constructor(@Inject(DIALOG_DATA) public data: { modo: 'añadir' | 'actualizar', elemento: Goals }) {
-    this.modo = data.modo || 'añadir';
-    this.objetivoActual = data?.elemento!
-  };
-
   arrayIntereses: Interests [] = [];
+  originalFormValue: any; // Para controlar cambios en el contenido del formulario cuando 'actualizar'
 
   goalsForm = new FormGroup({
     goals_name: new FormControl('', Validators.required),
@@ -43,7 +38,11 @@ export class FormularioObjetivosComponent implements OnInit {
     ])
   });
 
-  originalFormValue: any; // Para controlar cambios en el contenido del formulario cuando 'actualizar'
+  // Recepción de datos del Objetivo actual desde el componente Objetivos del Panel
+  constructor(@Inject(DIALOG_DATA) public data: { modo: 'añadir' | 'actualizar', elemento: Goals }) {
+    this.modo = data.modo || 'añadir';
+    this.objetivoActual = data?.elemento!
+  };
 
   ngOnInit() {
     // Carga previa de array de UsersInterests para pintarlos en el desplegable de Interés Asociado
@@ -74,9 +73,7 @@ export class FormularioObjetivosComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
-        const mensaje = 'Error al inicializar el componente formulario-objetivos.' +
-          (error?.error?.message ? ' ' + error.error.message : '');
-        this.toastService.showError(mensaje);
+        this.toastService.showError('Error al inicializar el componente formulario-objetivos.');
       }
     })
   }
@@ -92,7 +89,6 @@ export class FormularioObjetivosComponent implements OnInit {
     }
 
     const { goals_name, users_interests_id, description, hours_per_week } = this.goalsForm.value;
-
     const goal: Goals = {
       goals_name: goals_name!,
       users_interests_id: Number(users_interests_id),
@@ -107,52 +103,48 @@ export class FormularioObjetivosComponent implements OnInit {
     }  
   }
 
-addGoal(elemento: Goals) {
-  this.panelService.addGoals(
-    this.authService.getDecodedToken().id,
-    elemento.users_interests_id!,
-    elemento.goals_name!,
-    elemento.description!,
-    elemento.hours_per_week!
-  ).subscribe({
-    next: (data: GoalsResponse) => {
-      this.toastService.showSuccess('Objetivo añadido correctamente.');
-      
-      // Construir el objetivo completo con ID retornado por el backend
-      const objetivoConId: Goals = {
-        ...elemento,
-        id: data.goal?.id
-      };
-
-      // Cerrar el diálogo y devolver el nuevo objetivo completo (con ID)
-      this.dialogRef?.close(objetivoConId);
-    },
-    error: (error) => {
-      console.log(error);
-      const mensaje = 'Error al añadir el Objetivo.' +
-        (error?.error?.message ? ' ' + error.error.message : '');
-      this.toastService.showError(mensaje);
-    }
-  });
-}
+  addGoal(elemento: Goals) {
+    this.panelService.addGoals(
+      this.authService.getDecodedToken().id,
+      elemento.users_interests_id!,
+      elemento.goals_name!,
+      elemento.description!,
+      elemento.hours_per_week!
+    ).subscribe({
+      next: (data: GoalsResponse) => {
+        this.toastService.showSuccess('Objetivo añadido correctamente.');
+        
+        // Construir el objetivo completo con ID retornado por el backend
+        const objetivoConId: Goals = {
+          ...elemento,
+          id: data.goal?.id
+        };
+        // Cerrar el diálogo y devolver el nuevo objetivo completo (con ID)
+        this.dialogRef?.close(objetivoConId);
+      },
+      error: (error) => {
+        console.log(error);
+        this.toastService.showError('Error al añadir el Objetivo.');
+      }
+    });
+  }
 
   updateGoal(elementoActualizador: Goals) {
     this.panelService.updateGoals(
-                                      this.authService.getDecodedToken().id,
-                                      elementoActualizador.id!, 
-                                      elementoActualizador.users_interests_id!,
-                                      elementoActualizador.goals_name!,
-                                      elementoActualizador.description!,
-                                      elementoActualizador.hours_per_week!).subscribe( {
+      this.authService.getDecodedToken().id,
+      elementoActualizador.id!, 
+      elementoActualizador.users_interests_id!,
+      elementoActualizador.goals_name!,
+      elementoActualizador.description!,
+      elementoActualizador.hours_per_week!
+    ).subscribe({
       next: (data: Interests) => {
         this.toastService.showSuccess('Objetivo Actualizado correctamente.');
         this.dialogRef?.close(this.goalsForm.value);
       },
       error: (error) => {
         console.log(error);
-        const mensaje = 'Error al actualizar el Objetivo.' +
-          (error?.error?.message ? ' ' + error.error.message : '');
-        this.toastService.showError(mensaje);
+        this.toastService.showError('Error al actualizar el Objetivo.');
       }
     });
   }
@@ -173,7 +165,7 @@ addGoal(elemento: Goals) {
     const input = event.target as HTMLInputElement;
     const char = event.key;
 
-    // Permitir teclas de navegación (opcional: backspace, delete, arrows, etc.)
+    // Permitir teclas de navegación
     if (['Backspace', 'ArrowLeft', 'ArrowRight', 'Delete', 'Tab'].includes(char)) {
       return;
     }
@@ -182,10 +174,12 @@ addGoal(elemento: Goals) {
     if (/^\d$/.test(char)) {
       return;
     }
+
     // Permitir un solo punto (,) y solo si aún no está en el valor
     if (char === '.' && !input.value.includes('.')) {
       return;
     }
+    
     // Bloquear cualquier otro carácter
     event.preventDefault();
   }

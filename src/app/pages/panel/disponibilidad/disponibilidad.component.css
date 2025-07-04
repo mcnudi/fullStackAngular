@@ -32,7 +32,6 @@ ul {
     border: 1px solid darkgray;
     border-radius: 7px;
     min-width: 0;
-
 }
 
 .elemento-disponibilidad {
@@ -82,7 +81,7 @@ mat-expansion-panel[id] {
   width: 100%;
 }
 
-.header-color-mat h3 {
+.header-color-mat h3,h6 {
   width: 100%;
   margin: 0;
 }
