@@ -11,13 +11,13 @@
 
 /* Estilos Globales de la Landing Page */
 #landing-container {
-  font-family: 'Roboto', sans-serif; /* Puedes cambiar a tu fuente preferida */
+  font-family: 'Roboto', sans-serif; 
   color: var(--dark-blue);
-  overflow-x: hidden; /* Evita barras de scroll horizontal */
+  overflow-x: hidden;
 }
 
 h1, h2, h3, h4 {
-  font-family: 'Montserrat', sans-serif; /* Fuente para títulos */
+  font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   color: var(--dark-blue);
 }
