@@ -82,29 +82,26 @@
         </button>
       </div>
     }
-
-    <!-- Si NO se cumple la condición, muestra el botón adecuado -->
-    @else {
-      <div class="text-center">
-        @if (rutinas.length === 0) {
-          <button
-            class="btn-custom btn-primary-color mt-2 py-5 mt-5"
-            [routerLink]="['/app/rutina']"
-            style="min-width: 220px;"
-          >
-            Crear tu primera rutina
-          </button>
-        } @else {
-          <button
-            class="btn-custom btn-primary-color mt-2 py-5 mt-5"
-            [routerLink]="['/app/panel']"
-            style="min-width: 220px;"
-          >
-            Asignar disponibilidad
-          </button>
-        }
-      </div>
+@else {
+  <div class="text-center">
+    @if (rutinas.length === 0) {
+      <button
+        class="btn-custom btn-primary-color w-100 w-md-auto mt-2 py-5 mt-5"
+        [routerLink]="['/app/rutina']"
+      >
+        Diseña tu Rutina Inicial
+      </button>
+    } @else {
+      <button
+        class="btn-custom btn-primary-color w-100 w-md-auto mt-2 py-5 mt-5"
+        [routerLink]="['/app/panel']"
+      >
+        Asignar disponibilidad
+      </button>
     }
+  </div>
+}
+
 
   </div>
 </div>
