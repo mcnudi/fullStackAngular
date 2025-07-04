@@ -1,16 +1,17 @@
-/* Estilos base para los botones, se pueden extender con las clases cta-primary/secondary */
 button[mat-raised-button] {
   font-size: 1rem;
   font-weight: bold;
   padding: 0.9rem 2rem;
-  border-radius: 50px; /* Bordes más redondeados para un look moderno */
+  border-radius: 50px;
   transition: all 0.3s ease;
   border: none !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra sutil */
-  min-width: 200px; /* Asegura un tamaño mínimo */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+  min-width: 200px;
+  color: white;
+  background:#0FA3B1;
+  white-space: nowrap;
 }
 
-/* Estilos para el botón CTA Primario */
 .cta-primary {
   background-color: var(--accent-cyan) !important;
   color: var(--white) !important;
@@ -18,19 +19,18 @@ button[mat-raised-button] {
 .cta-primary:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-  background-color: #0c8c9a !important; /* Tono más oscuro al hover */
+  background-color: #0c8c9a !important; 
 }
 .cta-primary:active {
   transform: translateY(0);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Estilos para el botón CTA Secundario */
 .cta-secondary {
   background-color: transparent !important;
   color: var(--white) !important;
   border: 2px solid rgba(255, 255, 255, 0.7) !important;
-  box-shadow: none; /* Sin sombra inicial */
+  box-shadow: none; 
 }
 .cta-secondary:hover {
   background-color: rgba(255, 255, 255, 0.1) !important;
@@ -41,7 +41,6 @@ button[mat-raised-button] {
   transform: translateY(0);
 }
 
-/* Variables de Color (repite aquí para que el componente las use si es necesario, o usa un archivo global de variables) */
 :root {
   --primary-blue: #006699;
   --dark-blue: #003366;
@@ -51,15 +50,14 @@ button[mat-raised-button] {
   --white: #ffffff;
 }
 
-/* Media Query para responsividad en botones */
 @media (max-width: 576px) {
   button[mat-raised-button] {
-    width: 100%; /* Botones de ancho completo en móvil */
+    width: 100%; 
     font-size: 1rem;
     padding: 0.8rem 1.5rem;
   }
   .botones-overlay {
-    flex-direction: column; /* Apila los botones en pantallas pequeñas */
+    flex-direction: column; 
     gap: 1rem;
   }
 }

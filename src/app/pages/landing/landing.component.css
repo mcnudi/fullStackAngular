@@ -77,7 +77,6 @@ h1, h2, h3, h4 {
   font-size: 3.2rem;
   color: #23292c;
   letter-spacing: -1px;
-  line-height: 1.1;
 }
 
 .hero-subtitle {
@@ -116,6 +115,20 @@ h1, h2, h3, h4 {
   background-color: rgba(255, 255, 255, 0.1) !important;
   transform: translateY(-3px);
 }
+
+.hero-logo-group {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.hero-logo {
+  height: 3.2rem;
+  width: auto;
+  max-width: 100%;
+  display: block;
+}
+
 
 /* --- Sección Problema/Solución --- */
 .problem-solution-section {
@@ -452,18 +465,6 @@ h1, h2, h3, h4 {
   color: var(--accent-cyan);
 }
 
-.hero-logo-group {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-}
-
-.hero-logo {
-  height: 3.2rem;
-  width: auto;
-  max-width: 100%;
-  display: block;
-}
 
 /* --- Media Queries para Responsividad --- */
 @media (max-width: 992px) {
@@ -567,4 +568,18 @@ h1, h2, h3, h4 {
     font-size: 1.2rem;
     padding: 1rem 2rem;
   }
+}
+
+.button-Registrarse {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0.9rem 2rem;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  border: none !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+  min-width: 200px;
+  color: white;
+  background:#0FA3B1;
+  white-space: nowrap;
 }
