@@ -58,11 +58,6 @@ label.form-label {
   color: #444;
 }
 
-/* Botón */
-.text-end {
-  margin-top: 2rem;
-  text-align: right;
-}
 
 button.btn {
   padding: 0.6rem 1.25rem;
