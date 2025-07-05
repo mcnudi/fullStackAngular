@@ -61,37 +61,29 @@ eventosFiltradosPorRutina: EventInput[] = [];
   actividades: Activity[] = [];
   categorias: Category[] = [];
   categoriasUsuario: Category[] = [];
-
   objetivos: Goals [] = [];
   interesColorMap = new Map<number, string>();
 
   rutinas: any[] = [];
-  profileImage: string =
-    'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
-  mostrarFormularioActividad = false;
-
+  profileImage: string = 'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
   objetoRutinaDefecto:any[]=[];
 
   actividadSeleccionada: any = null;
   rutinaSeleccionada: any = null;
   rutinaSeleccionadaAnterior: any = null;
 
-  mostrarVistaActividad = false;
-
-  filtroTipo: string = ''; // Este array siempre debe contener TODOS los eventos cargados inicialmente
-  filtroRutina: string = ''; // Este array siempre debe contener TODAS las rutinas cargadas inicialmente
+  filtroTipo: string = '';
+  filtroRutina: string = '';
   eventosOriginales: EventInput[] = [];
 
   filtroCategoria: string = '';
-
-  /*--------- TS de Calendario ----------*/
 
   calendarOptions: any = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     initialView: 'timeGridWeek',
     locale: esLocale,
-    selectable: true, // Permite seleccionar rangos de fechas
-    editable: false, // Permite arrastrar eventos
+    selectable: true,
+    editable: false,
     dayMaxEvents: true,
     headerToolbar: {
       left: 'prev,next today',
@@ -155,7 +147,7 @@ eventosFiltradosPorRutina: EventInput[] = [];
           this.profileImage = `data:image/png;base64,${user.image}`;
         }
 
-        /* Conseguimos rutinas por usuario */
+        /* Generamos rutinas por usuario */
         this.ruinaService.getRutinasByUser(userId, token).subscribe({
           next: (data: any[]) => {
             this.rutinas = data || [];
@@ -167,7 +159,7 @@ eventosFiltradosPorRutina: EventInput[] = [];
             }
           },
         });
-          /*Sacar categorias.*/
+          /*Generamos categorias.*/
         this.calendarEventsService
           .getAllCategories()
           .subscribe({
@@ -178,7 +170,7 @@ eventosFiltradosPorRutina: EventInput[] = [];
               console.log('Error al cargar categorias:', error);
             },
           });
-          /*OBJETIVOS */
+          /*Generamos Objetivos */
         this.panelService.getGoals(userId).subscribe({
               next: (data) => {
                 this.objetivos = data;
@@ -199,7 +191,7 @@ eventosFiltradosPorRutina: EventInput[] = [];
             },
           });
 
-        /*Conseguimos Disponibilidad del usuaroi*/
+        /*Generamos Disponibilidad del usuaroi*/
         this.panelService.getAvailability(userId).subscribe({
           next: (data: Availability[]) => {
             this.availability = data || [];
@@ -209,7 +201,7 @@ eventosFiltradosPorRutina: EventInput[] = [];
           },
         });
 
-        /*Conseguimos intereses*/
+        /*Generamos intereses*/
         this.panelService.getInterests(userId).subscribe({
           next: (data: Interests[]) => {
             this.intereses = data || [];
