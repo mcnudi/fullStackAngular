@@ -5,11 +5,11 @@ import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Category } from '../interfaces/icategory.interface';
 import { Activity } from '../interfaces/iactivity.interface';
-
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class CalendarEventsService {
-  private apiUrl = 'http://localhost:3000/api/events'; // AJUSTADO
+  private apiUrl = environment.backendURL + '/api/events';
 
   constructor(private http: HttpClient) {}
 
@@ -19,61 +19,62 @@ export class CalendarEventsService {
 
   getActivitiesByRoutineByDefault(userId: number): Observable<any[]> {
     return this.http
-      .get<any[]>(`http://localhost:3000/api/activities/activitiesByRoutine/isDefault/${userId}`)
-      .pipe(
-        catchError(() => of([]))
-      );
+      .get<any[]>(
+        `${environment.backendURL}/api/activities/activitiesByRoutine/isDefault/${userId}`
+      )
+      .pipe(catchError(() => of([])));
   }
 
   getActivitiesByUserId(userId: number): Observable<any[]> {
     return this.http
-      .get<any[]>(`http://localhost:3000/api/activities/activitybyuser/${userId}`)
-      .pipe(
-        catchError(() => of([]))
-      );
+      .get<any[]>(
+        `${environment.backendURL}/api/activities/activitybyuser/${userId}`
+      )
+      .pipe(catchError(() => of([])));
   }
 
   getActivitiesByRoutineId(routineId: number): Observable<any[]> {
     return this.http
-      .get<any[]>(`http://localhost:3000/api/activities/selectActivitiesByRoutine/${routineId}`)
-      .pipe(
-        catchError(() => of([]))
-      );
+      .get<any[]>(
+        `${environment.backendURL}/api/activities/selectActivitiesByRoutine/${routineId}`
+      )
+      .pipe(catchError(() => of([])));
   }
 
-    getAllCategories(): Observable<Category[]> {
+  getAllCategories(): Observable<Category[]> {
     return this.http
-      .get<Category[]>(`http://localhost:3000/api/categories/getAllCategories`)
-      .pipe(
-        catchError(() => of([]))
-      );
+      .get<Category[]>(
+        `${environment.backendURL}/api/categories/getAllCategories`
+      )
+      .pipe(catchError(() => of([])));
   }
-    addNewActivity(actividad: {
-      routines_versions_id: number;
-      title: string | null;
-      description: string;
-      activity_categories_id: number;
-      day_of_week: string;
-      start_time: string | null;
-      end_time: string | null;
-    }): Observable<any> {
-      return this.http.post('http://localhost:3000/api/activities/create', actividad);
-    }
+  addNewActivity(actividad: {
+    routines_versions_id: number;
+    title: string | null;
+    description: string;
+    activity_categories_id: number;
+    day_of_week: string;
+    start_time: string | null;
+    end_time: string | null;
+  }): Observable<any> {
+    return this.http.post(
+      `${environment.backendURL}/api/activities/create`,
+      actividad
+    );
+  }
 
-      getIdVersionRoutine(routineId: number): Observable<any[]> {
+  getIdVersionRoutine(routineId: number): Observable<any[]> {
     return this.http
-      .get<any[]>(`http://localhost:3000/api/activities/version/${routineId}`)
-      .pipe(
-        catchError(() => of([]))
-      );
+      .get<any[]>(
+        `${environment.backendURL}/api/activities/version/${routineId}`
+      )
+      .pipe(catchError(() => of([])));
   }
-      deleteActivity(activity_id: number): Observable<Activity[]> {
+  deleteActivity(activity_id: number): Observable<Activity[]> {
     return this.http
-      .delete<Activity[]>(`http://localhost:3000/api/activities/delete/${activity_id}`)
-      .pipe(
-        catchError(() => of([]))
-      );
+      .delete<Activity[]>(
+        `${environment.backendURL}/api/activities/delete/${activity_id}`
+      )
+      .pipe(catchError(() => of([])));
   }
-
-
 }

@@ -2,24 +2,20 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NgIf, DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { MatIconModule} from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-rutinas-list',
   standalone: true,
-  imports: [
-    NgIf,
-    DatePipe,
-    FormsModule,
-    MatIconModule,
-    RouterLink
-  ],
+  imports: [NgIf, DatePipe, FormsModule, MatIconModule, RouterLink],
   templateUrl: './rutinas-list.component.html',
   styleUrls: ['./rutinas-list.component.css'],
 })
 export class RutinasListComponent implements OnInit {
+  private API_URL = environment.backendURL;
   private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
   username: string = '';
@@ -50,11 +46,11 @@ export class RutinasListComponent implements OnInit {
 
     console.log(
       '✅ Lanzando GET a:',
-      `http://localhost:3000/api/rutinas/user/${userId}`
+      `${this.API_URL}/api/rutinas/user/${userId}`
     );
 
     this.http
-      .get<any[]>(`http://localhost:3000/api/rutinas/user/${userId}`, {
+      .get<any[]>(`${this.API_URL}/api/rutinas/user/${userId}`, {
         headers,
       })
       .subscribe({
@@ -77,22 +73,20 @@ export class RutinasListComponent implements OnInit {
     this.router.navigate(['/app/detalles', id]);
   }
 
-  
   get rutinasFiltradas() {
     const filtro = this.filtroBusqueda.toLowerCase();
-    return this.rutinas.filter(rutina =>
+    return this.rutinas.filter((rutina) =>
       rutina.name?.toLowerCase().includes(filtro)
     );
   }
 
-  
   get paginatedRutinas() {
     const start = (this.currentPage - 1) * this.pageSize;
     return this.rutinasFiltradas.slice(start, start + this.pageSize);
   }
 
   nextPage() {
-    if ((this.currentPage * this.pageSize) < this.rutinasFiltradas.length) {
+    if (this.currentPage * this.pageSize < this.rutinasFiltradas.length) {
       this.currentPage++;
     }
   }

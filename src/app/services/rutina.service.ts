@@ -7,13 +7,14 @@ import {
 import { lastValueFrom, Observable } from 'rxjs';
 import { RecommendedActivities } from '../interfaces/irecomendedActivity';
 import { IRutinaPaginada } from '../interfaces/i-rutina-paginada.interface';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RutinaService {
   private http = inject(HttpClient);
-  private baseURL: string = 'http://localhost:3000/api/rutinas';
+  private baseURL: string = environment.backendURL + '/api/rutinas';
 
   insertRutina(rutina: Irutina): Observable<Irutina> {
     return this.http.post<Irutina>(`${this.baseURL}`, rutina);
@@ -70,7 +71,7 @@ export class RutinaService {
     success: boolean;
     inserts: number[];
   }> {
-    const endpoint = `http://localhost:3000/api/activities/generated/add/${routineId}`;
+    const endpoint = `${environment.backendURL}/api/activities/generated/add/${routineId}`;
     return lastValueFrom(
       this.http.post<{ success: boolean; inserts: number[] }>(
         endpoint,
@@ -99,7 +100,7 @@ export class RutinaService {
       email: correo,
     });
   }
-   borrarRutina(rutinaId: number): Observable<any> {
+  borrarRutina(rutinaId: number): Observable<any> {
     return this.http.delete(`${this.baseURL}/${rutinaId}`);
   }
 }
