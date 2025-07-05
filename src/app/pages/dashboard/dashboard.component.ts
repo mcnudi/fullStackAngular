@@ -111,7 +111,6 @@ eventosFiltradosPorRutina: EventInput[] = [];
       let categoria = "";
       if(info.event._def.publicId.startsWith('actividad-')) {
         const activityNum = Number(info.event._def.publicId.split('-')[1]?.trim());
-        console.log("Activity Number:", activityNum);
         categoria = "Categoria: " + this.getCategoryNameByActivityId(activityNum);
       }
 
@@ -289,10 +288,7 @@ async eliminarActividad(actividad: { id: number }) {
         next: (data: Activity[]) => {
           this.actividades = data || [];
           this.limpiarFiltros();
-          const index = this.actividades.findIndex(a => a.id === actividad.id);
-          if (index !== -1) {
-            this.actividades.splice(index, 1);
-          }
+
         },
         error: (error) => {
           this.toastService.showError('Error al eliminar la actividad.');
