@@ -26,7 +26,6 @@ export class FormInfoActivityComponent implements OnInit {
 }
 
   ngOnInit(): void {
-    console.log(this.actividad);
     if (this.actividad.activity_categories_id && this.categorias) {
       const categoria = this.categorias.find(
         (cat) => cat.id === this.actividad!.activity_categories_id

@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { NgIf, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-rutinas-list',
   standalone: true,
-  imports: [NgIf, DatePipe, FormsModule, MatIconModule, RouterLink],
+  imports: [DatePipe, FormsModule, MatIconModule, RouterLink],
   templateUrl: './rutinas-list.component.html',
   styleUrls: ['./rutinas-list.component.css'],
 })
@@ -24,19 +24,15 @@ export class RutinasListComponent implements OnInit {
   authService = inject(AuthService);
 
   filtroBusqueda: string = '';
-
   currentPage: number = 1;
   pageSize: number = 5;
 
   ngOnInit(): void {
-    console.log('🔥 ngOnInit ejecutado');
-
     const userId = this.authService.getDecodedToken().id;
     const token = localStorage.getItem('token');
     this.username = this.authService.getUserName();
 
     if (!userId || !token) {
-      console.warn('Faltan userId o token en localStorage');
       return;
     }
 
@@ -44,24 +40,17 @@ export class RutinasListComponent implements OnInit {
       Authorization: `Bearer ${token}`,
     });
 
-    console.log(
-      '✅ Lanzando GET a:',
-      `${this.API_URL}/api/rutinas/user/${userId}`
-    );
-
     this.http
       .get<any[]>(`${this.API_URL}/api/rutinas/user/${userId}`, {
         headers,
       })
       .subscribe({
         next: (data) => {
-          console.log(
-            '📦 Rutinas recibidas (detalle):',
-            JSON.stringify(data, null, 2)
-          );
           this.rutinas = data;
         },
-        error: (err) => console.error('❌ Error al obtener rutinas:', err),
+        error: () => {
+          
+        },
       });
   }
 
