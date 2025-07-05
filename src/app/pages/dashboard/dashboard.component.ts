@@ -159,7 +159,6 @@ eventosFiltradosPorRutina: EventInput[] = [];
         /* Conseguimos rutinas por usuario */
         this.ruinaService.getRutinasByUser(userId, token).subscribe({
           next: (data: any[]) => {
-            console.log('Rutinas recibidas: ', data);
             this.rutinas = data || [];
             for (let i = 0; i < this.rutinas.length; i++) {
               if (this.rutinas[i].is_default == 1) {
@@ -174,10 +173,6 @@ eventosFiltradosPorRutina: EventInput[] = [];
           .getAllCategories()
           .subscribe({
             next: (data: any[]) => {
-              console.log(
-                'Categorias:',
-                data
-              );
               this.categorias = data || [];
             },
             error: (error) => {
@@ -197,10 +192,6 @@ eventosFiltradosPorRutina: EventInput[] = [];
           .getActivitiesByRoutineByDefault(userId)
           .subscribe({
             next: (data: any[]) => {
-              console.log(
-                'Actividades recibidass de la Rutina por defecto:',
-                data
-              );
               this.actividades = data || [];
               this.categoriasUsuario = this.getCategoriesByActivities();
             },
@@ -212,16 +203,12 @@ eventosFiltradosPorRutina: EventInput[] = [];
         /*Conseguimos Disponibilidad del usuaroi*/
         this.panelService.getAvailability(userId).subscribe({
           next: (data: Availability[]) => {
-            console.log('Disponibilidad recibidas:', data);
             this.availability = data || [];
           },
           error: (error) => {
             console.log('Error al cargar actividades:', error);
           },
         });
-
-
-
 
         /*Conseguimos intereses*/
         this.panelService.getInterests(userId).subscribe({
@@ -300,22 +287,18 @@ async eliminarActividad(actividad: { id: number }) {
     try {
       this.calendarEventsService.deleteActivity(actividad.id).subscribe({
         next: (data: Activity[]) => {
-          // Actualiza disponibilidad o el array de actividades si lo necesitas
           this.actividades = data || [];
           this.limpiarFiltros();
-          // Si tienes un array de actividades local y quieres actualizarlo:
           const index = this.actividades.findIndex(a => a.id === actividad.id);
           if (index !== -1) {
             this.actividades.splice(index, 1);
           }
         },
         error: (error) => {
-          console.error('Error al eliminar la actividad:', error);
           this.toastService.showError('Error al eliminar la actividad.');
         }
       });
     } catch (err) {
-      console.error('Error inesperado al eliminar la actividad:', err);
       this.toastService.showError('Error inesperado al eliminar la actividad.');
     }
   }
@@ -337,17 +320,15 @@ async eliminarActividad(actividad: { id: number }) {
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
-    return `${hours}:${minutes}:${seconds}`; // Formato 'HH:mm:ss'
+    return `${hours}:${minutes}:${seconds}`;
   }
 
   aplicarFiltros() {
-    console.log('Aplicando filtros...');
 
     let eventosFiltrados: EventInput[] = [];
 
     // Lógica para filtrar por TIPO y RUTINA
     if (this.filtroTipo === 'actividad' || this.filtroTipo === '') {
-      console.log('Filtro de Actividades aplicado o Todos seleccionado');
 
       if (this.rutinaSeleccionada !== this.rutinaSeleccionadaAnterior || this.filtroTipo === 'actividad' || this.filtroTipo === '') {
 
@@ -358,7 +339,6 @@ async eliminarActividad(actividad: { id: number }) {
 
         this.calendarEventsService.getActivitiesByRoutineId(this.rutinaSeleccionada).subscribe({
           next: (data: any[]) => {
-            console.log('Actividades recibidas de la rutina ' + this.rutinaSeleccionada, data);
             this.actividades = data || [];
 
             const activityEvents: EventInput[] = this.actividades.map((act) => ({
@@ -400,7 +380,6 @@ async eliminarActividad(actividad: { id: number }) {
             }
 
             this.calendarOptions.events = eventosFiltrados;
-            console.log('Eventos Calendario final (con rutina/tipo y categoría):', this.calendarOptions.events);
 
           },
           error: (error) => {
@@ -409,12 +388,10 @@ async eliminarActividad(actividad: { id: number }) {
         });
       }
     } else if (this.filtroTipo === 'disponibilidad') {
-      console.log('Filtro de Disponibilidad aplicado');
       eventosFiltrados = this.eventosOriginales.filter(
         (ev: EventInput) => ev.id && ev.id.toString().startsWith('disponibilidad-')
       );
       this.calendarOptions.events = eventosFiltrados;
-      console.log('Eventos Calendario final (solo disponibilidad):', this.calendarOptions.events);
     } else {
       // Si no hay filtro de tipo, la base es eventosOriginales
       eventosFiltrados = [...this.eventosOriginales];
@@ -430,12 +407,10 @@ async eliminarActividad(actividad: { id: number }) {
         );
       }
       this.calendarOptions.events = eventosFiltrados;
-      console.log('Eventos Calendario final (sin filtro de tipo, con/sin categoría):', this.calendarOptions.events);
     }
 
     // Si no hay filtro de tipo y tampoco filtro de categoría, se muestran todos los originales
     if (this.filtroTipo === '' && this.filtroCategoria === '') {
-      console.log('No hay filtro de tipo ni categoría, se muestran todos los eventos originales.');
       this.calendarOptions.events = this.eventosOriginales;
     }
   }
@@ -563,9 +538,9 @@ async eliminarActividad(actividad: { id: number }) {
 mostrarActividadesOrdenadas(): Activity[] {
   return this.actividades.slice().sort((a, b) => {
     if (a.day_of_week !== b.day_of_week) {
-      return a.day_of_week - b.day_of_week; // Ordenar por día de la semana
+      return a.day_of_week - b.day_of_week;
     }
-    // Si es el mismo día, ordenar por hora de inicio (start_time)
+
     return a.start_time.localeCompare(b.start_time);
   });
 }

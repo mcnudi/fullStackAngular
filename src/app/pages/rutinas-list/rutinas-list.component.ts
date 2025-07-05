@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { NgIf, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-rutinas-list',
   standalone: true,
-  imports: [NgIf, DatePipe, FormsModule, MatIconModule, RouterLink],
+  imports: [DatePipe, FormsModule, MatIconModule, RouterLink],
   templateUrl: './rutinas-list.component.html',
   styleUrls: ['./rutinas-list.component.css'],
 })

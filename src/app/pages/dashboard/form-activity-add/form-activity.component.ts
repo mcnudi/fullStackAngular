@@ -72,37 +72,33 @@ export class FormActivityComponent implements OnInit, OnChanges {
   });
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
-    console.log('Constructor - data recibida:', data);
     this.objetoRutinaDefecto = data.objetoRutinaDefecto || [];
     this.disponibilidad = data.disponibilidad || [];
     this.actividades = data.actividades || [];
     this.categorias = data.categorias || [];
     this.rutinaSeleccionada = data.rutinaSeleccionada ?? null;
 
-    // Ya no se suscribe aquí para 'dia', se hace en ngOnInit()
     this.inicializarFormulario();
   }
 
   ngOnInit() {
     this.cargarVersion();
 
-    // Ajustar 'categoria' si viene como string
+
     this.form.get('categoria')?.valueChanges.subscribe(value => {
       if (typeof value === 'string') {
         this.form.get('categoria')?.setValue(Number(value), { emitEvent: false });
       }
     });
 
-    // Suscripción robusta para 'dia'
     this.form.get('dia')?.valueChanges.subscribe(valor => {
-      // Convertir a número si es string
       const diaSeleccionado = typeof valor === 'string' ? parseInt(valor, 10) : valor;
       if (diaSeleccionado !== null && !isNaN(diaSeleccionado)) {
         this.inicializarFormulario(diaSeleccionado);
       }
     });
 
-    this.inicializarFormulario(); // llamado inicial
+    this.inicializarFormulario();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -111,7 +107,6 @@ export class FormActivityComponent implements OnInit, OnChanges {
     }
   }
 
-  /** Método que se vincula en el HTML al evento (change) del select de día */
   convertirDia(event: Event) {
     const select = event.target as HTMLSelectElement;
     const numero = parseInt(select.value, 10);
@@ -120,29 +115,22 @@ export class FormActivityComponent implements OnInit, OnChanges {
 
 private cargarVersion() {
   const id = this._rutinaSeleccionada;
-  console.log('cargarVersion - ID rutinaSeleccionada:', id);
 
   if (typeof id === 'number') {
     this.calendarEventsService.getIdVersionRoutine(id).subscribe({
       next: (data: any) => {
-        console.log('Versión recibida del servicio:', data);
-
-        // Suponemos que el backend devuelve { versionId: 123 }
         const versionId = data?.versionId;
         if (typeof versionId === 'number') {
           this.routines_versions_id = versionId;
         } else {
-          console.warn('Respuesta inválida, no se encontró ID de versión.');
           this.routines_versions_id = 0;
         }
       },
       error: (err) => {
-        console.error('Error al obtener versión:', err);
         this.routines_versions_id = 0;
       }
     });
   } else {
-    console.warn('ID de rutina inválido:', id);
     this.routines_versions_id = 0;
   }
 }
@@ -185,8 +173,6 @@ private cargarVersion() {
   }
 
   actualizarHoras(diaSeleccionado: number | null) {
-  console.log('Actualizando horas para día:', diaSeleccionado);
-
   if (diaSeleccionado === null) {
     this.horasFiltradas.set([]);
     return;
@@ -212,7 +198,7 @@ private cargarVersion() {
     return actividadesDia.some(a => {
       const actInicio = horaAMinutos(a.start_time?.slice(0, 5));
       const actFin = horaAMinutos(a.end_time?.slice(0, 5));
-      return !(fin <= actInicio || inicio >= actFin); // hay solapamiento
+      return !(fin <= actInicio || inicio >= actFin);
     });
   };
 
@@ -222,7 +208,7 @@ for (const bloque of bloques) {
   const inicioStr = bloque.start_time?.slice(0, 5);
   const finStr = bloque.end_time?.slice(0, 5);
 
-  if (!inicioStr || !finStr) continue; // Salta el bloque si falta alguno
+  if (!inicioStr || !finStr) continue;
 
   const inicioMin = horaAMinutos(inicioStr);
   const finMin = horaAMinutos(finStr);
@@ -240,7 +226,6 @@ for (const bloque of bloques) {
 
   const horasFinales = Array.from(horasDisponibles).sort();
   this.horasFiltradas.set(horasFinales);
-  console.log('Horas de inicio posibles:', horasFinales);
 }
 
 
@@ -266,7 +251,6 @@ estaDentroDeUnaSolaFranja(): boolean {
   const bloques = this.disponibilidad.filter(d => d.weekday === dia);
 
   if (bloques.length === 0) {
-    console.warn(`No se encontraron bloques de disponibilidad para el día ${dia}`);
     return false;
   }
 
