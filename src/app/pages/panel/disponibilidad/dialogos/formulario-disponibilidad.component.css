@@ -1,0 +1,60 @@
+:host-context(cdk-dialog-container) {
+  display: block;
+  border-radius: 15px;
+  background-color: white;
+  filter: drop-shadow(0 0 2em rgba(black, 0.5));
+  padding: 2em 2em 2em 2em;
+}
+
+.titulo_modal {
+  padding: 15px;
+  background-color: lightgray;
+  text-align: center;
+  border-radius: 15px;
+  border: solid 2px darkgray;
+}
+
+h2 {
+  display: block;
+  margin: 0;
+}
+
+ul {
+  list-style: square;
+  padding: 0;
+  list-style-position: inside;}
+
+li {
+  margin: 0.3rem 0;
+}
+
+.container {
+  padding: 5px;
+  font-family: sans-serif;
+  border: 1px solid lightgray;
+  border-radius: 7px;
+}
+
+.selectores {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+select option {
+  text-align: center;
+}
+
+.btn-crud {
+    height: 40px;
+    width: 46px;
+    opacity: 0.3;
+}
+
+.franjas-configuradas-para-dia {
+  padding: 15px;
+  background-color: lightlime;
+  text-align: center;
+  border-radius: 15px;
+  border: solid 1px darkgray;
+}

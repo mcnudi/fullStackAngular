@@ -1,0 +1,75 @@
+<form [formGroup]="goalsForm" (ngSubmit)="saveGoals()">
+    <!-- Zona de título -->
+    <div class="titulo_modal mb-3">
+        <h2>
+            <mat-icon>add_task</mat-icon>
+            ¿Cuál es tu objetivo?
+        </h2>
+    </div>
+
+    <!-- Grupo de título -->
+    <div class="mb-3">
+        <label for="goals_name" class="form-label required">Nombre del objetivo:</label>
+        <input id="goals_name" class="form-control" formControlName="goals_name" placeholder="Escribe el nombre de tu objetivo">
+        @if (checkControl('interest_name', 'required')) {
+            <mat-error class="text-danger text-sm mt-1">El campo es obligatorio</mat-error>
+        }
+    </div>
+
+    <!-- Grupo de interés -->
+    <div class="mb-3">
+        <label for="users_interests_id" class="form-label required">Interés asociado:</label>
+        <select class="form-control" id="users_interests_id" name="users_interests_id"
+          class="form-select text-center" formControlName="users_interests_id" placeholder="Elige el interés asociado">
+         @for (interes of arrayIntereses; let i = $index; track interes) {
+            <option 
+                [value]="interes.id">{{ interes.interest_name }}
+            </option>
+        }
+        </select>
+        @if (checkControl('users_interests_id', 'required')) {
+            <mat-error class="text-danger text-sm mt-1">El campo es obligatorio</mat-error>
+        }
+    </div>
+
+    <!-- Grupo de descripción -->
+    <div class="mb-3">
+        <label for="description" class="form-label">Describe tu objetivo:</label>
+        <textarea id="description" class="form-control" rows="3" formControlName="description" placeholder="Da todos los detalles que quieras..."></textarea>
+    </div>
+
+    <!-- Grupo de horas -->
+    <div class="mb-3">
+        <label for="hours_per_week" class="form-label required">Horas a la semana:</label>
+        <input type="text"
+            inputmode="decimal"
+            pattern="\d+(\.\d{1,2})?"
+            id="hours_per_week"
+            class="form-control"
+            maxlength="4"
+            formControlName="hours_per_week"
+            (keypress)="onlyDigits($event)">
+        @if (checkControl('hours_per_week', 'required')) {
+            <mat-error class="text-danger text-sm mt-1">El campo es obligatorio</mat-error>
+        }
+        @if (checkControl('hours_per_week', 'pattern')) {
+            <mat-error class="text-danger text-sm mt-1">El campo no cumple con el formato esperado: N.D</mat-error>
+            <mat-error class="text-danger text-sm mt-1"></mat-error>
+        }
+    </div>
+
+    <!-- Botones -->
+    <div class="d-flex justify-content-center gap-2 mt-3">
+        <button type="submit"
+            [disabled]="goalsForm.invalid || (modo === 'actualizar' && !formularioTieneCambios())"
+            class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">
+            <mat-icon>save</mat-icon>
+            {{ modo === 'actualizar' ? 'Actualizar' : 'Añadir' }} <!-- Label del botón en función del modo -->
+        </button>
+        <button type="button"
+            class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-error"
+            (click)="closeModal()">
+            <mat-icon>cancel</mat-icon>Cancelar
+        </button>
+    </div>
+</form>

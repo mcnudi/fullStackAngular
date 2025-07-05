@@ -1,0 +1,45 @@
+<form [formGroup]="userInterestsForm" (ngSubmit)="saveInterests()">
+    <!-- Zona de título -->
+    <div class="titulo_modal mb-3">
+        <h2>
+            <mat-icon>interests</mat-icon>
+            ¿Cuál es tu interés?
+        </h2>
+    </div>
+
+    <!-- Grupo de interés -->
+    <div class="mb-3">
+        <label for="nombre_intereses" class="form-label required">Interés:</label>
+        <input id="nombre_intereses" class="form-control" formControlName="interest_name" placeholder="Escribe tu interés">
+        @if (checkControl('interest_name', 'required')) {
+            <mat-error class="text-danger text-sm mt-1">El campo es obligatorio</mat-error>
+        }
+    </div>
+
+    <!-- Grupo de color -->
+    <div class="mb-3 d-flex justify-content-between">
+        <label for="color" class="form-label required">Color a mostrar:</label>
+        <div>
+            <input type="color" value="#6600ff" oninput="colorhex.value=value" formControlName="color" placeholder="Elige un color">
+            <output id="colorhex">#6600ff</output>
+            @if (checkControl('color', 'required')) {
+                <mat-error class="text-danger text-sm mt-1">El campo es obligatorio</mat-error>
+            }
+        </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="d-flex justify-content-center gap-2 mt-3">
+        <button type="submit"
+            [disabled]="userInterestsForm.invalid || (modo === 'actualizar' && !formularioTieneCambios())"
+            class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color">
+            <mat-icon>save</mat-icon>
+            {{ modo === 'actualizar' ? 'Actualizar' : 'Añadir' }} <!-- Label del botón en función del modo -->
+        </button>
+        <button type="button"
+            class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-error"
+            (click)="closeModal()">
+            <mat-icon>cancel</mat-icon>Cancelar
+        </button>
+    </div>
+</form>

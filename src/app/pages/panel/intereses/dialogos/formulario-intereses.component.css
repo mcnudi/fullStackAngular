@@ -1,0 +1,70 @@
+:host-context(cdk-dialog-container) {
+  display: block;
+  border-radius: 15px;
+  background-color: white;
+  filter: drop-shadow(0 0 2em rgba(black, 0.5));
+  padding: 2em 2em 2em 2em;
+}
+
+.titulo_modal {
+  padding: 15px;
+  background-color: lightgray;
+  text-align: center;
+  border-radius: 15px;
+  border: solid 2px darkgray;
+}
+
+h2 {
+  display: block;
+  margin: 0;
+}
+
+[type="color"] {
+  display: inline-flex;
+  vertical-align: bottom; 
+  border: none;
+  padding: 0;
+  height: 50px;
+  width: 100%;
+  cursor: pointer;
+  
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  
+  &::-webkit-color-swatch {
+    border: 0;
+    border-radius: 10px 10px 0 0;
+  
+    &::-moz-color-swatch {
+      border: 0;
+      border-radius: 10px 10px 0 0;
+    }
+  }
+}
+
+output {
+  display: block;
+  background: #f3f3f3;
+  font-size: 12px;
+  border-radius: 0 0 10px 10px;
+  padding: 16px;
+  line-height: 1.2;
+  
+  &:before {
+    content: 'HEXADECIMAL';
+    font-size: 12px;
+    font-weight: bold;
+    display: block;
+  }
+}
+
+.invalid-feedback {
+  color: red;
+}
+
+label.required::after {
+  content: '*';
+  color: red;
+  margin-left: 2px;
+}

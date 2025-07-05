@@ -1,0 +1,63 @@
+<section class="login-wrapper">
+    <div class="login-card">
+      <h2 class="text-center mb-4">Iniciar Sesión</h2>
+  
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+        <mat-form-field class="w-100 mb-3" appearance="fill">
+          <mat-label for="username" class="form-label fw-bold">Usuario</mat-label>
+          <input
+            matInput
+            type="text"
+            id="username"
+            class="form-control"
+            formControlName="username"
+            placeholder="Introduce tu usuario"
+          />
+          @if (checkControl('username', 'required')) {
+            <mat-error class="text-danger">El campo es obligatorio</mat-error>
+          }
+        </mat-form-field>
+  
+        <mat-form-field class="w-100 mb-3" appearance="fill">
+          <mat-label for="password" class="form-label fw-bold">Contraseña</mat-label>
+          <div class="position-relative">
+            <input
+            matInput
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            class="form-control"
+            formControlName="password"
+            placeholder="Introduce tu contraseña"
+            />
+            <button
+              type="button"
+              (click)="showPassword = !showPassword"
+              class="position-absolute top-50 translate-middle-y end-0 d-flex align-items-center text-secondary hover:text-primary border-0 bg-transparent"        >
+              @if (!showPassword) {
+                <mat-icon>visibility</mat-icon>
+              } @else {
+                <mat-icon>visibility_off</mat-icon>
+              }
+            </button>
+          </div>
+
+          @if (checkControl('password', 'required')) {
+            <mat-error class="text-danger">El campo es obligatorio</mat-error>
+          }
+        </mat-form-field>
+  
+        <button
+        class="w-100 mt-4 d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color"
+        [disabled]="loginForm.invalid"
+        type="submit">
+          Iniciar Sesión
+        </button>
+      </form>
+      <div class="d-flex justify-content-center align-items-center mt-4 flex-column">
+        <p>¿Has olvidado tu contraseña? <a [routerLink]="['/passwordRecovery']" class="link-primary-color text-decoration-none">Recuérdame</a></p>
+        <p>¿Aún no tienes cuenta? <a [routerLink]="['/register']" class="link-primary-color text-decoration-none">Regístrate</a></p>
+
+      </div>
+    </div>
+  </section>
+  

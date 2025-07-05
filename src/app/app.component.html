@@ -1,6 +1,10 @@
-<header>
-  <app-navegacion></app-navegacion>
-</header>
-<main>
- <!-- <router-outlet />-->
+@if(mostrarHeader){
+  <header>
+    <app-navegacion></app-navegacion>
+  </header>
+}
+<main class="h-100">
+  <div>
+    <router-outlet />
+  </div>
 </main>

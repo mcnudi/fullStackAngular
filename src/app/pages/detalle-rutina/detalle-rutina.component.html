@@ -1,0 +1,105 @@
+<h3 class="card-title text-center mb-2 mt-3">Detalle de la rutina</h3>
+<div class="d-flex justify-content-center align-items-center mt-3">
+  <article class="col-12 col-sm-4 col-md-4 col-lg-4 p-3 card m-3 w-75">
+    <div class="d-flex flex-column justify-content-between m-3">
+      <p>
+        <strong>{{ nombre }}</strong>
+      </p>
+      <p>{{ descripcion }}</p>
+    </div>
+    <div class="d-flex justify-content-center flex-wrap gap-2 mt-2">
+      <button class="btn-custom btn-primary-color d-flex align-items-center justify-content-center gap-2" (click)="volver()">
+        <mat-icon>arrow_back</mat-icon>
+        Volver
+      </button>
+     
+      <button class="btn-custom btn-primary-color d-flex align-items-center justify-content-center gap-2" (click)="actualizarTarea()">
+        <mat-icon>update</mat-icon>
+        Actualizar Rutina
+      </button>
+
+      <button class="btn-custom btn-primary-color d-flex align-items-center justify-content-center gap-2" (click)="borrarRutina()">
+        <mat-icon>delete</mat-icon>
+          Borrar Rutina
+      </button>
+
+      <button class="btn-custom btn-primary-color d-flex align-items-center justify-content-center gap-2" (click)="descargarPdf(rutinaN)">
+        <mat-icon>download</mat-icon>
+        Descargar
+      </button>
+      
+  <button class="btn-custom btn-primary-color d-flex align-items-center justify-content-center gap-2" (click)="abrirDialogoCompartir()">
+    <mat-icon>share</mat-icon>
+    Compartir
+  </button>
+
+</div>
+  </article>
+</div>
+<h3 class="card-title text-center mb-2 mt-2">Últimas versiones</h3>
+<div class="d-flex justify-content-center align-items-center">
+  <section class="p-1 card w-50 m-3">
+    <div class="d-flex flex-column gap-2 align-items-center">
+      @for(rutina of tablarutina;track rutina.idVersion){
+      <article class="w-100 p-3 border rounded bg-light rutina-card">
+        <div class="container">
+          <div class="row" align-items-center>
+            <div class="col-md-4 w-75 mb-4">
+              <strong>{{ rutina.name }}</strong>
+            </div>
+            <div class="col-md-4 w-25 color d-flex align-items-center gap-1">v{{ rutina.version_number }}
+              @if(rutina.is_selected){
+                <mat-icon>star</mat-icon>
+              }
+            </div>
+          </div>
+          <div class="row align-items-center">
+            <div class="col-md-4 w-75">{{ rutina.description }}</div>
+            <div class="col-md-4 w-25">{{ rutina.numActividades }} Actividades</div>
+          </div>
+          <div class="row align-items-center">
+            <div class="col-md-4 w-75">
+              Ùltima actualización:
+              {{ rutina.created_at | date : "dd/MM/yyyy" }}
+            </div>
+
+            <div class="col-md-4 w-25">
+              <button
+                class="d-flex align-content-center btn-custom btn-primary-color"
+                (click)="elegir(rutina.idVersion)">
+                <mat-icon>radio_button_checked</mat-icon>
+                Elegir
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+      }
+    </div>
+    <div class="paginacion">
+      @if(deshabilitarA){
+      <button class="d-flex align-content-center btn-custom btn-primary-color" disabled (click)="atras()">
+        <mat-icon>chevron_left</mat-icon>
+        Atras
+      </button>
+      }@else{
+        <button class="d-flex align-content-center btn-custom btn-primary-color" (click)="atras()">
+          <mat-icon>chevron_left</mat-icon>
+        Atras
+      </button>
+      }
+      @if(tablarutina){
+      <p class="info-pagina">Página {{ page }} </p>
+      }
+       @if(deshabilitarD){
+      <button class="d-flex align-content-center btn-custom btn-primary-color" disabled (click)="avanzar()">
+        Siguiente <mat-icon>chevron_right</mat-icon>
+      </button>
+    }@else{
+      <button class="d-flex align-content-center btn-custom btn-primary-color" (click)="avanzar()">
+        Siguiente <mat-icon>chevron_right</mat-icon>
+      </button>
+    }
+    </div>
+  </section>
+</div>

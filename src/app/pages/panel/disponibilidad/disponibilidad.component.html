@@ -1,0 +1,57 @@
+<mat-expansion-panel [expanded]='true'>
+    <mat-expansion-panel-header class="header-color-mat">
+        <div class="d-flex align-items-center justify-content-between w-100">
+            <!-- Div 1: Icono a la izquierda -->
+            <div class="me-2">
+                <mat-icon>calendar_month</mat-icon>
+            </div>
+        
+            <!-- Div 2: Título centrado -->
+            <div class="flex-grow-1 text-center">
+                <h3 class="mb-0">
+                    <strong>Disponibilidad</strong>
+                </h3>
+            </div>
+        
+            <!-- Div 3: Botón a la derecha -->
+            <div>
+                <mat-panel-description>
+                <button 
+                    (click)="openModal('añadir', {}, arrayDisponibilidad, 1); $event.stopPropagation()"
+                    class="btn-mas d-flex align-items-center justify-content-center btn-custom btn-primary-color py-2 px-3 fs-4">
+                    +
+                </button>
+                </mat-panel-description>
+            </div>
+        </div>
+    </mat-expansion-panel-header>
+
+    @for (diaConDisponibilidad of diasSemanaOrdenados; let i = $index; track diaConDisponibilidad.nombre) {
+        <mat-expansion-panel [expanded]="true" [id]="diaConDisponibilidad.valor"
+                             [class]="{ 'sin-disponibilidad': !hasDisponibilidad(diaConDisponibilidad.valor) }">
+            <mat-expansion-panel-header class="header-color-mat cabecera-interior">
+                <h6 class="mb-0 m-0">
+                    <strong>{{ diaConDisponibilidad.nombre }}</strong>
+                </h6>
+            </mat-expansion-panel-header>
+            
+            <div class="panel-content elemento-lista-card p-3 bg-light" (click)="openModal('añadir', {}, arrayDisponibilidad, diaConDisponibilidad.valor)">
+                @for (item of arrayDisponibilidad; track item.id) {
+                    @if (item.weekday === diaConDisponibilidad.valor) {
+                        <div class="elemento-disponibilidad">
+                            <div class="elemento-texto-lista mt-1 text-center fw-bold">
+                                <span>{{ formatearHoras(item.start_time) }}</span>
+                            </div>
+                            <div class="elemento-texto-lista mt-1 text-center fw-bold">
+                                <span>{{ formatearHoras(item.end_time) }}</span>
+                            </div>
+                            <button (click)="deleteAvailability(item); $event.stopPropagation()" class="btn-crud btn btn-outline-danger mt-1">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                    }
+                }
+            </div>
+        </mat-expansion-panel>
+    }
+</mat-expansion-panel>

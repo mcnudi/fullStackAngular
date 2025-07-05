@@ -1,0 +1,158 @@
+<div class="container mt-5">
+  <div class="card shadow">
+    <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+      <div class="header-background text-white text-center py-5"></div>
+      <div class="text-center img-position">
+        <img
+          [src]="profileImageUrl"
+          alt="Foto de perfil"
+          class="rounded-circle border border-3 border-white bg-white shadow"
+          width="150"
+          height="150"
+        />
+      </div>
+      <div class="card-body text-center mt-3 mx-5">
+        <div class="d-flex justify-content-center gap-5 mt-3">
+          <button
+            class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color"
+            (click)="toggleEdit()"
+            [disabled]="editView"
+            type="button"
+          >
+            <mat-icon>edit</mat-icon> Editar Datos
+          </button>
+          <div class="d-flex flex-column align-items-center gap-3">
+            <a
+              class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color text-decoration-none"
+              [routerLink]="['/app/updateImage']"
+            >
+              <mat-icon>photo_camera</mat-icon> Editar Foto
+            </a>
+          </div>
+          <button
+            class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color"
+            (click)="deleteProfile()"
+            [disabled]="editView"
+            type="button"
+          >
+            <mat-icon>delete_forever</mat-icon> Eliminar Usuario
+          </button>
+        </div>
+
+        <div class="table-responsive mt-4">
+          <table class="table">
+            <thead class="table-info">
+              <tr>
+                <th colspan="2" class="text-start">Datos Personales</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-start">
+                  <label for="name" class="form-label fw-bold"
+                    >Nombre Completo</label
+                  >
+                </td>
+                <td class="text-start">
+                  @if (editView) {
+                  <input
+                    id="name"
+                    class="form-control"
+                    formControlName="name"
+                  />
+                  } @else {
+                  {{ profile.name }}
+                  }
+                </td>
+              </tr>
+
+              <tr>
+                <td class="text-start">
+                  <label for="username" class="form-label fw-bold"
+                    >Nombre de Usuario</label
+                  >
+                </td>
+                <td class="text-start">
+                  @if (editView) {
+                  <input
+                    id="username"
+                    class="form-control"
+                    formControlName="username"
+                  />
+                  } @else {
+                  {{ profile.username }}
+                  }
+                </td>
+              </tr>
+
+              <tr>
+                <td class="text-start">
+                  <label for="password" class="form-label fw-bold"
+                    >Contraseña</label
+                  >
+                </td>
+                <td class="text-start">
+                  @if (editView) {
+                  <input
+                    id="password"
+                    type="password"
+                    class="form-control"
+                    formControlName="password"
+                  />
+                  } @else {
+                  {{ profile.password }}
+                  }
+                </td>
+              </tr>
+
+              <tr>
+                <td class="text-start">
+                  <label for="email" class="form-label fw-bold"
+                    >Correo Electrónico</label
+                  >
+                </td>
+                <td class="text-start">
+                  @if (editView) {
+                  <input
+                    id="email"
+                    type="email"
+                    class="form-control"
+                    formControlName="email"
+                  />
+                  } @else {
+                  {{ profile.email }}
+                  }
+                </td>
+              </tr>
+
+              <tr>
+                <td class="text-start"><strong>Fecha de creación</strong></td>
+                <td class="text-start">
+                  {{ profile.created_at | date: "d / M / y" }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        @if (editView) {
+        <div class="d-flex justify-content-center gap-5 mt-3">
+          <button
+            class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color"
+            type="submit"
+          >
+            <mat-icon>save</mat-icon> Guardar
+          </button>
+          <button
+            class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-error"
+            (click)="toggleEdit()"
+            type="button"
+          >
+            <mat-icon>cancel</mat-icon> Cancelar
+          </button>
+        </div>
+        }
+      </div>
+    </form>
+  </div>
+</div>

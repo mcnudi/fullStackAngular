@@ -1,0 +1,65 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center; /* centramos horizontalmente */
+  align-items: center;
+  z-index: 10000;
+  box-sizing: border-box;
+  padding-left: 290px; /* espacio para sidebar + margen */
+}
+
+.form-container {
+  background: white;
+  border-radius: 15px;
+  padding: 30px 40px;
+  max-width: 500px; /* más ancho */
+  width: 100%;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  box-sizing: border-box;
+}
+
+
+
+
+/* Títulos y textos */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+label {
+  font-size: 14px;
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+/* Inputs y selects */
+input[type="text"],
+input.form-control,
+select.form-select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input[disabled] {
+  background-color: #e0e0e0;
+}
+
+/* Flex utilities para botones o agrupaciones */
+.d-flex {
+  display: flex;
+}
+
+.gap-3 {
+  gap: 1rem;
+}

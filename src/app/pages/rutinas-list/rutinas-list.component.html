@@ -1,0 +1,67 @@
+<div class="main-container">
+  <div class="header d-flex justify-content-between align-items-center">
+    <div>
+      <h1>Mis rutinas</h1>
+      <p class="subtext">{{ rutinas.length }} rutinas</p>
+    </div>
+
+    @if (rutinas.length > 0) {
+      <div class="d-flex flex-column gap-3 botones-flotantes">
+        <button class="btn-custom btn-primary-color d-flex align-items-center justify-content-center gap-2" (click)="irAlta()">
+          <mat-icon>note_add</mat-icon>
+          Crear Rutina
+        </button>
+        <button class="d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color" [routerLink]="['/app/rutinas/generate']">
+          <mat-icon>auto_awesome</mat-icon>
+          Generar Rutina con IA
+        </button>
+      </div>
+    }
+  </div>
+
+  @if (rutinas.length > 0) {
+    <div class="search-bar">
+      <input type="text" placeholder="Buscar rutinas" [(ngModel)]="filtroBusqueda" />
+      <mat-icon class="icon">search</mat-icon>
+    </div>
+  }
+
+  @for (rutina of paginatedRutinas; track rutina.id) {
+    <div class="rutina-card" (click)="verDetalle(rutina.id)">
+      <div class="rutina-header">
+        <strong>{{ rutina.name }}</strong>
+        @if (rutina.is_default) {
+          <mat-icon class="icon-star">star</mat-icon>
+        }
+      </div>
+      <p>{{ rutina.description }}</p>
+      <div class="rutina-footer">
+        <span>Última actualización: {{ rutina.created_at | date:'dd/MM/yyyy' }}</span>
+        <div>
+          <a href="#">v{{ rutina.version_number || 1 }}</a> · 
+          <span>
+            {{ rutina.activity_count || 0 }} 
+            {{ (rutina.activity_count || 0) === 1 ? 'Actividad' : 'Actividades' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (rutinasFiltradas.length > pageSize) {
+    <div class="pagination">
+      <button (click)="prevPage()" [disabled]="currentPage === 1">Anterior</button>
+      <span>Página {{ currentPage }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage * pageSize >= rutinasFiltradas.length">
+        Siguiente
+      </button>
+    </div>
+  }
+
+  @if (rutinas.length === 0) {
+    <div class="no-rutinas text-center">
+      <h2>¡Todavía no tienes rutinas!</h2>
+      <button class="btn-custom btn-primary-color mt-3" (click)="irAlta()">Crear rutina</button>
+    </div>
+  }
+</div>

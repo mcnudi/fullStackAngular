@@ -1,0 +1,119 @@
+<section class="login-wrapper">
+  <div class="login-card">
+    <h2 class="text-center mb-4">Regístrate</h2>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+      <mat-form-field class="w-100 mb-3" appearance="fill">
+        <mat-label for="name" class="form-label fw-bold"
+          >Nombre Completo</mat-label>
+        <input
+          matInput
+          type="text"
+          id="name"
+          class="form-control"
+          formControlName="name"
+          placeholder="Introduce tu nombre completo"
+        />
+        @if (checkControl('name', 'required')) {
+        <mat-error class="text-danger">El campo es obligatorio</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field class="w-100 mb-3" appearance="fill">
+        <mat-label for="email" class="form-label fw-bold">Correo Electrónico</mat-label>
+        <input
+          matInput
+          type="text"
+          id="email"
+          class="form-control"
+          formControlName="email"
+          placeholder="Introduce tu email"
+        />
+        @if (checkControl('email', 'required')) {
+        <mat-error class="text-danger">El campo es obligatorio</mat-error>
+        } @if (checkControl('email', 'pattern')) {
+        <mat-error class="text-danger">Introduce un correo válido</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field class="w-100 mb-3" appearance="fill">
+        <mat-label for="username" class="form-label fw-bold">Usuario</mat-label>
+        <input
+          matInput
+          type="text"
+          id="username"
+          class="form-control"
+          formControlName="username"
+          placeholder="Introduce tu usuario"
+        />
+        @if (checkControl('username', 'required')) {
+        <mat-error class="text-danger">El campo es obligatorio</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field class="w-100 mb-3" appearance="fill">
+        <mat-label for="password" class="form-label fw-bold">Contraseña</mat-label>
+        <div class="position-relative">
+          <input
+            matInput
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            class="form-control"
+            formControlName="password"
+            placeholder="Introduce tu contraseña"
+          />
+          <button
+            type="button"
+            (click)="showPassword = !showPassword"
+            class="position-absolute top-50 translate-middle-y end-0 d-flex align-items-center text-secondary hover:text-primary border-0 bg-transparent"
+          >
+          @if (!showPassword) {
+            <mat-icon>visibility</mat-icon>
+          } @else {
+            <mat-icon>visibility_off</mat-icon>
+          }
+          </button>
+        </div>
+      <!--  @if (passwordSecurity) {
+        <p
+        class="text-sm fw-medium mt-2"
+        [ngClass]="{
+            'text-danger': passwordSecurity === 'Débil',
+            'text-warning': passwordSecurity === 'Media',
+            'text-success': passwordSecurity === 'Fuerte'
+        }"
+        >
+          Seguridad: {{ passwordSecurity }}
+        </p>
+        }-->
+        @if (checkControl('password', 'required')) {
+        <mat-error class="text-danger text-sm mt-1">El campo es obligatorio</mat-error>
+        } @else if (checkControl('password', 'pattern')) {
+        <mat-error class="text-danger text-sm mt-1">
+          La contraseña debe contener al menos una mayúscula, una minúscula y un
+          número
+        </mat-error>
+        } @else if (checkControl('password', 'minlength')) {
+        <mat-error class="text-danger text-sm mt-1">
+          La contraseña debe tener al menos 8 caracteres
+        </mat-error>
+        }
+      </mat-form-field>
+      <button
+      class="w-100 mt-4 d-flex align-items-center justify-content-center gap-2 btn-custom btn-primary-color"
+      [disabled]="registerForm.invalid">
+        Registrarse
+      </button>
+    </form>
+    <div
+      class="d-flex justify-content-center align-items-center mt-4 flex-column"
+    >
+      <p>
+        ¿Ya tienes cuenta?
+        <a
+          [routerLink]="['/login']"
+          class="link-primary-color text-decoration-none"
+          >Iniciar Sesión</a
+        >
+      </p>
+    </div>
+  </div>
+</section>

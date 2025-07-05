@@ -1,0 +1,28 @@
+.rutina-card {
+  background: #fff;
+  padding: 18px 24px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+section{
+    background-color: transparent;
+    border: 0px;
+}
+.color{
+    color:#0fa3b1
+}
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem; /* Espacio entre los elementos */
+}
+
+.info-pagina {
+  margin: 0;
+}

@@ -1,0 +1,133 @@
+.layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.sidebar {
+  background-color: white;
+  width: 350px;
+  transition: width 0.5s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #e0e0e0;
+}
+
+.sidebar--collapsed {
+  width: 100px;
+}
+
+.sidebar__toggle {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+  transition: justify-content 0.3s ease;
+}
+
+.sidebar--collapsed .sidebar__toggle {
+  justify-content: center;
+}
+
+.sidebar__toggle-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 7px;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar__toggle-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.sidebar__toggle-btn mat-icon {
+  font-size: 24px;
+  color: #1f1f1f;
+}
+
+.sidebar__section {
+  padding: 20px 20px;
+}
+
+.sidebar__profile {
+  margin: 10px;
+  width: 50px;
+  height: 50px;
+}
+
+.sidebar__link {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  transition: padding 0.3s ease, gap 0.3s ease;
+}
+
+.sidebar--collapsed .sidebar__link {
+  gap: 0;
+  justify-content: center;
+}
+
+.sidebar__link p {
+  margin: 0;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sidebar--collapsed .sidebar__link p {
+  opacity: 0;
+}
+
+.sidebar__link__icon {
+  height: 35px;
+  width: 35px;
+  fill: #1f1f1f;
+  transition: transform 0.3s ease;
+}
+
+.sidebar__link__container {
+  margin-bottom: 20px;
+}
+.sidebar__link__container:hover {
+  cursor: pointer;
+}
+
+.sidebar__link--active {
+  background-color: rgba(116, 190, 197, 0.3);
+  border-radius: 20px;
+  padding: 30px 16px;
+}
+.sidebar__link--active p,
+.sidebar__link--active svg {
+  fill: #0fa3b1;
+  color: #0fa3b1;
+  font-weight: bold;
+}
+
+.divider {
+  color: #ececec;
+}
+
+.sidebar--collapsed h1,
+.sidebar--collapsed p:not(.sidebar__link p) {
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease, height 0.3s ease;
+}
+
+h1,
+.sidebar__section > p {
+  opacity: 1;
+  transition: opacity 0.3s ease, height 0.3s ease;
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  overflow: auto;
+  padding: 24px;
+}

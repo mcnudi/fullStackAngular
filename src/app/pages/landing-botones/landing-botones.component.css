@@ -1,0 +1,63 @@
+button[mat-raised-button] {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0.9rem 2rem;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  border: none !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+  min-width: 200px;
+  color: white;
+  background:#0FA3B1;
+  white-space: nowrap;
+}
+
+.cta-primary {
+  background-color: var(--accent-cyan) !important;
+  color: var(--white) !important;
+}
+.cta-primary:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+  background-color: #0c8c9a !important; 
+}
+.cta-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.cta-secondary {
+  background-color: transparent !important;
+  color: var(--white) !important;
+  border: 2px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow: none; 
+}
+.cta-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.cta-secondary:active {
+  transform: translateY(0);
+}
+
+:root {
+  --primary-blue: #006699;
+  --dark-blue: #003366;
+  --accent-cyan: #0fa3b1;
+  --light-gray-bg: #f8f9fa;
+  --medium-gray-text: #555;
+  --white: #ffffff;
+}
+
+@media (max-width: 576px) {
+  button[mat-raised-button] {
+    width: 100%; 
+    font-size: 1rem;
+    padding: 0.8rem 1.5rem;
+  }
+  .botones-overlay {
+    flex-direction: column; 
+    gap: 1rem;
+  }
+}
