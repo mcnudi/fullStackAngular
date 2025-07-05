@@ -1,19 +1,22 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UserAuthenticatedResponse, UserLoginRequest, UserRegisterRequest } from '../interfaces/iuser.interface';
-
+import {
+  UserAuthenticatedResponse,
+  UserLoginRequest,
+  UserRegisterRequest,
+} from '../interfaces/iuser.interface';
+import { environment } from '../../environments/environment';
 
 interface AuthResponse {
   token: string;
 }
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private API_URL = 'http://localhost:3000/api/users';
+  private API_URL = environment.backendURL + '/api/users';
 
   constructor(private http: HttpClient) {}
 
@@ -66,5 +69,4 @@ export class AuthService {
     const decoded = this.getDecodedToken();
     return decoded ? decoded.userName : null;
   }
-
 }
